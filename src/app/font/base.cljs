@@ -2,6 +2,7 @@
   (:require
    ["@pdf-lib/fontkit" :as fontkit]
    ["react-native-fs" :as fs]
+   ["react-native" :as rn]
    [goog.object :as gobj]
    [goog.crypt.base64 :as b64]
    [applied-science.js-interop :as j]
@@ -15,11 +16,17 @@
   (reagent/atom {}))
 
 (defn init []
-  (p/alet [result (p/await (.readFileAssets fs "monbaiti.ttf" "base64"))]
-          (swap! fonts assoc :white (fontkit/create (b64/decodeStringToUint8Array result))))
+  (p/alet [result (p/await
+                    (let [platform (j/get-in rn [:Platform :OS])]
+                      (condp = platform
+                        "android" (.readFileAssets fs "monbaiti.ttf" "base64")
+                        "ios" (.readFile fs (str fs/MainBundlePath "/assets/monbaiti.ttf") "base64"))))]
+    (swap! fonts assoc :white (fontkit/create (b64/decodeStringToUint8Array result))))
+    ; (js/console.log "aaa"))
+    ; (js/console.log (b64/decodeStringToUint8Array result)))
   ;; (async (p/await (p/delay 100)))
-  (js/console.log "init function")
-  )
+  (js/console.log "init function"))
+
 
 (defn load [name url]
   (-> (fs/readFileAssets url)
@@ -103,7 +110,7 @@
         (j/call :rotate (str (* 1 (.-PI js/Math))))
         (j/call :scale (* 0.1 (font-scale :white)))
         (j/call :toSVG))))
-      
+
 
 (comment
   (init)
@@ -111,15 +118,15 @@
   (time (get-font :whtie))
   (time (get-glyphs :white mstr))
   (time (* 100 12 13))
-  (time 
-  (-> (get-glyphs :white mstr)
-      first
-      (j/get :path)
-      (j/call :scale 1 -1)
-      (j/call :rotate (str (* 1 (.-PI js/Math))))
-      (j/call :scale (* 0.12 (font-scale :white)))
-      (j/call :toSVG))
-)
+  (time
+   (-> (get-glyphs :white mstr)
+       first
+       (j/get :path)
+       (j/call :scale 1 -1)
+       (j/call :rotate (str (* 1 (.-PI js/Math))))
+       (j/call :scale (* 0.12 (font-scale :white)))
+       (j/call :toSVG)))
+
 
   (def mstr "ᠡᠷᠬᠡ")
 
@@ -164,7 +171,4 @@
   (.toSVG (.scale ab (- (glyph-scale :white 24)) (glyph-scale :white 24)))
   ;; (.toSVG)    )
   (.getScaledPath ab 12)
-  (glyph-scale :white 24)
-  )
-
-
+  (glyph-scale :white 24))

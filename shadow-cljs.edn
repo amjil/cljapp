@@ -1,6 +1,7 @@
 {:source-paths ["src" "test"]
 
- :dependencies [[cljs-bean "1.7.0"]
+ :dependencies [
+                [cljs-bean "1.7.0"]
                 [applied-science/js-interop "0.3.1"]
                 [funcool/promesa "1.8.1"]
                 [reagent "1.0.0"]
