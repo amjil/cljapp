@@ -13,15 +13,21 @@
 
 (defn root-comp []
   [safe-area/safe-area-view
-   [rn/view
-    [rn/text "Hello CLojure! from CLJS "]
+   [rn/view {:style {:flexDirection "column"}}
+    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]
     ;; [:> svg/Svg {:width "130" :height "130" :fill "blue" :stroke "red" :color "green" :viewBox "-16 -16 544 544" :style {:transform [{:scaleX -1}]}}
     (if (font/get-font :white)
-      [:> svg/Svg {:width "130" :height "130" :fill "blue" :color "green" :viewBox "16 16 544 544"}
-       [:> svg/Path {:d
-                     (font/msvg)
-                     :origin "10,50" :rotation "90"}]])]])
-
+      [rn/view {:style {:margin 10 :backgroundColor "yellow"}}
+       [:> svg/Svg {:width "130" :height "130" :fill "blue" :color "green"}
+        [:> svg/Path {:d
+                      (font/msvg 0)
+                      :x "0" :y "0" :rotation "90"}]
+        [:> svg/Path {:d
+                      (font/msvg 1)
+                      :x "0" :y "5.89453125" :rotation "90"}]]])]])
+                      ;; :originX "50" :originY "80" :rotation "90"
+                      ;; }]]])]])
+  
 
 
 (defn init []
