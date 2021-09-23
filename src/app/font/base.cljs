@@ -84,14 +84,17 @@
        (* size)))
 
 (defn svg [glyph font-name size]
-  (-> glyph
-      (j/get :path)
-      (j/call :scale -1 1)
-      (j/call :rotate (str (.-PI js/Math)))
-      (j/call :scale (/ size (units-per-em font-name)))
-      (j/call :toSVG)))
+  (if (empty? (j/get glyph :path))
+    ""
+    (-> glyph
+        (j/get :path)
+        (j/call :scale -1 1)
+        (j/call :rotate (str (.-PI js/Math)))
+        (j/call :scale (/ size (units-per-em font-name)))
+        (j/call :toSVG))))
 
 (def mstr "ᠡᠷᠬᠡ")
+(def mlongstr "ᠨᠠᠢᠵᠠ᠎ᠮᠢᠨᠢ᠂ ᠲᠠ ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ᠎ᠳᠤ ᠬᠦᠷᠴᠦ ᠦᠵᠡᠪᠡ᠎ᠦᠦ? ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ ᠪᠣᠯ ᠮᠠᠨ᠎ᠤ ᠤᠯᠤᠰ᠎ᠤᠨ ᠪᠠᠷᠠᠭᠤᠨ ᠬᠣᠢᠲᠤ ᠬᠢᠯᠢ ᠳᠠᠭᠠᠤ ᠬᠡᠳᠦᠨ ᠮᠢᠩᠭᠠᠨ ᠭᠠᠵᠠᠷ ᠦᠷᠭᠦᠯᠵᠢᠯᠡᠭᠰᠡᠨ ᠲᠣᠮᠤᠬᠠᠨ ᠨᠢᠷᠤᠭᠤ ᠮᠥᠨ ᠪᠥᠭᠡᠳ ᠵᠦᠩᠭᠠᠷ ᠲᠠᠷᠢᠮ ᠬᠣᠶᠠᠷ ᠬᠣᠲᠤᠭᠤᠷ᠎ᠤᠨ ᠳᠤᠮᠳᠠᠭᠤᠷ ᠬᠥᠨᠳᠡᠯᠢᠳᠴᠦ᠂ ᠥᠷᠭᠡᠨ ᠠᠭᠤᠳᠠᠮ ᠰᠢᠨᠵᠢᠶᠠᠩ ᠣᠷᠤᠨ᠎ᠢ ᠡᠮᠦᠨ᠎ᠡ ᠬᠣᠢᠨ᠎ᠠ ᠬᠣᠶᠠᠷ ᠬᠡᠰᠡᠭ ᠪᠣᠯᠭᠠᠨ ᠬᠤᠪᠢᠶᠠᠵᠠᠢ᠃ ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ᠎ᠶᠢ ᠠᠯᠤᠰ᠎ᠠᠴᠠ ᠪᠠᠷᠠᠯᠠᠬᠤ᠎ᠳᠤ ᠲᠦᠮᠡᠨ ᠦᠵᠡᠮᠵᠢ ᠲᠡᠭᠦᠰ ᠪᠦᠷᠢᠳᠦᠭᠡᠳ ᠡᠭᠦᠯᠡᠨ ᠰᠠᠴᠤᠭ᠎ᠲᠤ ᠰᠢᠷᠭᠤᠭᠰᠠᠨ ᠮᠥᠩᠬᠡ ᠴᠠᠰᠤᠲᠤ ᠰᠠᠷᠢᠳᠠᠭ ᠣᠷᠭᠢᠯ᠎ᠤᠳ᠎ᠨᠢ ᠡᠭᠡᠭᠡ᠎ᠯᠡ ᠪᠥᠵᠢᠭᠯᠡᠯᠴᠡᠵᠦ ᠪᠠᠢᠭ᠎ᠠ ᠤᠢᠭᠤᠷ ᠬᠡᠦᠬᠡᠨᠴᠦᠦᠯ᠎ᠦᠨ ᠣᠷᠤᠢ᠎ᠶᠢᠨ ᠴᠢᠮᠡᠭ ᠪᠣᠯᠤᠭᠰᠠᠨ ᠲᠠᠨ᠎ᠠ ᠰᠤᠪᠤᠳ ᠰᠢᠭᠢᠳᠭᠡᠭᠡᠲᠦ ᠲᠢᠲᠢᠮ ᠠᠳᠠᠯᠢ ᠭᠢᠯᠪᠠᠯᠵᠠᠨ ᠭᠢᠯᠲᠦᠭᠡᠨᠡᠨ᠎ᠡ᠃ ᠠᠯᠠᠭᠯᠠᠨ ᠬᠠᠷᠠᠭᠳᠠᠬᠤ ᠥᠨᠳᠦᠷ ᠨᠠᠮ ᠨᠢᠷᠤᠭᠤ᠎ᠨᠤᠭᠤᠳ᠎ᠨᠢ ᠥᠳᠦ ᠰᠣᠳᠤ᠎ᠪᠠᠨ ᠰᠠᠭᠠᠳᠠᠭᠯᠠᠭᠳᠠᠭᠰᠠᠨ ᠲᠣᠭᠤᠰ ᠰᠢᠪᠠᠭᠤ ᠮᠡᠲᠦ ᠳᠤᠷ᠎ᠠ ᠪᠠᠬᠠᠷᠬᠠᠯ᠎ᠢ ᠲᠠᠲᠠᠭᠰᠠᠨ ᠪᠠᠢᠨ᠎ᠠ᠃")
 
 (defn msvg [num]
   ;; (if (empty? @fonts) (js/console.log "11xxxxx") (js/console.log "11aaaaa"))
@@ -112,8 +115,8 @@
         (j/call :toSVG))))
 
 (defn svgs [glyphs font-name size]
-  (let [widths (map #(width font-name size %) glyphs)]
-    ))
+  (let [widths (map #(width font-name size %) glyphs)]))
+
 
 (comment
   (init)
@@ -121,9 +124,12 @@
   (time (get-font :whtie))
   (time (get-glyphs :white mstr))
   (time (* 100 12 13))
+  (-> (get-glyphs :white mstr)
+      last)
+
   (time
    (-> (get-glyphs :white mstr)
-       first
+       last
        (j/get :path)
        (j/call :scale 1 -1)
        (j/call :rotate (str (* 1 (.-PI js/Math))))
@@ -131,14 +137,21 @@
        (j/call :toSVG)))
 
 
-  (def mstr "ᠡᠷᠬᠡ")
   (time
-  (map #(width :white 24 %) (get-glyphs :white mstr))
-)
+   (map #(width :white 24 %) (get-glyphs :white mstr)))
   (map #(svg % :white 24) (get-glyphs :white mstr))
+  (map #(svg % :white 24) (get-glyphs :white mlongstr))
+  mlongstr
+  mstr
+  (require '[clojure.string :as str])
+  (time
+   (->>
+    (str/split mlongstr #" ")
+    (map #(get-glyphs :white %))
+    (map (fn [x] (map #(width :white 24 %) x)))))
   (-> (get-glyphs :white mstr)
-  first
-  (svg 24)    )
+      first
+      (svg 24))
 
   (msvg)
   (load :white "./assets/fonts/monbaiti.ttf")
@@ -150,6 +163,9 @@
 
   (units-per-em :white)
   (font-scale :white)
+  (time
+   (units-per-em :white))
+
   ;; (js/console.log (layout :white "ᠡᠷᠬᠡ"))
   ;; (def glyphs (.-glyphs (layout :white "ᠡᠷᠬᠡ ")))
   ;; (def glyphs (.-glyphs (layout :white "aa")))
