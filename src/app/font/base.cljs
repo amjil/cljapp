@@ -55,6 +55,9 @@
       (j/call (get-font font-name) :layout value)
       nil)))
 
+
+          
+
 (defn render [ctx glyph font-size]
   (j/call glyph :render ctx font-size))
 
@@ -92,6 +95,22 @@
         (j/call :rotate (str (.-PI js/Math)))
         (j/call :scale (/ size (units-per-em font-name)))
         (j/call :toSVG))))
+
+
+(defn run [font-name size word]
+  (let [font (get-font font-name)]
+    (if font
+      (let [glyphs (-> font
+                       (j/call :layout word)
+                       (j/get :glyphs))]
+         (map #(hash-map :svg (svg %)
+                                 :width (-> %
+                                            (j/get :advanceWidth)
+                                            (* size)
+                                            (/ (j/get font :unitsPerEm)))
+                                 :code-points (j/get % :codePoints)) 
+                      glyhphs)))))
+
 
 (def mstr "ᠡᠷᠬᠡ")
 (def mlongstr "ᠨᠠᠢᠵᠠ᠎ᠮᠢᠨᠢ᠂ ᠲᠠ ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ᠎ᠳᠤ ᠬᠦᠷᠴᠦ ᠦᠵᠡᠪᠡ᠎ᠦᠦ? ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ ᠪᠣᠯ ᠮᠠᠨ᠎ᠤ ᠤᠯᠤᠰ᠎ᠤᠨ ᠪᠠᠷᠠᠭᠤᠨ ᠬᠣᠢᠲᠤ ᠬᠢᠯᠢ ᠳᠠᠭᠠᠤ ᠬᠡᠳᠦᠨ ᠮᠢᠩᠭᠠᠨ ᠭᠠᠵᠠᠷ ᠦᠷᠭᠦᠯᠵᠢᠯᠡᠭᠰᠡᠨ ᠲᠣᠮᠤᠬᠠᠨ ᠨᠢᠷᠤᠭᠤ ᠮᠥᠨ ᠪᠥᠭᠡᠳ ᠵᠦᠩᠭᠠᠷ ᠲᠠᠷᠢᠮ ᠬᠣᠶᠠᠷ ᠬᠣᠲᠤᠭᠤᠷ᠎ᠤᠨ ᠳᠤᠮᠳᠠᠭᠤᠷ ᠬᠥᠨᠳᠡᠯᠢᠳᠴᠦ᠂ ᠥᠷᠭᠡᠨ ᠠᠭᠤᠳᠠᠮ ᠰᠢᠨᠵᠢᠶᠠᠩ ᠣᠷᠤᠨ᠎ᠢ ᠡᠮᠦᠨ᠎ᠡ ᠬᠣᠢᠨ᠎ᠠ ᠬᠣᠶᠠᠷ ᠬᠡᠰᠡᠭ ᠪᠣᠯᠭᠠᠨ ᠬᠤᠪᠢᠶᠠᠵᠠᠢ᠃ ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ᠎ᠶᠢ ᠠᠯᠤᠰ᠎ᠠᠴᠠ ᠪᠠᠷᠠᠯᠠᠬᠤ᠎ᠳᠤ ᠲᠦᠮᠡᠨ ᠦᠵᠡᠮᠵᠢ ᠲᠡᠭᠦᠰ ᠪᠦᠷᠢᠳᠦᠭᠡᠳ ᠡᠭᠦᠯᠡᠨ ᠰᠠᠴᠤᠭ᠎ᠲᠤ ᠰᠢᠷᠭᠤᠭᠰᠠᠨ ᠮᠥᠩᠬᠡ ᠴᠠᠰᠤᠲᠤ ᠰᠠᠷᠢᠳᠠᠭ ᠣᠷᠭᠢᠯ᠎ᠤᠳ᠎ᠨᠢ ᠡᠭᠡᠭᠡ᠎ᠯᠡ ᠪᠥᠵᠢᠭᠯᠡᠯᠴᠡᠵᠦ ᠪᠠᠢᠭ᠎ᠠ ᠤᠢᠭᠤᠷ ᠬᠡᠦᠬᠡᠨᠴᠦᠦᠯ᠎ᠦᠨ ᠣᠷᠤᠢ᠎ᠶᠢᠨ ᠴᠢᠮᠡᠭ ᠪᠣᠯᠤᠭᠰᠠᠨ ᠲᠠᠨ᠎ᠠ ᠰᠤᠪᠤᠳ ᠰᠢᠭᠢᠳᠭᠡᠭᠡᠲᠦ ᠲᠢᠲᠢᠮ ᠠᠳᠠᠯᠢ ᠭᠢᠯᠪᠠᠯᠵᠠᠨ ᠭᠢᠯᠲᠦᠭᠡᠨᠡᠨ᠎ᠡ᠃ ᠠᠯᠠᠭᠯᠠᠨ ᠬᠠᠷᠠᠭᠳᠠᠬᠤ ᠥᠨᠳᠦᠷ ᠨᠠᠮ ᠨᠢᠷᠤᠭᠤ᠎ᠨᠤᠭᠤᠳ᠎ᠨᠢ ᠥᠳᠦ ᠰᠣᠳᠤ᠎ᠪᠠᠨ ᠰᠠᠭᠠᠳᠠᠭᠯᠠᠭᠳᠠᠭᠰᠠᠨ ᠲᠣᠭᠤᠰ ᠰᠢᠪᠠᠭᠤ ᠮᠡᠲᠦ ᠳᠤᠷ᠎ᠠ ᠪᠠᠬᠠᠷᠬᠠᠯ᠎ᠢ ᠲᠠᠲᠠᠭᠰᠠᠨ ᠪᠠᠢᠨ᠎ᠠ᠃")
