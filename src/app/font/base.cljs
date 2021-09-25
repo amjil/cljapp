@@ -47,7 +47,7 @@
   (/ size (j/get font :unitsPerEm)))
 
 (defn svg [glyph size]
-  (if (empty? (j/get glyph :path))
+  (if (nil? (j/get glyph :path))
     ""
     (-> glyph
         (j/get :path)
@@ -66,7 +66,7 @@
                            (->clj))]
         (map #(hash-map :svg (svg % inner-size)
                         :width (* inner-size (j/get % :advanceWidth))
-                        :code-points (j/get % :codePoints))
+                        :code-points (->clj (j/get % :codePoints)))
              glyphs)))))
 
 
