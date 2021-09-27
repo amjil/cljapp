@@ -56,6 +56,17 @@
         (j/call :scale size)
         (j/call :toSVG))))
 
+(defn space-dimention [font-name size]
+  (let [font (get-font font-name)]
+    (if font
+      (let [glyph (-> font
+                      (j/call :layout " ")
+                      (j/get :glyphs)
+                      last)
+            inner-size (font-size font size)]
+        [(* inner-size (j/get glyph :advanceWidth))
+         (* inner-size (j/get glyph :advanceHeight))]))))
+
 (defn run [font-name size word]
   (let [font (get-font font-name)]
     (if font
@@ -77,19 +88,24 @@
 (comment
   (init)
   (run :white 24 mstr)
+  (space-dimention :white 24)
   (font-size (get-font :white) 24)
   (-> (get-font :white)
-      (j/call :layout mstr)
+      (j/call :layout " ")
       (j/get :glyphs)
-      (->clj))
+      first
+      (js/console.log))
 
-  (map #(hash-map :svg (svg % 0.01171875)
+  (map #(hash-map 
+        ;;  :svg (svg % 0.01171875)
+        :height (* 0.01171875 (j/get % :advanceHeight))
                        :width (* 0.01171875 (j/get % :advanceWidth))
-                        :code-points (j/get % :codePoints)))
-            ;;  (-> (get-font :white)
-            ;;                (j/call :layout mstr)
-            ;;                (j/get :glyphs)
-            ;;                (->clj))
+                        ;; :code-points (j/get % :codePoints)
+         )
+             (-> (get-font :white)
+                           (j/call :layout mstr)
+                           (j/get :glyphs)
+                           (->clj)))
 
   fonts
   (time (get-font :whtie))
