@@ -19,7 +19,7 @@
   (p/alet [result (p/await
                     (let [platform (j/get-in rn [:Platform :OS])]
                       (condp = platform
-                        "android" (.readFileAssets fs "monbaiti.ttf" "base64")
+                        "android" (.readFileAssets fs "mnglwhiteotf.ttf" "base64")
                         "ios" (.readFile fs (str fs/MainBundlePath "/assets/monbaiti.ttf") "base64"))))]
     (swap! fonts assoc :white (fontkit/create (b64/decodeStringToUint8Array result))))
     ; (js/console.log "aaa"))
@@ -83,11 +83,12 @@
 
 
 (def mstr "ᠡᠷᠬᠡ")
-(def mlongstr "ᠨᠠᠢᠵᠠ᠎ᠮᠢᠨᠢ᠂ ᠲᠠ ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ᠎ᠳᠤ ᠬᠦᠷᠴᠦ ᠦᠵᠡᠪᠡ᠎ᠦᠦ? ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ ᠪᠣᠯ ᠮᠠᠨ᠎ᠤ ᠤᠯᠤᠰ᠎ᠤᠨ ᠪᠠᠷᠠᠭᠤᠨ ᠬᠣᠢᠲᠤ ᠬᠢᠯᠢ ᠳᠠᠭᠠᠤ ᠬᠡᠳᠦᠨ ᠮᠢᠩᠭᠠᠨ ᠭᠠᠵᠠᠷ ᠦᠷᠭᠦᠯᠵᠢᠯᠡᠭᠰᠡᠨ ᠲᠣᠮᠤᠬᠠᠨ ᠨᠢᠷᠤᠭᠤ ᠮᠥᠨ ᠪᠥᠭᠡᠳ ᠵᠦᠩᠭᠠᠷ ᠲᠠᠷᠢᠮ ᠬᠣᠶᠠᠷ ᠬᠣᠲᠤᠭᠤᠷ᠎ᠤᠨ ᠳᠤᠮᠳᠠᠭᠤᠷ ᠬᠥᠨᠳᠡᠯᠢᠳᠴᠦ᠂ ᠥᠷᠭᠡᠨ ᠠᠭᠤᠳᠠᠮ ᠰᠢᠨᠵᠢᠶᠠᠩ ᠣᠷᠤᠨ᠎ᠢ ᠡᠮᠦᠨ᠎ᠡ ᠬᠣᠢᠨ᠎ᠠ ᠬᠣᠶᠠᠷ ᠬᠡᠰᠡᠭ ᠪᠣᠯᠭᠠᠨ ᠬᠤᠪᠢᠶᠠᠵᠠᠢ᠃ ᠲᠡᠭᠷᠢ ᠠᠭᠤᠯᠠ᠎ᠶᠢ ᠠᠯᠤᠰ᠎ᠠᠴᠠ ᠪᠠᠷᠠᠯᠠᠬᠤ᠎ᠳᠤ ᠲᠦᠮᠡᠨ ᠦᠵᠡᠮᠵᠢ ᠲᠡᠭᠦᠰ ᠪᠦᠷᠢᠳᠦᠭᠡᠳ ᠡᠭᠦᠯᠡᠨ ᠰᠠᠴᠤᠭ᠎ᠲᠤ ᠰᠢᠷᠭᠤᠭᠰᠠᠨ ᠮᠥᠩᠬᠡ ᠴᠠᠰᠤᠲᠤ ᠰᠠᠷᠢᠳᠠᠭ ᠣᠷᠭᠢᠯ᠎ᠤᠳ᠎ᠨᠢ ᠡᠭᠡᠭᠡ᠎ᠯᠡ ᠪᠥᠵᠢᠭᠯᠡᠯᠴᠡᠵᠦ ᠪᠠᠢᠭ᠎ᠠ ᠤᠢᠭᠤᠷ ᠬᠡᠦᠬᠡᠨᠴᠦᠦᠯ᠎ᠦᠨ ᠣᠷᠤᠢ᠎ᠶᠢᠨ ᠴᠢᠮᠡᠭ ᠪᠣᠯᠤᠭᠰᠠᠨ ᠲᠠᠨ᠎ᠠ ᠰᠤᠪᠤᠳ ᠰᠢᠭᠢᠳᠭᠡᠭᠡᠲᠦ ᠲᠢᠲᠢᠮ ᠠᠳᠠᠯᠢ ᠭᠢᠯᠪᠠᠯᠵᠠᠨ ᠭᠢᠯᠲᠦᠭᠡᠨᠡᠨ᠎ᠡ᠃ ᠠᠯᠠᠭᠯᠠᠨ ᠬᠠᠷᠠᠭᠳᠠᠬᠤ ᠥᠨᠳᠦᠷ ᠨᠠᠮ ᠨᠢᠷᠤᠭᠤ᠎ᠨᠤᠭᠤᠳ᠎ᠨᠢ ᠥᠳᠦ ᠰᠣᠳᠤ᠎ᠪᠠᠨ ᠰᠠᠭᠠᠳᠠᠭᠯᠠᠭᠳᠠᠭᠰᠠᠨ ᠲᠣᠭᠤᠰ ᠰᠢᠪᠠᠭᠤ ᠮᠡᠲᠦ ᠳᠤᠷ᠎ᠠ ᠪᠠᠬᠠᠷᠬᠠᠯ᠎ᠢ ᠲᠠᠲᠠᠭᠰᠠᠨ ᠪᠠᠢᠨ᠎ᠠ᠃")
+(def mlongstr "ᠴᠠᠰᠤᠲᠤ ᠬᠠᠷᠠᠬᠠᠨ ᠬᠥᠪᠴᠢ ᠬᠠᠩᠭᠠᠢ ᠡᠯᠡᠰᠦᠨ ᠮᠠᠩᠬ᠎ᠠ ᠨᠢ ᠴᠠᠭ ᠊ᠤᠨ ᠤᠷᠲᠤ  ᠳ᠋ᠤ᠌ ᠬᠤᠪᠢᠷᠠᠭ᠎ᠠ ᠦᠭᠡᠢ ᠡᠭᠡᠯ ᠲᠥᠷᠬᠦ ᠲᠠᠢ ᠠᠭᠤᠯᠠ ᠤᠰᠤ ᠤᠷᠭᠤᠮᠠᠯ ᠠᠮᠢᠲᠠᠨ ᠪᠤᠭᠤᠷᠤᠯ ᠳᠡᠭᠡᠳᠦᠰ ᠮᠢᠨᠢ")
+;; (def mlongstr "ᠴᠠᠰᠤᠲᠤ ᠬᠠᠷᠠᠬᠠᠨ ")
 
 (comment
   (init)
-  (run :white 24 mstr)
+  (run :white 24 "ᠠᠭᠤᠯᠠ ")
   (space-dimention :white 24)
   (font-size (get-font :white) 24)
   (-> (get-font :white)
@@ -96,16 +97,16 @@
       first
       (js/console.log))
 
-  (map #(hash-map 
+  (map #(hash-map
         ;;  :svg (svg % 0.01171875)
-        :height (* 0.01171875 (j/get % :advanceHeight))
-                       :width (* 0.01171875 (j/get % :advanceWidth))
+         :height (* 0.01171875 (j/get % :advanceHeight))
+                 :width (* 0.01171875 (j/get % :advanceWidth)))
                         ;; :code-points (j/get % :codePoints)
-         )
-             (-> (get-font :white)
-                           (j/call :layout mstr)
-                           (j/get :glyphs)
-                           (->clj)))
+
+        (-> (get-font :white)
+            (j/call :layout mstr)
+            (j/get :glyphs)
+            (->clj)))
 
   fonts
   (time (get-font :whtie))
@@ -137,52 +138,5 @@
     (str/split mlongstr #" ")
     (map #(get-glyphs :white %))
     (map (fn [x] (map #(width :white 24 %) x)))))
-  (-> (get-glyphs :white mstr)
-      first
-      (svg 24))
-
-  (msvg)
-  (load :white "./assets/fonts/monbaiti.ttf")
-  load
-
-  fs/readFile
-  (get-font :white)
-  (:white @fonts)
-
-  (units-per-em :white)
-  (font-scale :white)
-  (time
-   (units-per-em :white))
-
-  ;; (js/console.log (layout :white "ᠡᠷᠬᠡ"))
-  ;; (def glyphs (.-glyphs (layout :white "ᠡᠷᠬᠡ ")))
-  ;; (def glyphs (.-glyphs (layout :white "aa")))
-  glyphs
-
-  (width :white 48 (first glyphs))
-
-  (.-head (get-font :white))
-
-
-
-
-  (require '[clj-bean.core :refer [bean ->clj ->js]])
-  (def glyph-run (layout :white mstr))
-  (-> (j/get glyph-run :glyphs)
-      first)
-  (def (-> (get-glyphs :white mstr)
-           first)
-    aa)
-  aa
-  (def ab (.getScaledPath aa -2400))
-  (def ab (j/get aa :path))
-  ab
-  (.toSVG (.scale (.scale ab -1 1) (glyph-scale :white 12)))
-  (.toSVG ab)
-  (.toSVG (.rotate (.scale (.scale ab -1 1) (glyph-scale :white 12)) 90))
-  (.toSVG (.scale (.scale ab -1 1) (glyph-scale :white 120)))
-
-  (.toSVG (.scale ab (- (glyph-scale :white 24)) (glyph-scale :white 24)))
-  ;; (.toSVG)    )
-  (.getScaledPath ab 12)
-  (glyph-scale :white 24))
+  
+  )
