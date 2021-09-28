@@ -5,9 +5,8 @@
    ["react-native" :as rn]
    [goog.crypt.base64 :as b64]
    [applied-science.js-interop :as j]
-   [cljs-bean.core :refer [bean ->clj ->js]]
+   [cljs-bean.core :refer [->clj ->js]]
    [promesa.core :as p]
-   [promesa.async-cljs :refer-macros [async]]
    [reagent.core :as reagent]))
 
 ;; (defonce ^:private
@@ -20,11 +19,8 @@
                     (let [platform (j/get-in rn [:Platform :OS])]
                       (condp = platform
                         "android" (.readFileAssets fs "mnglwhiteotf.ttf" "base64")
-                        "ios" (.readFile fs (str fs/MainBundlePath "/assets/monbaiti.ttf") "base64"))))]
+                        "ios" (.readFile fs (str fs/MainBundlePath "/assets/mnglwhiteotf.ttf") "base64"))))]
     (swap! fonts assoc :white (fontkit/create (b64/decodeStringToUint8Array result))))
-    ; (js/console.log "aaa"))
-    ; (js/console.log (b64/decodeStringToUint8Array result)))
-  ;; (async (p/await (p/delay 100)))
   (js/console.log "init function"))
 
 
