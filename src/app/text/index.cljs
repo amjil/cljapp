@@ -68,7 +68,6 @@
   (js/console.log (:white @font/fonts))
   (font/run :white 24 font/mstr)
   (-> (font/run :white 24 " ") first :width)
-  (font/run :white 24 "ᠠᠭᠤᠯᠠ")
   (next-position runs)
   (in-current-line? (font/run :white 24 font/mstr) 500 490 6)
   (text-component 0 500 font/mlongstr)
