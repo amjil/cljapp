@@ -3,7 +3,7 @@
  :dependencies [
                 [cljs-bean "1.7.0"]
                 [applied-science/js-interop "0.3.1"]
-                [funcool/promesa "1.8.1"]
+                [funcool/promesa "6.0.2"]
                 [reagent "1.0.0"]
                 [re-frame "0.12.0"]
                 [re-frame-steroid "0.1.1"]

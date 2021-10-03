@@ -72,8 +72,8 @@
   (in-current-line? (font/run :white 24 font/mstr) 500 490 6)
   (text-component 0 500 font/mlongstr)
   (font/space-dimention :white 24)
-  
+
   (-> (str/split font/mlongstr #" ") m
-       (map #(font/run :white 24 %) m)
-       (nth m 16))     
+      (map #(font/run :white 24 %) m)
+      (nth m 16))
   )

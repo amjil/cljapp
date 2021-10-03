@@ -15,11 +15,10 @@
   (reagent/atom {}))
 
 (defn init []
-  (p/alet [result (p/await
-                    (let [platform (j/get-in rn [:Platform :OS])]
-                      (condp = platform
-                        "android" (.readFileAssets fs "mnglwhiteotf.ttf" "base64")
-                        "ios" (.readFile fs (str fs/MainBundlePath "/assets/mnglwhiteotf.ttf") "base64"))))]
+  (p/let [result (let [platform (j/get-in rn [:Platform :OS])]
+                   (condp = platform
+                     "android" (.readFileAssets fs "mnglwhiteotf.ttf" "base64")
+                     "ios" (.readFile fs (str fs/MainBundlePath "/assets/mnglwhiteotf.ttf") "base64")))]
     (swap! fonts assoc :white (fontkit/create (b64/decodeStringToUint8Array result))))
   (js/console.log "init function"))
 
