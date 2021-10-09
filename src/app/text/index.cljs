@@ -43,9 +43,9 @@
               (reset! line [])
               (reset! y 0)
               (recur (conj lines (flatten item))
-                     run-runs))
-            ))))
-    ))
+                     run-runs))))))))
+
+
 
     ; (map #(let [[x y] (next-position)]
     ;         vector :> svg/Path {:d (:svg %)
@@ -75,5 +75,4 @@
 
   (-> (str/split font/mlongstr #" ") m
       (map #(font/run :white 24 %) m)
-      (nth m 16))
-  )
+      (nth m 16)))
