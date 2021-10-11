@@ -10,8 +10,6 @@
    [app.font.base :as font]
    [app.text.index :as text]))
 
-(def BlinkingDot (.-BlinkingDot (js/require "../src/native/cursor.js")))
-
 (defn root-comp []
   [safe-area/safe-area-view
    [rn/view {:style {:flexDirection "column"}}
@@ -47,20 +45,19 @@
                                 :key      (str idx "-" i)}])))
             item))
          (text/text-component 25.5 520 font/mlongstr))]])
-    ; [rn/text-input {:place}]
-    [rn/view {:style {:width 14 :height 40 :position :absolute :left 90 :top 98}}
+    ; [rn/view {:style {:width 80 :height 40 :position :absolute :left 70 :top 98}}]
+    [rn/view {:style {:width 6 :height 18 :position :absolute :left 90 :top 98}}
       [rn/text-input {:style       {
-                                    ; :height     40
-                                    ; :margin-left 50
-                                    ; :position "relative"
-                                    ; :top 0
-                                    ; :left 0
-                                    ; :margin-top 0
-                                    :transform [{:rotate "90deg"}]}
-                                                ; {:translateX -27}
-                                                ; {:translateY 27}]}
+                                    :transform [{:rotate "90deg"}
+                                                {:scaleY -1}]
+                                    :height 40
+                                    :font-size 28}
+                                    ; :color :white}
                       ; :placeholder "Type your text ..."
                       :showSoftInputOnFocus false
+                      :contextMenuHidden true
+                      :clearTextOnFocus true
+                      ; :editable false
                       :autoFocus true}]]]])
 
 
