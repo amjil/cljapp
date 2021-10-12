@@ -13,7 +13,7 @@
 (defn root-comp []
   [safe-area/safe-area-view
    [rn/view {:style {:flexDirection "column"}}
-    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]
+    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]]])
     ;; [:> svg/Svg {:width "130" :height "130" :fill "blue" :stroke "red" :color "green" :viewBox "-16 -16 544 544" :style {:transform [{:scaleX -1}]}}
     ; (if (font/get-font :white)
     ;   [rn/view {:style {:margin 10
@@ -45,20 +45,7 @@
     ;                             :key      (str idx "-" i)}])))
     ;         item))
     ;      (text/text-component 25.5 520 font/mlongstr))]])
-    [rn/view {:style {:width 80 :height 40 :position :absolute :left 70 :top 98}}
-    ; [rn/view {:style {:width 6 :height 18 :position :absolute :left 90 :top 98}}
-      [rn/text-input {:style       {
-                                    :transform [{:rotate "90deg"}
-                                                {:scaleY -1}]
-                                    :height 40
-                                    :font-size 28}
-                                    ; :color :white}
-                      ; :placeholder "Type your text ..."
-                      :showSoftInputOnFocus false
-                      :contextMenuHidden true
-                      :clearTextOnFocus true
-                      ; :editable false
-                      :autoFocus true}]]]])
+    
 
 
 (defn init []
