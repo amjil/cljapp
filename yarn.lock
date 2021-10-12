@@ -6035,6 +6035,11 @@ react-native-screens@^3.8.0:
   dependencies:
     warn-once "^0.1.0"
 
+react-native-smooth-blink-view@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmmirror.com/react-native-smooth-blink-view/download/react-native-smooth-blink-view-1.0.3.tgz#02e19426501a7e1116724262dcacf807a34728c0"
+  integrity sha1-AuGUJlAafhEWckJi3Kz4B6NHKMA=
+
 react-native-svg@^12.1.1:
   version "12.1.1"
   resolved "https://registry.nlark.com/react-native-svg/download/react-native-svg-12.1.1.tgz#5f292410b8bcc07bbc52b2da7ceb22caf5bcaaee"
