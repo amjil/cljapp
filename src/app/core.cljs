@@ -19,6 +19,14 @@
      [rn/view {:style {:position :absolute :top 40 :left 86}}
       [:> svg/Svg {:width 24 :height 6}
        [:> svg/Rect {:x "0" :y "0" :width 48 :height 2 :fill "black"}]]]]
+    [rn/view {:style {:position :absolute :top 140 :left 81}}
+     [:> svg/Svg {:width 45 :height 20}
+      [:> svg/Circle {:cx "5" :cy "5" :r "5" :fill "black"}]
+      [:> svg/Rect {:x "10" :y "3" :width 25 :height 2 :fill "black"}]]]
+    [rn/view {:style {:position :absolute :top 150 :left 81}}
+     [:> svg/Svg {:width 45 :height 20}
+      [:> svg/Circle {:cx "40" :cy "5" :r "5" :fill "black"}]
+      [:> svg/Rect {:x "10" :y "3" :width 25 :height 2 :fill "black"}]]]
     ;; [:> svg/Svg {:width "130" :height "130" :fill "blue" :stroke "red" :color "green" :viewBox "-16 -16 544 544" :style {:transform [{:scaleX -1}]}}
     (if (font/get-font :white)
       [rn/view {:style {:margin 10
