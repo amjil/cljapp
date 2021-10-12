@@ -15,38 +15,38 @@
    [rn/view {:style {:flexDirection "column"}}
     [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]
     ;; [:> svg/Svg {:width "130" :height "130" :fill "blue" :stroke "red" :color "green" :viewBox "-16 -16 544 544" :style {:transform [{:scaleX -1}]}}
-    (if (font/get-font :white)
-      [rn/view {:style {:margin 10
-                        :flex 1
-                        :backgroundColor :white}}
-
-       [:> svg/Svg {:width  "100%"
-                    :height "530"
-                    :fill   "blue"
-                    :color  "green"
-                    :top 0
-                    :left 0
-                    :position  "relative"}
-        ; [:> svg/Rect {:x      "0"
-        ;               :y      "0"
-        ;               :width  "28"
-        ;               :height 520
-        ;               :fill   "#318FFE"}]
-        (map-indexed
-         (fn [idx item]
-           (map-indexed
-            (fn [i run]
-              (if-not (empty? (:svg run))
-                (let [x (if (= idx 0) "3" (str (* idx 40)))]
-                  [:> svg/Path {:d        (:svg run)
-                                :x        x
-                                :y        (str (:y run))
-                                :rotation "90"
-                                :key      (str idx "-" i)}])))
-            item))
-         (text/text-component 25.5 520 font/mlongstr))]])
-    ; [rn/view {:style {:width 80 :height 40 :position :absolute :left 70 :top 98}}]
-    [rn/view {:style {:width 6 :height 18 :position :absolute :left 90 :top 98}}
+    ; (if (font/get-font :white)
+    ;   [rn/view {:style {:margin 10
+    ;                     :flex 1
+    ;                     :backgroundColor :white}}
+    ;
+    ;    [:> svg/Svg {:width  "100%"
+    ;                 :height "530"
+    ;                 :fill   "blue"
+    ;                 :color  "green"
+    ;                 :top 0
+    ;                 :left 0
+    ;                 :position  "relative"}
+    ;     ; [:> svg/Rect {:x      "0"
+    ;     ;               :y      "0"
+    ;     ;               :width  "28"
+    ;     ;               :height 520
+    ;     ;               :fill   "#318FFE"}]
+    ;     (map-indexed
+    ;      (fn [idx item]
+    ;        (map-indexed
+    ;         (fn [i run]
+    ;           (if-not (empty? (:svg run))
+    ;             (let [x (if (= idx 0) "3" (str (* idx 40)))]
+    ;               [:> svg/Path {:d        (:svg run)
+    ;                             :x        x
+    ;                             :y        (str (:y run))
+    ;                             :rotation "90"
+    ;                             :key      (str idx "-" i)}])))
+    ;         item))
+    ;      (text/text-component 25.5 520 font/mlongstr))]])
+    [rn/view {:style {:width 80 :height 40 :position :absolute :left 70 :top 98}}
+    ; [rn/view {:style {:width 6 :height 18 :position :absolute :left 90 :top 98}}
       [rn/text-input {:style       {
                                     :transform [{:rotate "90deg"}
                                                 {:scaleY -1}]
