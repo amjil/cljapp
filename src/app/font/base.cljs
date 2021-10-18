@@ -62,23 +62,24 @@
         [(* inner-size (j/get glyph :advanceWidth))
          (* inner-size (j/get glyph :advanceHeight))]))))
 
-(defn run [font-name size word]
+(defn run [font-name size word is-mgl?]
   (let [font (get-font font-name)]
     (if font
       (let [inner-size (font-size font size)
-            glyphs     (-> font
-                           (j/call :layout word)
-                           (j/get :glyphs)
-                           (->clj))]
+            get-fn (if is-mgl? :layout :glyphsForString)
+            glyphs     (as-> font m
+                         (j/call m get-fn word)
+                         (j/get m :glyphs)
+                         (->clj m))]
         (map #(hash-map :svg (svg % inner-size)
                         :width (* inner-size (j/get % :advanceWidth))
                         :code-points (->clj (j/get % :codePoints)))
              glyphs)))))
 
-
+;a
 
 (def mstr "ᠡᠷᠬᠡ")
-(def mlongstr "ᠴᠠᠰᠤᠲᠤ ᠬᠠᠢᠷᠬᠠᠨ ᠬᠥᠪᠴᠢ ᠬᠠᠩᠭᠠᠢ ᠡᠯᠡᠰᠦᠨ ᠮᠠᠩᠬ᠎ᠠ ᠨᠢ ᠴᠠᠭ ᠊ᠤᠨ ᠤᠷᠲᠤ ᠳᠤ ᠬᠤᠪᠢᠷᠠᠭ᠎ᠠ ᠦᠭᠡᠢ ᠡᠭᠡᠯ ᠲᠥᠷᠬᠦ ᠲᠠᠢ ᠠᠭᠤᠯᠠ ᠤᠰᠤ ᠤᠷᠭᠤᠮᠠᠯ ᠠᠮᠢᠲᠠᠨ ᠪᠤᠭᠤᠷᠤᠯ ᠳᠡᠭᠡᠳᠦᠰ ᠮᠢᠨᠢ")
+(def mlongstr "ᠴᠠᠰᠤᠲᠤ ᠬᠠᠢᠷᠬᠠᠨ ᠬᠥᠪᠴᠢ ᠬᠠᠩᠭᠠᠢ ᠡᠯᠡᠰᠦᠨ ᠮᠠᠩᠬ᠎ᠠ ᠨᠢ ᠴᠠᠭ ᠊ᠤᠨ ᠤᠷᠲᠤ ᠳᠤ ᠬᠤᠪᠢᠷᠠᠭ᠎ᠠ ᠦᠭᠡᠢ ᠡᠭᠡᠯ ᠲᠥᠷᠬᠦ ᠲᠠᠢ ᠠᠭᠤᠯᠠ ᠤᠰᠤ ᠤᠷᠭᠤᠮᠠᠯ ᠠᠮᠢᠲᠠᠨ ᠪᠤᠭᠤᠷᠤᠯ ᠳᠡᠭᠡᠳᠦᠰ ᠮᠢᠨᠢ \n a\tbc ")
 ;; (def mlongstr "ᠴᠠᠰᠤᠲᠤ ᠬᠠᠷᠠᠬᠠᠨ ")
 
 (comment
@@ -95,13 +96,13 @@
   (map #(hash-map
         ;;  :svg (svg % 0.01171875)
          :height (* 0.01171875 (j/get % :advanceHeight))
-                 :width (* 0.01171875 (j/get % :advanceWidth)))
+         :width (* 0.01171875 (j/get % :advanceWidth)))
                         ;; :code-points (j/get % :codePoints)
 
-        (-> (get-font :white)
-            (j/call :layout mstr)
-            (j/get :glyphs)
-            (->clj)))
+       (-> (get-font :white)
+           (j/call :layout mstr)
+           (j/get :glyphs)
+           (->clj)))
 
   fonts
   (time (get-font :whtie))
@@ -132,6 +133,4 @@
    (->>
     (str/split mlongstr #" ")
     (map #(get-glyphs :white %))
-    (map (fn [x] (map #(width :white 24 %) x)))))
-  
-  )
+    (map (fn [x] (map #(width :white 24 %) x))))))
