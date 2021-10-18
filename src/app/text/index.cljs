@@ -32,9 +32,9 @@
 
 (defn text-runs [text font size]
   (let [text-chars (->> (str/split text #"")
-                      (map #(.codePointAt % 0))
-                      (remove nil?)
-                      (map int))]
+                        (map #(.codePointAt % 0))
+                        (remove nil?)
+                        (map int))]
     (loop [shape-chars []
            txt-chars text-chars
            runs []]
@@ -42,7 +42,7 @@
         (cond
           (empty? txt-chars)
           (if-not (empty? shape-chars)
-            (conj runs (font/run font size (apply str (map char shape-chars)) true))
+            (conj runs (font/run font size (apply str (map char shape-chars))))
             runs)
 
           (is-shape-char? first-char)
@@ -54,37 +54,39 @@
           (recur []
                  (rest txt-chars)
                  (conj runs
-                       (font/run font size (apply str (map char shape-chars)) true)
-                       (font/run font size (str first-char) false)))
+                       (font/run font size (apply str (map char shape-chars)))
+                       (font/run font size (str (char first-char)))))
 
           :else
           (recur shape-chars
                  (rest txt-chars)
-                 (conj runs (font/run font size (str first-char) false))))))))
+                 (conj runs (font/run font size (str (char first-char))))))))))
 
 (defn text-component [w h font size text]
   (let [line                     (reagent/atom [])
         line-num                 (reagent/atom 0)
         y                        (reagent/atom 0)
         [space-width line-width] (font/space-dimention :white 24)
-        ; text-list                (str/split text #" ")
-        ; text-runs                (map #(font/run font size %) text-list)]
         text-runs                (text-runs text font size)]
     (loop [lines    []
            run-runs text-runs]
-      (if (empty? run-runs)
-        (conj lines @line)
-        (let [runs (first run-runs)]
-          (if (true? (in-current-line? runs h @y space-width))
-            (do
-              (doall (into-line runs line line-num y))
-              (recur lines (rest run-runs)))
-            (let [item @line]
-              (swap! line-num inc)
-              (reset! line [])
-              (reset! y 0)
-              (recur (conj lines (flatten item))
-                     run-runs))))))))
+      (let [runs (first run-runs)]
+        (cond
+          (empty? run-runs)
+          (conj lines @line)
+
+          (in-current-line? runs h @y space-width)
+          (do
+            (into-line runs line line-num y)
+            (recur lines (rest run-runs)))
+
+          :else
+          (let [item @line]
+            (swap! line-num inc)
+            (reset! line [])
+            (reset! y 0)
+            (recur (conj lines (flatten item))
+                   run-runs)))))))
 
 (defn text-area [text-svgs props]
   (let [line-height (:line-height props)
@@ -128,9 +130,13 @@
   (js/console.log (:white @font/fonts))
   (is-shape-char? (first (seq font/mlongstr)))
   ;; :f
-(int (first (seq font/mlongstr)))
-(js/console.log (seq font/mlongstr))
-(map #(int (.codePointAt % 0)) (str/split font/mlongstr #""))
-      (text-runs font/mlongstr :white 24)
-      (text-component 0 500 :white 24 font/mlongstr)
-      (font/space-dimention :white 24))
+  (int (first (seq font/mlongstr)))
+  (js/console.log (seq font/mlongstr))
+  (map #(.codePointAt (char %) 0) (seq font/mlongstr))
+  (map #(int (.codePointAt % 0)) (str/split font/mlongstr #""))
+  (apply str (map char [6196 6176 6192 6180 6194 6180]))
+  (is-shape-char? \space)
+  (text-runs font/mlongstr :white 24)
+  (text-component 0 500 :white 24 font/mlongstr)
+  (font/space-dimention :white 24)
+  )

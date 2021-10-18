@@ -62,13 +62,12 @@
         [(* inner-size (j/get glyph :advanceWidth))
          (* inner-size (j/get glyph :advanceHeight))]))))
 
-(defn run [font-name size word is-mgl?]
+(defn run [font-name size word]
   (let [font (get-font font-name)]
     (if font
       (let [inner-size (font-size font size)
-            get-fn (if is-mgl? :layout :glyphsForString)
             glyphs     (as-> font m
-                         (j/call m get-fn word)
+                         (j/call m :layout word)
                          (j/get m :glyphs)
                          (->clj m))]
         (map #(hash-map :svg (svg % inner-size)
