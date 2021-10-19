@@ -17,18 +17,21 @@
     (let [width (:width run)
           run-y (assoc run :y @y :line @num)]
       (swap! line conj run-y)
-      (reset! y (+ @y width)))))
+      (swap! y + width))))
 ;; (.codePointAt % 0)
 ;; (char %)
 ;; var px = evt.nativeEvent.localtionX / PixelRatio.get();
 ;; if one word longer then height
 (defn is-shape-char? [c]
-  (cond
-    (< 6144 (int c) 6319)
+ (cond
+   (< 6144 (int c) 6319
     true
 
+    ;; dagbur
+    (= 8239 (int c)) true
+
     :else
-    false))
+    false)))
 
 (defn text-runs [text font size]
   (let [text-chars (->> (str/split text #"")
@@ -67,7 +70,10 @@
         line-num                 (reagent/atom 0)
         y                        (reagent/atom 0)
         [space-width line-width] (font/space-dimention :white 24)
-        text-runs                (text-runs text font size)]
+        text-runs                (text-runs text font size)
+        new-line-fn              (fn [] (swap! line-num inc)
+                                        (reset! line [])
+                                        (reset! y 0))]
     (loop [lines    []
            run-runs text-runs]
       (let [runs (first run-runs)]
@@ -75,16 +81,27 @@
           (empty? run-runs)
           (conj lines @line)
 
+          ;; return
+          (= [10] (-> runs first :code-points))
+          (let [item (conj @line (map #(assoc % :svg "" :y @y :line @line-num) runs))]
+            (new-line-fn)
+            (recur (conj lines (flatten item))
+                   (rest run-runs)))
+
+          ;; line start with space
+          (and (= [32] (-> runs first :code-points)) (= @y 0))
+          (do
+            (swap! line conj runs)
+            (recur lines (rest run-runs)))
+
           (in-current-line? runs h @y space-width)
           (do
-            (into-line runs line line-num y)
+            (doall (into-line runs line line-num y))
             (recur lines (rest run-runs)))
 
           :else
           (let [item @line]
-            (swap! line-num inc)
-            (reset! line [])
-            (reset! y 0)
+            (new-line-fn)
             (recur (conj lines (flatten item))
                    run-runs)))))))
 
@@ -95,20 +112,22 @@
       [:> svg/Svg (merge {:width  "100%"
                           :height "100%"}
                          props)
-       (map-indexed
-        (fn [idx item]
-          (map-indexed
-           (fn [i run]
-             (if-not (empty? (:svg run))
-                ;; default is padding left
-               (let [x (str (+ half-line-h (* idx line-height)))]
-                 [:> svg/Path {:d        (:svg run)
-                               :x        x
-                               :y        (str (:y run))
-                               :rotation "90"
-                               :key      (str idx "-" i)}])))
-           item))
-        text-svgs)])))
+       (doall
+         (map-indexed
+          (fn [idx item]
+            (doall
+              (map-indexed
+               (fn [i run]
+                 (if-not (empty? (:svg run))
+                    ;; default is padding left
+                   (let [x (str (+ half-line-h (* idx line-height)))]
+                     [:> svg/Path {:d        (:svg run)
+                                   :x        x
+                                   :y        (str (:y run))
+                                   :rotation "90"
+                                   :key      (str idx "-" i)}])))
+               item)))
+          text-svgs))])))
 
 (defn flat-list-text [text-svgs props])
 
@@ -137,6 +156,7 @@
   (apply str (map char [6196 6176 6192 6180 6194 6180]))
   (is-shape-char? \space)
   (text-runs font/mlongstr :white 24)
+  (nth (text-component 0 500 :white 24 font/mlongstr) 0)
   (text-component 0 500 :white 24 font/mlongstr)
-  (font/space-dimention :white 24)
-  )
+  (map #(dissoc % :svg) ( first (text-component 0 500 :white 24 font/mlongstr)))
+  (font/space-dimention :white 24))
