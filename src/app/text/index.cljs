@@ -3,6 +3,11 @@
    [reagent.core :as reagent]
    [app.font.base :as font]
    [clojure.string :as str]
+   [steroid.rn.components.list :as rn-list]
+   [steroid.rn.core :as rn]
+   [steroid.rn.components.touchable :as touchable]
+   [steroid.rn.navigation.safe-area :as safe-area]
+
    ["react-native-svg" :as svg]
    [cljs-bean.core :refer [bean ->clj ->js]]
    [applied-science.js-interop :as j]))
@@ -23,15 +28,15 @@
 ;; var px = evt.nativeEvent.localtionX / PixelRatio.get();
 ;; if one word longer then height
 (defn is-shape-char? [c]
- (cond
-   (< 6144 (int c) 6319
+  (cond
+    (< 6144 (int c) 6319)
     true
 
     ;; dagbur
     (= 8239 (int c)) true
 
     :else
-    false)))
+    false))
 
 (defn text-runs [text font size]
   (let [text-chars (->> (str/split text #"")
@@ -129,7 +134,35 @@
                item)))
           text-svgs))])))
 
-(defn flat-list-text [text-svgs props])
+(defn text-list-item [item]
+  [touchable/touchable-opacity {}
+   [rn/view {:style {}} ;{:padding-horizontal 30}} ;:margin-vertical 10}}
+    ;; if no text tag svg can't render
+    [rn/text {} ""]
+    [:> svg/Svg {:width "40"
+                 :height "100%"
+                 ; :top 0 :left 0
+                 :fill "black"}
+     (doall
+       (map-indexed
+         (fn [i run]
+           (if-not (empty? (:svg run))
+             [:> svg/Path {:d        (:svg run)
+                           :x        20
+                           :y        (str (:y run))
+                           :rotation "90"
+                           :key      (str i)}]))
+         item))]]])
+
+(defn flat-list-text [text-svgs props]
+  (let [line-height (:line-height props)
+        half-line-h (/ line-height 2)]
+    (if (font/get-font :white)
+      [rn-list/flat-list
+       {:key-fn    identity
+        :data      text-svgs
+        :render-fn text-list-item
+        :horizontal true}])))
 
 
 
