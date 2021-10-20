@@ -28,45 +28,7 @@
     ;   [:> svg/Circle {:cx "40" :cy "5" :r "5" :fill "black"}]
     ;   [:> svg/Rect {:x "10" :y "4.5" :width 25 :height 2 :fill "black"}]]]
     ; (text/text-area (text/text-component 0 500 :white 24 font/mlongstr) {:line-height 40 :fill "blue" :color "black" :top 0 :left 0})]])
-    (text/flat-list-text (text/text-component 0 500 :white 24 font/mlongstr) {:line-height 40 :fill "black" :color "black"})]])
-    ; (text/tags ["hello" "John"])]])
-    ; [:> svg/Svg {:width "100%" :height "100%" :viewBox "0 0 100 100"
-    ;              :top 0 :left 0}
-    ;  [:> svg/Circle {:cx "10" :cy "10" :r "5" :fill "black"}]]]])
-    ; (text/tags (doall (text/text-component 0 500 :white 24 font/mlongstr)))]])
-    ;; [:> svg/Svg {:width "130" :height "130" :fill "blue" :stroke "red" :color "green" :viewBox "-16 -16 544 544" :style {:transform [{:scaleX -1}]}}
-    ; (if (font/get-font :white)
-    ;  [rn/view {:style {:margin 10}
-    ;                 :flex 1
-    ;                 :backgroundColor :white}
-    ;
-    ;    [:> svg/Svg {:width  "100%"}
-    ;                :height "530"
-    ;                :fill   "blue"
-    ;                :color  "green"
-    ;                :top 0
-    ;                :left 0
-    ;                :position  "relative"]
-    ;     ; [:> svg/Rect {:x      "0"
-    ;     ;               :y      "0"
-    ;     ;               :width  "28"
-    ;     ;               :height 520
-    ;     ;               :fill   "#318FFE"}]
-    ;    (doall
-    ;       (map-indexed
-    ;        (fn [idx item]
-    ;            (doall
-    ;              (map-indexed
-    ;               (fn [i run]
-    ;                 (if-not (empty? (:svg run))
-    ;                   (let [x (if (= idx 0) "3" (str (* idx 40)))]
-    ;                     [:> svg/Path {:d        (:svg run)}
-    ;                                  :x        x
-    ;                                  :y        (str (:y run))
-    ;                                  :rotation "90"
-    ;                                  :key      (str idx "-" i)])))
-    ;               item))
-    ;          (text/text-component 25.5 520 :white 24 font/mlongstr))))])]])
+    (text/flat-list-text {:width 26 :fill "black" :color "black"} (text/text-component 0 500 :white 18 font/mlongstr))]])
 
 
 

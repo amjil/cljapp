@@ -110,7 +110,9 @@
             (recur (conj lines (flatten item))
                    run-runs)))))))
 
-(defn text-area [text-svgs props]
+
+
+(defn text-area [props text-svgs]
   (let [line-height (:line-height props)
         half-line-h (/ line-height 2)]
     (if (font/get-font :white)
@@ -134,35 +136,35 @@
                item)))
           text-svgs))])))
 
-(defn text-list-item [item]
+(defn text-line [props svgs]
   [touchable/touchable-opacity {}
    [rn/view {:style {}} ;{:padding-horizontal 30}} ;:margin-vertical 10}}
     ;; if no text tag svg can't render
     [rn/text {} ""]
-    [:> svg/Svg {:width "40"
-                 :height "100%"
-                 ; :top 0 :left 0
-                 :fill "black"}
+    [:> svg/Svg (merge {:height "100%"
+                        :fill "black"}
+                       props
+                       {:width (str (:width props))})
+
      (doall
        (map-indexed
          (fn [i run]
            (if-not (empty? (:svg run))
              [:> svg/Path {:d        (:svg run)
-                           :x        20
+                           :x        (/ (:width props) 2)
                            :y        (str (:y run))
                            :rotation "90"
                            :key      (str i)}]))
-         item))]]])
+         svgs))]]])
 
-(defn flat-list-text [text-svgs props]
-  (let [line-height (:line-height props)
-        half-line-h (/ line-height 2)]
-    (if (font/get-font :white)
-      [rn-list/flat-list
-       {:key-fn    identity
-        :data      text-svgs
-        :render-fn text-list-item
-        :horizontal true}])))
+(defn flat-list-text [props text-svgs]
+  (if (font/get-font :white)
+    [rn-list/flat-list
+     {:key-fn    identity
+      :data      text-svgs
+      ; :render-fn text-list-item
+      :render-fn (partial text-line props)
+      :horizontal true}]))
 
 
 
