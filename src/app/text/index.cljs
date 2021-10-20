@@ -23,8 +23,7 @@
           run-y (assoc run :y @y :line @num)]
       (swap! line conj run-y)
       (swap! y + width))))
-;; (.codePointAt % 0)
-;; (char %)
+
 ;; var px = evt.nativeEvent.localtionX / PixelRatio.get();
 ;; if one word longer then height
 (defn is-shape-char? [c]
@@ -70,12 +69,12 @@
                  (rest txt-chars)
                  (conj runs (font/run font size (str (char first-char))))))))))
 
-(defn text-component [w h font size text]
+(defn text-component [{:keys [height font font-size]} text]
   (let [line                     (reagent/atom [])
         line-num                 (reagent/atom 0)
         y                        (reagent/atom 0)
         [space-width line-width] (font/space-dimention :white 24)
-        text-runs                (text-runs text font size)
+        text-runs                (text-runs text font font-size)
         new-line-fn              (fn [] (swap! line-num inc)
                                         (reset! line [])
                                         (reset! y 0))]
@@ -99,7 +98,7 @@
             (swap! line conj runs)
             (recur lines (rest run-runs)))
 
-          (in-current-line? runs h @y space-width)
+          (in-current-line? runs height @y space-width)
           (do
             (doall (into-line runs line line-num y))
             (recur lines (rest run-runs)))
@@ -156,18 +155,20 @@
 (defn flat-list-item [props svgs]
   [touchable/touchable-opacity {}
    [rn/view {:style {}} ;{:padding-horizontal 30}} ;:margin-vertical 10}}
-    ;; if no text tag svg can't render
-    [rn/text {} ""]
+    ;; TODO if no text tag svg can't render, test later
+    ; [rn/text {} ""]
     [text-line props svgs]]])
 
-(defn flat-list-text [props text-svgs]
+(defn flat-list-text [props text]
   (if (font/get-font :white)
-    [rn-list/flat-list
-     {:key-fn    identity
-      :data      text-svgs
-      ; :render-fn text-list-item
-      :render-fn (partial flat-list-item props)
-      :horizontal true}]))
+    (let [text-svgs (text-component props text)]
+      (js/console.log "xxxxx11")
+      [rn-list/flat-list
+       {:key-fn    identity
+        :data      text-svgs
+        ; :render-fn text-list-item
+        :render-fn (partial flat-list-item props)
+        :horizontal true}])))
 
 
 ;; (def inner-size 0)

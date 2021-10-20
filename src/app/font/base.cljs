@@ -22,13 +22,6 @@
     (swap! fonts assoc :white (fontkit/create (b64/decodeStringToUint8Array result))))
   (js/console.log "init function"))
 
-
-(defn load [name url]
-  (-> (fs/readFileAssets url)
-      (.then (fn [res] (swap! fonts assoc name (fontkit/create res))))
-      ;; (.then (fn [res] (swap! fonts assoc name res)))
-      (.catch (fn [err] (js/console.log err)))))
-
 ;; (.then (.readFileAssets fs "monbaiti.ttf") (fn [res] (swap! fonts assoc :white (fontkit/create res))))
 ;; (.then (.readFileAssets fs "monbaiti.ttf" "base64") (fn [res] (swap! fonts assoc :white (fontkit/create (b64/decodeStringToUint8Array res)))))
 
