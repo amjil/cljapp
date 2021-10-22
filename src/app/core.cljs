@@ -41,11 +41,9 @@
     [rn/view {:flex 1 :height 400 :width 40}
      [rn/scroll-view {:style {:height 400}
                       :showsVerticalScrollIndicator true
-                      :showsHorizontalScrollIndicator true
-                      :contentContainerStyle {:flex 1}}
-      [rn/view {:flex 1}
-       [text/text-line {:width 26 :fill "black" :color "black" :flex 1}
-         (nth (text/text-component {:width 26 :height 5000 :font :white :font-size 18} font/mlongstr) 0)]]]]]])
+                      :showsHorizontalScrollIndicator true}
+      [text/text-line {:height 5000 :width 26 :fill "black" :color "black" :flex 1}
+        (nth (text/text-component {:width 26 :height 5000 :font :white :font-size 18} font/mlongstr) 0)]]]]])
 
 
 
