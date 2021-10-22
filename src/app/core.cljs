@@ -38,9 +38,14 @@
     ; [text/text-area {:line-height 26 :fill "black" :color "black"}
     ;   (text/text-component {:width 26 :height 500 :font :white :font-size 18} font/mlongstr)]]])
 
-    [rn/view {:style {:overflow "scroll"}}
-     [text/text-line {:width 26 :fill "black" :color "black"}
-       (nth (text/text-component {:width 26 :height 5000 :font :white :font-size 18} font/mlongstr) 0)]]]])
+    [rn/view {:flex 1 :height 400 :width 40}
+     [rn/scroll-view {:style {:height 400}
+                      :showsVerticalScrollIndicator true
+                      :showsHorizontalScrollIndicator true
+                      :contentContainerStyle {:flex 1}}
+      [rn/view {:flex 1}
+       [text/text-line {:width 26 :fill "black" :color "black" :flex 1}
+         (nth (text/text-component {:width 26 :height 5000 :font :white :font-size 18} font/mlongstr) 0)]]]]]])
 
 
 
