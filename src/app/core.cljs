@@ -19,7 +19,7 @@
    [rn/view {:style {:flexDirection "column"
                      :height "100%"
                      :width "100%"}}
-    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]
+    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]]])
     ; [:> blinkview {"useNativeDriver" false}
     ;  [rn/view {:style {:position :absolute :top 40 :left 86}}
     ;   [:> svg/Svg {:width 24 :height 6}
@@ -38,12 +38,13 @@
     ; [text/text-area {:line-height 26 :fill "black" :color "black"}
     ;   (text/text-component {:width 26 :height 500 :font :white :font-size 18} font/mlongstr)]]])
 
-    [rn/view {:flex 1 :height 400 :width 40}
-     [rn/scroll-view {:style {:height 400}
-                      :showsVerticalScrollIndicator true
-                      :showsHorizontalScrollIndicator true}
-      [text/text-line {:height 5000 :width 26 :fill "black" :color "black" :flex 1}
-        (nth (text/text-component {:width 26 :height 5000 :font :white :font-size 18} font/mlongstr) 0)]]]]])
+    ; [rn/view {:flex 1 :height 400 :width 40}
+    ;  [rn/scroll-view {:style {:height 400}
+    ;                   :showsVerticalScrollIndicator true
+    ;                   :showsHorizontalScrollIndicator true}
+    ;                   ; :contentContainerStyle {:flex 1}}
+    ;   [text/text-line {:height 5000 :width 26 :fill "black" :color "black" :flex 1}
+    ;     (nth (text/text-component {:width 26 :height 5000 :font :white :font-size 18} font/mlongstr) 0)]]]]])
 
 
 
