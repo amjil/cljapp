@@ -12,6 +12,7 @@
    [app.font.base :as font]
    [app.text.index :as text]
    [clojure.string :as str]
+   [app.components.gesture :as gesture]
    ["react-native-smooth-blink-view" :default blinkview]))
 
 (defn root-comp []
@@ -19,7 +20,7 @@
    [rn/view {:style {:flexDirection "column"
                      :height "100%"
                      :width "100%"}}
-    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]]])
+    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]
     ; [:> blinkview {"useNativeDriver" false}
     ;  [rn/view {:style {:position :absolute :top 40 :left 86}}
     ;   [:> svg/Svg {:width 24 :height 6}
@@ -33,7 +34,7 @@
     ;   [:> svg/Circle {:cx "40" :cy "5" :r "5" :fill "black"}]
     ;   [:> svg/Rect {:x "10" :y "4.5" :width 25 :height 2 :fill "black"}]]]
 
-    ; (text/flat-list-text {:width 26 :fill "black" :color "black" :height 500 :font :white :font-size 18} font/mlongstr)]])
+    ; (text/flat-list-text {:width 26 :fill "black" :color "black" :height 200 :font :white :font-size 18} font/mlongstr)]])
 
     ; [text/text-area {:line-height 26 :fill "black" :color "black"}
     ;   (text/text-component {:width 26 :height 500 :font :white :font-size 18} font/mlongstr)]]])
@@ -45,6 +46,8 @@
     ;                   ; :contentContainerStyle {:flex 1}}
     ;   [text/text-line {:height 5000 :width 26 :fill "black" :color "black" :flex 1}
     ;     (nth (text/text-component {:width 26 :height 5000 :font :white :font-size 18} font/mlongstr) 0)]]]]])
+
+    [gesture/pan-gesture]]])
 
 
 
