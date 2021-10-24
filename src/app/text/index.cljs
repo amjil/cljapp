@@ -159,16 +159,54 @@
     ; [rn/text {} ""]
     [text-line props svgs]]])
 
-(defn flat-list-text [props text]
+(defn flat-list-text [props text-svgs]
   (if (font/get-font :white)
-    (let [text-svgs (text-component props text)]
-      (js/console.log "xxxxx11")
-      [rn-list/flat-list
-       {:key-fn    identity
-        :data      text-svgs
-        ; :render-fn text-list-item
-        :render-fn (partial flat-list-item props)
-        :horizontal true}])))
+    [rn-list/flat-list
+     {:key-fn    identity
+      :data      text-svgs
+      ; :render-fn text-list-item
+      :render-fn (partial flat-list-item props)
+      :horizontal true
+      :onScrollBeginDrag #(js/console.log "on scroll begin >>>")
+      :onScrollEndDrag #(js/console.log "on scroll end >>>")}]))
+
+(defn cursor-location [evt line-height svgs]
+  (let [ex (j/get evt :x)
+        ey (j/get evt :y)
+
+        x (loop [i      0]
+            (cond
+              (<= ex (+ (* i line-height) line-height))
+              i
+
+              (>= i (count svgs))
+              i
+
+              :else
+              (recur (inc i))))
+
+        line (nth svgs x)
+        item-count (count line)
+
+        y (loop [i      0]
+            (if-not (> item-count i)
+              (let [item (nth line i)]
+                (+ (:y item) (:width item))))
+
+            (let [item (nth line i)
+                  item-y (+ (:y item) (:width item))]
+              (cond
+                (<= ey item-y)
+                item-y
+
+                :else
+                (recur (inc i)))))]
+    ; [(+ x 8) y]
+    [(+ (* line-height x) 8) y]))
+
+
+
+
 
 
 ;; (def inner-size 0)

@@ -13,6 +13,9 @@
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
+    "@react-navigation/bottom-tabs": "^6.0.9",
+    "@react-navigation/native": "^6.0.6",
+    "@react-navigation/stack": "^6.0.11",
     "bluebird": "^3.7.2",
     "react": "17.0.2",
     "react-dom": "17.0.1",
@@ -25,6 +28,7 @@
     "react-native-screens": "^3.8.0",
     "react-native-smooth-blink-view": "^1.0.3",
     "react-native-svg": "^12.1.1",
+    "react-native-vector-icons": "^8.1.0",
     "shadow-cljs": "^2.15.9"
   },
   "devDependencies": {

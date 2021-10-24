@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* cljappTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* cljappTests.m */; };
+		04029D6027257C7200696F7B /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04029D5F27257C7200696F7B /* Ionicons.ttf */; };
 		04A3FC5626F9FA3D009F6F78 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 04A3FC5526F9FA3D009F6F78 /* assets */; };
 		0E4E73490B8BF3F20266D31A /* libPods-cljapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22250DDC44061B13949507D6 /* libPods-cljapp.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -31,6 +32,7 @@
 		00E356EE1AD99517003FC87E /* cljappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cljappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* cljappTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = cljappTests.m; sourceTree = "<group>"; };
+		04029D5F27257C7200696F7B /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		04A3FC5526F9FA3D009F6F78 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* cljapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cljapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = cljapp/AppDelegate.h; sourceTree = "<group>"; };
@@ -85,9 +87,18 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		04029D5E27257C1900696F7B /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				04029D5F27257C7200696F7B /* Ionicons.ttf */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* cljapp */ = {
 			isa = PBXGroup;
 			children = (
+				04029D5E27257C1900696F7B /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -125,6 +136,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				B77472E29649560B119779A1 /* Pods */,
+				D67E53C06606413F9529C728 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -149,6 +161,13 @@
 				6DF1128C939A064F93BCD8F0 /* Pods-cljapp-cljappTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		D67E53C06606413F9529C728 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,6 +266,7 @@
 			files = (
 				04A3FC5626F9FA3D009F6F78 /* assets in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				04029D6027257C7200696F7B /* Ionicons.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -334,7 +354,6 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-cljapp/Pods-cljapp-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
