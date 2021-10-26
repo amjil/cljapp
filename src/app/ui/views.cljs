@@ -8,6 +8,7 @@
    [steroid.rn.components.status-bar :as status-bar]
    [steroid.rn.navigation.safe-area :as safe-area]
    [steroid.rn.components.platform :as platform]
+   [steroid.rn.components.list :as rn-list]
    [app.ui.components :as ui]
    [steroid.rn.navigation.stack :as stack]
    [re-frame.core :as re-frame]
@@ -51,7 +52,8 @@
   (let [text-svgs (text/text-component {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text)
         runs (last (last text-svgs))
         x (reagent/atom nil)
-        y (reagent/atom nil)]
+        y (reagent/atom nil)
+        blink-cursor? (reagent/atom true)]
     (reset! y (:y runs))
     (reset! x (+ 8 (* 32 (dec (count text-svgs)))))
     (fn []
@@ -62,13 +64,33 @@
                                      (reset! x ex)
                                      (reset! y ey)))}
        [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
-                                                        (js/console.log "x = " ex " y = " ey))}
+                                                        (js/console.log "x = " ex " y = " ey)
+                                                        (reset! x ex)
+                                                        (reset! y ey))}
         [rn/view {:style {:height "100%" :width "100%"}}
-         [:> blinkview {"useNativeDriver" false}
-          [rn/view {:style {:position :absolute :top (or @y 0) :left (or @x 0)}}
-           [:> svg/Svg {:width 32 :height 2}
-            [:> svg/Rect {:x "0" :y "0" :width 32 :height 2 :fill "black"}]]]]
-         [text/flat-list-text {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text-svgs]]]])))
+         (when @blink-cursor?
+            [:> blinkview {"useNativeDriver" false}
+             [rn/view {:style {:position :absolute :top (or @y 0) :left (or @x 0)}}
+              [:> svg/Svg {:width 32 :height 2}
+               [:> svg/Rect {:x "0" :y "0" :width 32 :height 2 :fill "black"}]]]])
+         ; [text/flat-list-text {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text-svgs]]]])))
+         [rn-list/flat-list
+          {:key-fn    identity
+           :data      text-svgs
+           ; :render-fn text-list-item
+           :render-fn (partial text/flat-list-item {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24})
+           :horizontal true
+           ; :onScroll #(do
+           ;              (js/console.log "on scroll >>>>"))
+           :onMomentumScrollBegin #(do
+                                     (js/console.log "onmomentum scroll start >>>"))
+           :onMomentumScrollEnd #(do
+                                    (swap! blink-cursor? not)
+                                    (js/console.log "onmomentum scroll end >>>"))
+           :onScrollBeginDrag #(do (swap! blink-cursor? not)
+                                   (js/console.log "on scroll begin >>>"))
+           :onScrollEndDrag #(do
+                               (js/console.log "on scroll end >>>"))}]]]])))
 
 (defn home []
   (let [h (reagent/atom nil)]

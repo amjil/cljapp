@@ -174,38 +174,48 @@
   (let [ex (j/get evt :x)
         ey (j/get evt :y)
 
+        ; _ (js/console.log "xxx1111")
         x (loop [i      0]
             (cond
+              (empty? svgs)
+              0
+
               (<= ex (+ (* i line-height) line-height))
               i
 
               (>= i (count svgs))
+              (if (zero? (count svgs))
+                0
+                (dec i))
+
+              (= (inc i) (count svgs))
               i
 
               :else
               (recur (inc i))))
+        ; _ (js/console.log "xxx1112 = " x)
 
         line (nth svgs x)
         item-count (count line)
 
+        ; _ (js/console.log "xxx >>> " item-count)
         y (loop [i      0]
-            (if-not (> item-count i)
-              (let [item (nth line i)]
-                (+ (:y item) (:width item))))
+            ; (js/console.log "xxx111>> " i)
+            (if (= item-count i)
+              (let [item (last line)]
+                (+ (:y item) (:width item)))
 
-            (let [item (nth line i)
-                  item-y (+ (:y item) (:width item))]
-              (cond
-                (<= ey item-y)
-                item-y
+              (let [item (nth line i)
+                    item-y (+ (:y item) (:width item))]
+                (cond
+                  (<= ey item-y)
+                  item-y
 
-                :else
-                (recur (inc i)))))]
+                  :else
+                  (recur (inc i))))))]
+        ; _ (js/console.log "xxx1113")]
     ; [(+ x 8) y]
     [(+ (* line-height x) 8) y]))
-
-
-
 
 
 
