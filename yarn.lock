@@ -6112,6 +6112,11 @@ react-is@^16.13.0, react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.nlark.com/react-is/download/react-is-16.13.1.tgz?cache=0&sync_timestamp=1631636226881&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-is%2Fdownload%2Freact-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
 
+react-native-advanced-ripple@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/react-native-advanced-ripple/download/react-native-advanced-ripple-1.0.0.tgz#e34d79323bf720b29d441a7a17868f6bd8b07bea"
+  integrity sha1-4015Mjv3ILKdRBp6F4aPa9iwe+o=
+
 react-native-codegen@^0.0.7:
   version "0.0.7"
   resolved "https://registry.npm.taobao.org/react-native-codegen/download/react-native-codegen-0.0.7.tgz#86651c5c5fec67a8077ef7f4e36f7ed459043e14"
@@ -6175,6 +6180,11 @@ react-native-smooth-blink-view@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npmmirror.com/react-native-smooth-blink-view/download/react-native-smooth-blink-view-1.0.3.tgz#02e19426501a7e1116724262dcacf807a34728c0"
   integrity sha1-AuGUJlAafhEWckJi3Kz4B6NHKMA=
+
+react-native-sqlite-storage@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.npmmirror.com/react-native-sqlite-storage/download/react-native-sqlite-storage-6.0.1.tgz#ce6a6b852f07abbea68658d5363818c8bef45dfb"
+  integrity sha1-zmprhS8Hq76mhljVNjgYyL70Xfs=
 
 react-native-svg@^12.1.1:
   version "12.1.1"

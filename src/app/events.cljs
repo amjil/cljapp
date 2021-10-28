@@ -1,7 +1,8 @@
 (ns app.events
   (:require
    [re-frame.core :as re-frame]
-   [app.db :as db]))
+   [app.db :as db]
+   steroid.rn.navigation.events))
 
 
 (re-frame/reg-event-fx                                      ;; usage: (dispatch [:initialise-app])

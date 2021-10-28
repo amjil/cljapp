@@ -9,11 +9,12 @@
    [steroid.rn.navigation.safe-area :as safe-area]
    [steroid.rn.components.platform :as platform]
    [steroid.rn.components.list :as rn-list]
+   [steroid.rn.components.touchable :as touchable]
    [app.ui.components :as ui]
+   [app.ui.keyboard :as keyboard]
    [steroid.rn.navigation.stack :as stack]
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]
-
    [app.text.index :as text]
    [app.font.base :as font]
    [app.components.gesture :as gesture]
@@ -53,18 +54,21 @@
         runs (last (last text-svgs))
         x (reagent/atom nil)
         y (reagent/atom nil)
-        blink-cursor? (reagent/atom true)]
+        blink-cursor? (reagent/atom true)
+        touch-state (reagent/atom 0)]
     (reset! y (:y runs))
     (reset! x (+ 8 (* 32 (dec (count text-svgs)))))
     (fn []
       [gesture/tap-gesture-handler
        {:onHandlerStateChange #(if (gesture/tap-state-end (j/get % :nativeEvent))
                                    (let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
-                                     (js/console.log "x = " ex " y = " ey)
+                                     ; (js/console.log "x = " ex " y = " ey)
+                                     (reset! blink-cursor? true)
                                      (reset! x ex)
                                      (reset! y ey)))}
        [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
-                                                        (js/console.log "x = " ex " y = " ey)
+                                                        ; (js/console.log "x = " ex " y = " ey)
+                                                        (reset! blink-cursor? true)
                                                         (reset! x ex)
                                                         (reset! y ey))}
         [rn/view {:style {:height "100%" :width "100%"}}
@@ -82,12 +86,17 @@
            :horizontal true
            ; :onScroll #(do
            ;              (js/console.log "on scroll >>>>"))
-           :onMomentumScrollBegin #(do
-                                     (js/console.log "onmomentum scroll start >>>"))
+           :on-touch-start #(reset! blink-cursor? false)
+           :on-touch-move #(do
+                             (reset! blink-cursor? false)
+                             (js/console.log "on touch move"))
+           ; :onResponderMove #(js/console.log "on responder move >>>")
+           ; :onMomentumScrollBegin #(do
+           ;                           (js/console.log "onmomentum scroll start >>>"))
            :onMomentumScrollEnd #(do
                                     (swap! blink-cursor? not)
                                     (js/console.log "onmomentum scroll end >>>"))
-           :onScrollBeginDrag #(do (swap! blink-cursor? not)
+           :onScrollBeginDrag #(do (reset! blink-cursor? false)
                                    (js/console.log "on scroll begin >>>"))
            :onScrollEndDrag #(do
                                (js/console.log "on scroll end >>>"))}]]]])))
@@ -101,6 +110,11 @@
        (when @h
          [text-editor @h font/mlongstr])])))
 
+(defn profile []
+  [touchable/touchable-opacity {:on-press #(re-frame/dispatch [:navigate-to :keyboard])
+                                :style    {:padding-horizontal 20 :padding-top 10}}
+   [rn/text {:style (merge {:font-size 16})}
+    "Edit"]])
 
 (defn tabs []
   [bottom-tabs/bottom-tab
@@ -128,7 +142,7 @@
     {:name      :edit
      :component component}
     {:name      :profile
-     :component component}]])
+     :component profile}]])
 
 (defn root-stack []
   [safe-area/safe-area-provider
@@ -137,4 +151,7 @@
      [stack/stack {}
       [{:name      :main
         :component tabs
-        :options {:title "cljapp"}}]])]])
+        :options {:title ""}}
+       {:name       :keyboard
+        :component  keyboard/keyboard-view
+        :options    {:title ""}}]])]])
