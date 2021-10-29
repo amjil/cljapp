@@ -16,7 +16,7 @@
   [safe-area/safe-area-consumer
    (fn [insets]
      (reagent/as-element
-      (into [rn/view {:style {:flex             1 :padding-top (.-top insets)
+      (into [rn/view {:style {:flex             1 :padding-bottom (.-bottom insets)
                               :background-color :white}}]
             children)))])
 

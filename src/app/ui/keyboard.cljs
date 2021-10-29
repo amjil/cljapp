@@ -4,36 +4,36 @@
    [app.font.base :as font]
    [app.text.index :as text]
    [app.components.gesture :as gesture]
+   [app.ui.components :as ui]
    [applied-science.js-interop :as j]
    [cljs-bean.core :as bean]
    [reagent.core :as reagent]
    [steroid.rn.components.list :as rn-list]
-   [steroid.rn.components.ui :as ui]
-   [steroid.rn.components.ui :as ui]
    [steroid.rn.components.touchable :as touchable]
+   [steroid.rn.navigation.safe-area :as safe-area]
 
    ["react-native-smooth-blink-view" :default blinkview]
    ["react-native-svg" :as svg]
    ["react-native-advanced-ripple" :as ripple]))
 
 (defn text-editor [height text]
-  (let [text-svgs (text/text-component {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text)
+  (let [text-svgs (text/text-component {:width 0 :fill "gray" :color "black" :height height :font :white :font-size 24} text)
         runs (last (last text-svgs))
         x (reagent/atom nil)
         y (reagent/atom nil)
         blink-cursor? (reagent/atom true)
         touch-state (reagent/atom 0)]
     (reset! y (:y runs))
-    (reset! x (+ 8 (* 32 (dec (count text-svgs)))))
+    (reset! x (+ 8 (* 42 (dec (count text-svgs)))))
     (fn []
       [gesture/tap-gesture-handler
        {:onHandlerStateChange #(if (gesture/tap-state-end (j/get % :nativeEvent))
-                                   (let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
+                                   (let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 42 text-svgs)]
                                      ; (js/console.log "x = " ex " y = " ey)
                                      (reset! blink-cursor? true)
                                      (reset! x ex)
                                      (reset! y ey)))}
-       [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
+       [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 42 text-svgs)]
                                                         ; (js/console.log "x = " ex " y = " ey)
                                                         (reset! blink-cursor? true)
                                                         (reset! x ex)
@@ -42,14 +42,14 @@
          (when @blink-cursor?
             [:> blinkview {"useNativeDriver" false}
              [rn/view {:style {:position :absolute :top (or @y 0) :left (or @x 0)}}
-              [:> svg/Svg {:width 32 :height 2}
-               [:> svg/Rect {:x "0" :y "0" :width 32 :height 2 :fill "black"}]]]])
+              [:> svg/Svg {:width 42 :height 2}
+               [:> svg/Rect {:x "0" :y "0" :width 42 :height 2 :fill "black"}]]]])
          ; [text/flat-list-text {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text-svgs]]]])))
          [rn-list/flat-list
           {:key-fn    identity
            :data      text-svgs
            ; :render-fn text-list-item
-           :render-fn (partial text/flat-list-item {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24})
+           :render-fn (partial text/flat-list-item {:width 42 :fill "gray" :color "black" :height height :font :white :font-size 24})
            :horizontal true
            ; :onScroll #(do
            ;              (js/console.log "on scroll >>>>"))
@@ -93,156 +93,92 @@
     :fontWeight "400"
           :fontSize 25,
           :textAlign "center",
-          :color "#222222"})
-          ; :width 50})
+          :color "#222222"
+          :width 42})
+
+(def key-list [["ᠠ᠊" "ᠡ᠊" "ᠢ᠊" "ᠣ᠊" "ᠤ᠊" "ᠥ᠊" "ᠦ᠊" "ᠨᠠ"]
+               ["ᠪᠠ" "ᠫᠠ" "ᠬᠠ" "ᠭᠠ" "ᠮᠠ" "ᠯᠠ" "ᠰᠠ" "ᠱᠠ"]
+               ["ᠲᠠ" " ᠳᠠ" "ᠴᠠ" "ᠵᠠ" "ᠶᠠ" "ᠷᠠ"]
+               ["ᠸᠠ" "ᠺᠠ" "ᠹᠠ" "ᠽᠠ" "ᠼᠠ" "?"]])
 
 (defn keyboard-view []
   (let [h (reagent/atom nil)]
     (fn []
-      [rn/view {:style {:flex-direction "column" :width "100%" :height "100%"
-                        :flex 1}}
-       [rn/view {:style {:width "100%"
-                         :flex 2}
-                 :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
-                               (reset! h height))}
-        (when @h
-          [text-editor @h font/mlongstr])]
-       [rn/view {:style {:flex nil
-                         :width "100%"
-                         :flex-direction "column"
-                         :justifyContent "flex-end"}}
-        [rn/view {:style {:height 180
-                          :backgroundColor "#FFF"
+      [ui/safe-area-consumer
+      ; [safe-area/safe-area-view {:style {:flex             1}}
+                                       ;:background-color :white}}
+       [rn/view {:style {:flex-direction "column" :width "100%" :height "100%"
+                         :flex 1}}
+        [rn/view {:style {:width "100%"
+                          :flex 2}
+                  :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
+                                (reset! h height))}
+         (when @h
+           [text-editor @h font/mlongstr])]
+        [rn/view {:style {:flex nil
+                          :width "100%"
+                          :flex-direction "column"
+                          :justifyContent "flex-end"}}
+         [rn/view {:style {:height 180
+                           :backgroundColor "#FFF"
                            :alignItems "center"
                            :justifyContent "center"}}
-                          ; :flex 1 :flex-direction "column"}}
-         [rn/view {:style {:flex 1 :flex-direction "row"
-                           :alignItems "center"
-                           :justifyContent "center"}}
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]]
-         [rn/view {:style {:flex 1 :flex-direction "row"
-                           :alignItems "center"
-                           :justifyContent "center"}}
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]]
-         [rn/view {:style {:flex 1 :flex-direction "row"
-                           :alignItems "center"
-                           :justifyContent "center"}}
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]]
-         [rn/view {:style {:flex 1 :flex-direction "row"
-                           :alignItems "center"
-                           :justifyContent "center"}}
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]]
-         [rn/view {:style {:flex 1 :flex-direction "row"
-                           :alignItems "center"
-                           :justifyContent "center"}}
-         ; [rn/view {:style key-style}
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style key-con-style}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style (merge key-con-style {:flex 1.5})}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style (merge key-con-style {:flex 1.5})}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style (merge key-con-style {:flex 1.5})}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]
-          [rn/view {:style (merge key-con-style {:flex 1.5})}
-           [:> ripple {:rippleColor "#000" :style key-style}
-            [rn/text {:style key-text-style} "x"]]]]]]])))
+          (doall (for [k (take 2 key-list)]
+                   ^{:key k}
+                   [rn/view {:style {:flex 1 :flex-direction "row"
+                                     :alignItems "center"
+                                     :justifyContent "center"}}
+                    (doall (for [kk k]
+                             ^{:key kk}
+                             [rn/view {:style key-con-style}
+                              [:> ripple {:rippleColor "#000" :style key-style}
+                                (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} kk)))]]))]))
+          [rn/view {:style {:flex 2 :flex-direction "row"
+                            :alignItems "center"
+                            :justifyContent "center"}}
+           [rn/view {:style {:flex 6 :flex-direction "column"
+                             :alignItems "center"
+                             :justifyContent "flex-end"}}
+            [rn/view {:style {:flex 1 :flex-direction "row"
+                              :alignItems "center"
+                              :justifyContent "center"}}
+             (doall (for [kk (nth key-list 2)]
+                       ^{:key kk}
+                       [rn/view {:style key-con-style}
+                        [:> ripple {:rippleColor "#000" :style key-style}
+                         (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} kk)))]]))]
+            [rn/view {:style {:flex 1 :flex-direction "row"
+                              :alignItems "center"
+                              :justifyContent "center"}}
+             (doall (for [kk (nth key-list 3)]
+                       ^{:key kk}
+                       [rn/view {:style key-con-style}
+                        [:> ripple {:rippleColor "#000" :style key-style}
+                         (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} kk)))]]))]]
+           [rn/view {:style (merge key-con-style {:flex 1})}
+            [:> ripple {:rippleColor "#000" :style key-style}
+             (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} "ᠳᠡᠪᠢᠰᠭᠡᠷ")))]]
+           [rn/view {:style (merge key-con-style {:flex 1})}
+            [:> ripple {:rippleColor "#000" :style key-style}
+             (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} "ᠳᠠᠭᠠᠪᠤᠷᠢ")))]]]
+          [rn/view {:style {:flex 1 :flex-direction "row"
+                            :alignItems "center"
+                            :justifyContent "center"}}
+           [rn/view {:style (merge key-con-style {:flex 1})}
+            [:> ripple {:rippleColor "#000" :style key-style}
+             [rn/text {:style {:height "100%"}} "123"]]]
+           [rn/view {:style (merge key-con-style {:flex 1})}
+            [:> ripple {:rippleColor "#000" :style key-style}
+             [rn/text {:style {:height "100%"}} "abc"]]]
+           [rn/view {:style (merge key-con-style {:flex 1.5})}
+            [:> ripple {:rippleColor "#000" :style key-style}
+             [rn/text {:style {:height "100%"}} "home"]]]
+           [rn/view {:style (merge key-con-style {:flex 1.5})}
+            [:> ripple {:rippleColor "#000" :style key-style}
+             [rn/text {:style {:height "100%"}} "space"]]]
+           [rn/view {:style (merge key-con-style {:flex 1.5})}
+            [:> ripple {:rippleColor "#000" :style key-style}
+             [rn/text {:style {:height "100%"}} "back"]]]
+           [rn/view {:style (merge key-con-style {:flex 1.5})}
+            [:> ripple {:rippleColor "#000" :style key-style}
+             [rn/text {:style {:height "100%"}} "return"]]]]]]]])))

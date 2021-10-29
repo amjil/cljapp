@@ -110,11 +110,27 @@
        (when @h
          [text-editor @h font/mlongstr])])))
 
+(defn profile-flat-item [props item]
+  [touchable/touchable-highlight {:underlayColor "#DDDDDD"
+                                  :activeOpacity 0.6
+                                  :onPress #(re-frame/dispatch [:navigate-to :keyboard])}
+   [rn/view {:style {:width 52 :height "100%" :padding-right 20}} ;{:padding-horizontal 30}} ;:margin-vertical 10}}
+    [text/text-line props (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} (:text item)))]]])
+
 (defn profile []
-  [touchable/touchable-opacity {:on-press #(re-frame/dispatch [:navigate-to :keyboard])
-                                :style    {:padding-horizontal 20 :padding-top 10}}
-   [rn/text {:style (merge {:font-size 16})}
-    "Edit"]])
+  [ui/safe-area-consumer
+   [rn-list/flat-list
+    {:key-fn    identity
+     :data      [{:text "ᠳᠡᠪᠢᠰᠭᠡᠷ"} {:text "ᠳᠠᠭᠠᠪᠤᠷᠢ"} {:text "abc"}]
+     ; :render-fn text-list-item
+     :render-fn (partial profile-flat-item {:width 42})
+     :horizontal true
+     :ItemSeparatorComponent
+     (fn [] (reagent/as-element [rn/view {:style {:width 1 :backgroundColor "skyblue"}}]))}]])
+   ; [touchable/touchable-opacity {:on-press #(re-frame/dispatch [:navigate-to :keyboard])
+   ;                               :style    {:padding-horizontal 20 :padding-top 10}}
+   ;  [rn/text {:style (merge {:font-size 16})}
+   ;   "Edit"]]])
 
 (defn tabs []
   [bottom-tabs/bottom-tab
