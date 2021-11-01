@@ -22,7 +22,8 @@
    ["react-native-smooth-blink-view" :default blinkview]
    ["react-native-svg" :as svg]
 
-   [app.ui.profile.views :as profile]))
+   [app.ui.profile.views :as profile]
+   [app.ui.picker.views :as picker]))
 
 
 (when platform/android?
@@ -112,7 +113,6 @@
        (when @h
          [text-editor @h font/mlongstr])])))
 
-
 (defn tabs []
   [bottom-tabs/bottom-tab
    {
@@ -137,7 +137,7 @@
     {:name      :book
      :component component}
     {:name      :edit
-     :component component}
+     :component picker/picker}
     {:name      :profile
      :component profile/profile}]])
 

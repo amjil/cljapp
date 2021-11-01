@@ -6181,6 +6181,11 @@ react-native-smooth-blink-view@^1.0.3:
   resolved "https://registry.npmmirror.com/react-native-smooth-blink-view/download/react-native-smooth-blink-view-1.0.3.tgz#02e19426501a7e1116724262dcacf807a34728c0"
   integrity sha1-AuGUJlAafhEWckJi3Kz4B6NHKMA=
 
+react-native-smooth-picker@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.npmmirror.com/react-native-smooth-picker/download/react-native-smooth-picker-1.1.5.tgz#5e70b2ba5467045e022b77069904482854b8f657"
+  integrity sha1-XnCyulRnBF4CK3cGmQRIKFS49lc=
+
 react-native-sqlite-storage@^6.0.1:
   version "6.0.1"
   resolved "https://registry.npmmirror.com/react-native-sqlite-storage/download/react-native-sqlite-storage-6.0.1.tgz#ce6a6b852f07abbea68658d5363818c8bef45dfb"
