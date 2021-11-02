@@ -10,6 +10,7 @@
    [steroid.rn.components.platform :as platform]
    [steroid.rn.components.list :as rn-list]
    [steroid.rn.components.touchable :as touchable]
+   [steroid.rn.components.ui :as rn-ui]
    [app.ui.components :as ui]
    [app.ui.keyboard :as keyboard]
    [steroid.rn.navigation.stack :as stack]
@@ -23,7 +24,8 @@
    ["react-native-svg" :as svg]
 
    [app.ui.profile.views :as profile]
-   [app.ui.picker.views :as picker]))
+   [app.ui.picker.views :as picker]
+   [app.ui.modal.views :as modal]))
 
 
 (when platform/android?
@@ -50,7 +52,16 @@
   [rn/view {:style {:flexDirection "column"
                     :height "100%"
                     :width "100%"}}
-    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]])
+    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]
+    [rn-ui/button {:title "edit" :onPress #(do (reset! modal/is-visible true)
+                                               (js/console.log "is-visible ----- " @modal/is-visible))}]
+    [modal/modal [{:label "ᠨᠢᠭᠡ"} {:label "ᠬᠤᠶᠠᠷ"} {:label "ᠭᠤᠷᠪᠠ"}]]])
+
+(defn component-modal []
+  [rn/view {:style {:flex 1}}
+    [rn-ui/button {:title "edit" :onPress #(do (reset! modal/is-visible true)
+                                               (js/console.log "is-visible ----- " @modal/is-visible))}]
+    [modal/modal [{:label "ᠨᠢᠭᠡ"} {:label "ᠬᠤᠶᠠᠷ"} {:label "ᠭᠤᠷᠪᠠ"}]]])
 
 (defn text-editor [height text]
   (let [text-svgs (text/text-component {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text)
@@ -135,7 +146,7 @@
    [{:name      :home
      :component home}
     {:name      :book
-     :component component}
+     :component component-modal}
     {:name      :edit
      :component picker/picker}
     {:name      :profile
