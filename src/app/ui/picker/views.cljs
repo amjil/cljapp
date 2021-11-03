@@ -50,9 +50,7 @@
                      :borderColor (if (= index @selected)
                                     "#ABC9AF" "transparent")
                      :width "auto"})
-        [text/text-line {:width 42} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} item))]])))
-        ; [rn/text {:style {:font-size font-size}} item]])))
-
+        [text/text-line {:width 42} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size font-size} item))]])))
 
 
 (defn picker []
