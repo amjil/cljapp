@@ -17,14 +17,8 @@
   (fn []
     [:> rnmodal {:isVisible @is-visible
                  :hasBackdrop false
-                 ; :deviceHeight 200
-                 ; :deviceWidth 200
-                 :style {;:margin 0
+                 :style {:margin 0
                          :justifyContent "center"}}
-     ; [rn/view {:style {:flex 1}}
-     ;  [rn/text {} "Hello"]
-     ;  [rn-ui/button {:title "Hide modal" :onPress #(do (reset! is-visible false)
-     ;                                                   (js/console.log "Hide modal >>>"))}]]
      [rn/view {:style {:borderTopLeftRadius 12
                        :borderTopRightRadius 12
                        :borderBottomLeftRadius 12
@@ -33,6 +27,7 @@
                        :marginTop 8
                        :marginRight 20
                        :flex-direction "row"
+                       :justifyContent "flex-end"
                        :height 200}}
       (doall
         (map-indexed
