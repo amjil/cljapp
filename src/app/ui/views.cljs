@@ -25,7 +25,8 @@
 
    [app.ui.profile.views :as profile]
    [app.ui.picker.views :as picker]
-   [app.ui.modal.views :as modal]))
+   [app.ui.modal.views :as modal]
+   [app.ui.toast.views :as toast]))
 
 
 (when platform/android?
@@ -59,9 +60,14 @@
 
 (defn component-modal []
   [rn/view {:style {:flex 1}}
+   [rn/view
     [rn-ui/button {:title "edit" :onPress #(do (reset! modal/is-visible true)
                                                (js/console.log "is-visible ----- " @modal/is-visible))}]
-    [modal/modal [{:label "ᠨᠢᠭᠡ"} {:label "ᠬᠤᠶᠠᠷ"} {:label "ᠭᠤᠷᠪᠠ"}]]])
+    [modal/modal [{:label "ᠨᠢᠭᠡ"} {:label "ᠬᠤᠶᠠᠷ"} {:label "ᠭᠤᠷᠪᠠ"}]]]
+   [rn/view
+    [rn-ui/button {:title "toast" :onPress #(do (re-frame/dispatch [:navigate-to :toast]))}]]])
+
+
 
 (defn text-editor [height text]
   (let [text-svgs (text/text-component {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text)
@@ -162,4 +168,7 @@
         :options {:title ""}}
        {:name       :keyboard
         :component  keyboard/keyboard-view
+        :options    {:title ""}}
+       {:name       :toast
+        :component  toast/view
         :options    {:title ""}}]])]])
