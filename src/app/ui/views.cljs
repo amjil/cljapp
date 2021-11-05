@@ -12,7 +12,6 @@
    [steroid.rn.components.touchable :as touchable]
    [steroid.rn.components.ui :as rn-ui]
    [app.ui.components :as ui]
-   [app.ui.keyboard :as keyboard]
    [steroid.rn.navigation.stack :as stack]
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]
@@ -25,7 +24,8 @@
 
    [app.ui.profile.views :as profile]
    [app.ui.picker.views :as picker]
-   [app.ui.modal.views :as modal]))
+   [app.ui.modal.views :as modal]
+   [app.ui.keyboard.views :as keyboard]))
 
 
 (when platform/android?
