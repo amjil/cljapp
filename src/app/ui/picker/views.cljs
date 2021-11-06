@@ -62,6 +62,7 @@
                         :margin "auto"
                         :color "black"}}
        [:> smoothpicker {:offsetSelection 4
+                         :initialScrollToIndex 4
                          :scrollAnimation true
                          :data ["ᠨᠢᠭᠡ" "ᠬᠤᠶᠠᠷ" "ᠭᠤᠷᠪᠠ" "ᠳᠦᠷᠪᠡ" "ᠲᠠᠪᠤ" "ᠵᠢᠷᠭᠤᠭ᠎ᠠ" "ᠳᠣᠯᠣᠭ᠎ᠠ" "ᠨᠠᠢᠮᠠ" "ᠶᠢᠰᠦ" "ᠠᠷᠪᠠ"]
                          :onSelected (fn [option]

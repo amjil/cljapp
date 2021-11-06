@@ -40,6 +40,7 @@
                              :alignItems "center"
                              :paddingTop 16
                              :paddingBottom 16
+                             :paddingRight 6
                              ; :borderRightWidth StyleSheet.hairlineWidth,
                              :borderRightWidth 1
                              :borderColor "#DBDBDB"
