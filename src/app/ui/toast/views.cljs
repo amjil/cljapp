@@ -109,13 +109,12 @@
                     :height 200
                     :alignItems "center"
                     :justifyContent "center"}}
-           [rn/view {:style {:padding-right 8}}
-            [text/text-line {:width 40
-                             :fill "white"}
-             (first (text/text-component
-                      {:width 0
-                       :height 200 :font :white :font-size 18}
-                      "ᠪᠤᠷᠤᠭᠤ ᠭᠠᠷᠪᠠ"))]]]))}))
+           [text/text-line {:width 30
+                            :fill "white"}
+            (first (text/text-component
+                     {:width 0
+                      :height 200 :font :white :font-size 18}
+                     "ᠪᠤᠷᠤᠭᠤ ᠭᠠᠷᠪᠠ"))]]))}))
 
 (defn view []
   (let [flag (reagent/atom false)]
@@ -131,7 +130,8 @@
            {:on-press #(do (js/console.log "on-press toast >>>")
                          (reset! flag false))}
            [rn/view {:style {:position "absolute"
-                             :left 0 :right 0
+                             :left 0
+                             :right 0
                              :top 0
                              :bottom 0
                              :elevation 1999

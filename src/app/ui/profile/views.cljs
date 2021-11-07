@@ -5,7 +5,8 @@
     [app.text.index :as text]
     [steroid.rn.core :as rn]
     [steroid.rn.components.touchable :as touchable]
-    [steroid.rn.components.list :as rn-list]))
+    [steroid.rn.components.list :as rn-list]
+    [steroid.rn.components.other :as rn-other]))
 
 
 (defn profile-flat-item [props item]
@@ -23,5 +24,14 @@
    :data      [{:key 0} {:text "ᠳᠡᠪᠢᠰᠭᠡᠷ"} {:text "ᠳᠠᠭᠠᠪᠤᠷᠢ"} {:text "abc"} {:key 1} {:text "mgl"} {:key 2}]
    :render-fn (partial profile-flat-item {:width 42})
    :horizontal true
+   :showsVerticalScrollIndicator false
+   :contentContainerStyle {:flexGrow 1 :alignSelf "center" :flexDirection "row"}
+   :refreshControl (reagent/as-element
+                     [rn-other/refresh-control
+                       {:tintColor "black"
+                        :refreshing false
+                        :onRefresh #(do (js/console.log "on Refresh >>>")
+                                      true)}])
+
    :ItemSeparatorComponent
    (fn [] (reagent/as-element [rn/view {:style {:width 1 :backgroundColor "lightgrey"}}]))}])

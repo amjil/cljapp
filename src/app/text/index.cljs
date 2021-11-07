@@ -146,7 +146,7 @@
        (fn [i run]
          (if-not (empty? (:svg run))
            [:> svg/Path {:d        (:svg run)
-                         :x        (/ (:width props) 2)
+                         :x        10;(/ (:width props) 2)
                          :y        (str (:y run))
                          :rotation "90"
                          :key      (str i)}]))
@@ -215,7 +215,7 @@
                   (recur (inc i))))))]
         ; _ (js/console.log "xxx1113")]
     ; [(+ x 8) y]
-    [(+ (* line-height x) 8) y]))
+    [(* line-height x) y]))
 
 
 
