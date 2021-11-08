@@ -6,6 +6,22 @@
    [reagent.core :as reagent]
    [applied-science.js-interop :as j]))
 
+(comment
+  (def dog {:name "Dog"
+            :properties {:name "string"
+                         :age "int"}})
+  ;
+  (def Realm (js/require "realm"))
+  (def realm (Realm. (clj->js {:schema [dog]})))
+
+  ; (.write realm (fn []
+  ;                 (.create realm "Dog" (clj->js {:name "Rex" :age 3}))))
+  ;
+  (let [all-dogs (.objects realm "Dog")]
+     (js/console.log "dogs >>>> " all-dogs))
+
+  Realm.copyBundledRealmFiles)
+  ; Realm.defaultPath)
 
    ; [:> blinkview {"useNativeDriver" false}
    ;  [rn/view {:style {:position :absolute :top 40 :left 86}}

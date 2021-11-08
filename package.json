@@ -30,9 +30,9 @@
     "react-native-screens": "^3.8.0",
     "react-native-smooth-blink-view": "^1.0.3",
     "react-native-smooth-picker": "^1.1.5",
-    "react-native-sqlite-storage": "^6.0.1",
     "react-native-svg": "^12.1.1",
     "react-native-vector-icons": "^8.1.0",
+    "realm": "^10.9.1",
     "shadow-cljs": "^2.15.9"
   },
   "devDependencies": {
