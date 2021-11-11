@@ -9,15 +9,23 @@
 ;; (sqlite/enablePromise false)
 (sqlite/enablePromise true)
 
-(def conn
+(def conn (atom nil))
+
+(defn open []
   (let [platform    (j/get-in rn [:Platform :OS])
         file-prefix (condp = platform
                       "android" ""
                       "ios" fs/LibraryDirectoryPath)]
-    (sqlite/openDatabase 
-     (bean/->js
-      {:name               "cand.db"
-       :createFromLocation (str file-prefix "/LocalDatabase" "/cand.db")}))))
+    (.then
+     (sqlite/openDatabase
+      (bean/->js
+       {:name               "cand.db"
+        :createFromLocation (str file-prefix "/LocalDatabase" "/cand.db")}))
+     #(reset! conn %))))
+
+(defn close []
+  (if @conn
+    (.close @conn)))
 
 (.close conn)
 (comment
