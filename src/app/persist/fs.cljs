@@ -22,8 +22,9 @@
 (comment
   fs/DocumentDirectoryPath
   fs/MainBundlePath
-  ;; ifs/LibraryDirectoryPath 
-  ;; a fs/ExternalDirectoryPath
+  ;; io fs/LibraryDirectoryPath 
+  fs/LibraryDirectoryPath
+  ;; an fs/ExternalDirectoryPath
   (prn "aa")
   (copy-file "database.db")
   (str fs/DocumentDirectoryPath "/" "cand.db")
