@@ -13,6 +13,7 @@
   (def sqlite (js/require "react-native-sqlite-storage"))
 
   (js/require "react-native-sqlite-storage")
+  (js/console.log "aaa")
 
    ; [:> blinkview {"useNativeDriver" false}
    ;  [rn/view {:style {:position :absolute :top 40 :left 86}}

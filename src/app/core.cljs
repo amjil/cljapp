@@ -3,6 +3,7 @@
    [steroid.rn.core :as rn]
    [app.font.base :as font]
    [app.ui.views :as views]
+   ["react-native-sqlite-storage" :as sqlite]
    app.events
    app.subs))
 
