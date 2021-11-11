@@ -24,10 +24,13 @@
      #(reset! conn %))))
 
 (defn close []
-  (if @conn
-    (.close @conn)))
+  (when @conn
+    (.close @conn)
+    (reset! @conn nil)))
 
-(.close conn)
+(defn is-connected? []
+  (if @conn true false))
+
 (comment
   sqlite/openDatabase
   conn
