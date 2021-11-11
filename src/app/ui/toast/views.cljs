@@ -1,15 +1,15 @@
 (ns app.ui.toast.views
   (:require
-    [re-frame.core :as re-frame]
-    [reagent.core :as reagent]
-    [app.text.index :as text]
-    [applied-science.js-interop :as j]
-    ["react-native" :as rnn]
-    [cljs-bean.core :as bean]
-    [steroid.rn.core :as rn]
-    [steroid.rn.components.touchable :as touchable]
-    [app.ui.components :as ui]
-    [steroid.rn.components.ui :as rn-ui]))
+   [re-frame.core :as re-frame]
+   [reagent.core :as reagent]
+   [app.text.index :as text]
+   [applied-science.js-interop :as j]
+   ["react-native" :as rnn]
+   [cljs-bean.core :as bean]
+   [steroid.rn.core :as rn]
+   [steroid.rn.components.touchable :as touchable]
+   [app.ui.components :as ui]
+   [steroid.rn.components.ui :as rn-ui]))
 
 (def animated (j/get rnn :Animated))
 (def animated-value (j/get animated :Value))
@@ -143,4 +143,5 @@
 
             [testview2]]])]])))
 (comment
-  animated.View)
+  animated.View
+  sqlite)

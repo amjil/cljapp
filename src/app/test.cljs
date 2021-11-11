@@ -7,21 +7,12 @@
    [applied-science.js-interop :as j]))
 
 (comment
-  (def dog {:name "Dog"
-            :properties {:name "string"
-                         :age "int"}})
-  ;
-  (def Realm (js/require "realm"))
-  (def realm (Realm. (clj->js {:schema [dog]})))
+  (require '["react-native-sqlite-storage" :as sqlite])
+  sqlite/openDatabase
 
-  ; (.write realm (fn []
-  ;                 (.create realm "Dog" (clj->js {:name "Rex" :age 3}))))
-  ;
-  (let [all-dogs (.objects realm "Dog")]
-     (js/console.log "dogs >>>> " all-dogs))
+  (def sqlite (js/require "react-native-sqlite-storage"))
 
-  Realm.copyBundledRealmFiles)
-  ; Realm.defaultPath)
+  (js/require "react-native-sqlite-storage")
 
    ; [:> blinkview {"useNativeDriver" false}
    ;  [rn/view {:style {:position :absolute :top 40 :left 86}}
