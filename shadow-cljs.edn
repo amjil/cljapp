@@ -1,8 +1,9 @@
 {:source-paths ["src" "test"]
 
  :dependencies [
-                [cljs-bean "1.7.0"]
                 [applied-science/js-interop "0.3.1"]
+                [cljs-bean "1.7.0"]
+                [com.github.seancorfield/honeysql "2.1.818"]
                 [funcool/promesa "6.0.2"]
                 [reagent "1.0.0"]
                 [re-frame "0.12.0"]
