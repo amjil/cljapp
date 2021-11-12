@@ -58,11 +58,10 @@
 
     :else
     (let [table (first index-str)
-          sql-map {:select [:id :full_index :short_index :char_word :active_order]
-                   :from   [(keyword table)]
-                   :where  [:or [:= :a.full_index index-str]
-                            [:= :a.short-index index-str]]}
-          sql (hsql/format sql-map)]
+          sql (hsql/format {:select [:id :full_index :short_index :char_word :active_order]
+                            :from   [(keyword table)]
+                            :where  [:or [:= :a.full_index index-str]
+                                     [:= :a.short-index index-str]]})]
       (p/let [result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
         (p/then result #(return-fn (rows-data %)))))))
 
