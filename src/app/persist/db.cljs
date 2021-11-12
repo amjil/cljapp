@@ -60,8 +60,8 @@
     (let [table (first index-str)
           sql (hsql/format {:select [:id :full_index :short_index :char_word :active_order]
                             :from   [(keyword table)]
-                            :where  [:or [:= :a.full_index index-str]
-                                     [:= :a.short-index index-str]]})]
+                            :where  [:or [:= :full_index index-str]
+                                     [:= :short-index index-str]]})]
       (p/let [result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
         (p/then result #(return-fn (rows-data %)))))))
 
@@ -98,7 +98,7 @@
                                   (js/console.log "result = " res)))))
    #(js/console.log "yes >>>>" %))
 
-  (candidates "ab" js/console.log)
+  (candidates "sd" js/console.log)
 
   hsql/format
   asql
