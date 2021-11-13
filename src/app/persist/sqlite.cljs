@@ -61,10 +61,12 @@
           sql (hsql/format {:select [:id :full_index :short_index :char_word :active_order]
                             :from   [(keyword table)]
                             :where  [:or [:= :full_index index-str]
-                                     [:= :short-index index-str]]})]
+                                     [:= :short-index index-str]]
+                            :order-by [[:active_order :desc]]})]
       (p/let [result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
         (p/then result #(return-fn (rows-data %)))))))
 
+(open)
 (comment
   sqlite/openDatabase
   (open)

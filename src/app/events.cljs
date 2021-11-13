@@ -2,6 +2,7 @@
   (:require
    [re-frame.core :as re-frame]
    [app.db :as db]
+   app.handler.candidates.events
    steroid.rn.navigation.events))
 
 

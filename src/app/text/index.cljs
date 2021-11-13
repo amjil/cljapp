@@ -73,7 +73,7 @@
   (let [line                     (reagent/atom [])
         line-num                 (reagent/atom 0)
         y                        (reagent/atom 0)
-        [space-width line-width] (font/space-dimention :white 24)
+        [space-width line-width] (font/space-dimention :white font-size)
         text-runs                (text-runs text font font-size)
         new-line-fn              (fn [] (swap! line-num inc)
                                         (reset! line [])
@@ -109,7 +109,28 @@
             (recur (conj lines (flatten item))
                    run-runs)))))))
 
+(defn text-component-inline [{:keys [font font-size]} text]
+  (let [text-runs                (text-runs text font font-size)
+        [space-width line-width] (font/space-dimention font font-size)]
+    (loop [y 0
+           run-runs text-runs
+           result-runs []]
+      (let [runs (first run-runs)]
+        (cond
+          (empty? run-runs)
+          (let [result-runs (flatten result-runs)
+                last-run (last result-runs)]
+            [line-width
+             (+ (:width last-run) (:y last-run))
+             result-runs])
 
+          :else
+          (let [item-height (apply + (map :width runs))
+                widths (map :width runs)
+                runs-y (map-indexed #(assoc %2 :y (+ y (reduce + (take %1 widths)))) runs)]
+            (recur (+ y item-height)
+                   (rest run-runs)
+                   (concat result-runs runs-y))))))))
 
 (defn text-area [props text-svgs]
   (let [line-height (:line-height props)
@@ -151,6 +172,34 @@
                          :rotation "90"
                          :key      (str i)}]))
        svgs))])
+
+(comment 
+(text-component-inline 
+{:width 30
+ :fill "white"
+ :font :white
+ :font-size 18}
+"ᠨᠢᠭᠡ" )  )
+;
+(defn text-inline [props text]
+  (let [[width height text-runs]
+        (doall (text-component-inline (select-keys props [:font :font-size]) text))]
+    
+    [:> svg/Svg (merge {:fill "white"
+                        :height height}
+                       props)
+
+     (doall
+      (map-indexed
+       (fn [i run]
+         (if-not (empty? (:svg run))
+           [:> svg/Path {:d        (:svg run)
+                         :x        6;(/ width 2)
+
+                         :y        (str (:y run))
+                         :rotation "90"
+                         :key      (str i)}]))
+       text-runs))]))
 
 (defn flat-list-item [props svgs]
   [touchable/touchable-opacity {}

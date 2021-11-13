@@ -1,16 +1,19 @@
 (ns app.ui.keyboard.views
   (:require
+   [re-frame.core :refer [dispatch subscribe]]
    [steroid.rn.core :as rn]
    [app.font.base :as font]
    [app.text.index :as text]
    [app.components.gesture :as gesture]
    [app.ui.components :as ui]
+   [app.ui.keyboard.candidates :as candidates]
    [applied-science.js-interop :as j]
    [cljs-bean.core :as bean]
    [reagent.core :as reagent]
    [steroid.rn.components.list :as rn-list]
    [steroid.rn.components.touchable :as touchable]
    [steroid.rn.navigation.safe-area :as safe-area]
+   [app.handler.keyboard.events :as events]
 
    ["react-native-smooth-blink-view" :default blinkview]
    ["react-native-svg" :as svg]
@@ -26,47 +29,50 @@
     (reset! y (:y runs))
     (reset! x (* 42 (dec (count text-svgs))))
     (fn []
-      [gesture/tap-gesture-handler
-       {:onHandlerStateChange #(if (gesture/tap-state-end (j/get % :nativeEvent))
-                                   (let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 42 text-svgs)]
+      [rn/view {}
+       [gesture/tap-gesture-handler
+        {:onHandlerStateChange #(if (gesture/tap-state-end (j/get % :nativeEvent))
+                                  (let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 42 text-svgs)]
                                      ; (js/console.log "x = " ex " y = " ey)
-                                     (reset! blink-cursor? true)
-                                     (reset! x ex)
-                                     (reset! y ey)))}
-       [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 42 text-svgs)]
+                                    (reset! blink-cursor? true)
+                                    (reset! x ex)
+                                    (reset! y ey)))}
+        [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 42 text-svgs)]
                                                         ; (js/console.log "x = " ex " y = " ey)
-                                                        (reset! blink-cursor? true)
-                                                        (reset! x ex)
-                                                        (reset! y ey))}
-        [rn/view {:style {:height "100%" :width "100%"}}
-         (when @blink-cursor?
+                                                         (reset! blink-cursor? true)
+                                                         (reset! x ex)
+                                                         (reset! y ey))}
+         [rn/view {:style {:height "100%" :width "100%"}}
+          (when @blink-cursor?
             [:> blinkview {"useNativeDriver" false}
              [rn/view {:style {:position :absolute :top (or @y 0) :left (or @x 0)}}
               [:> svg/Svg {:width 42 :height 2}
                [:> svg/Rect {:x "0" :y "0" :width 42 :height 2 :fill "black"}]]]])
          ; [text/flat-list-text {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text-svgs]]]])))
-         [rn-list/flat-list
-          {:key-fn    identity
-           :data      text-svgs
+          [rn-list/flat-list
+           {:key-fn    identity
+            :data      text-svgs
            ; :render-fn text-list-item
-           :render-fn (partial text/flat-list-item {:width 42 :fill "gray" :color "black" :height height :font :white :font-size 24})
-           :horizontal true
+            :render-fn (partial text/flat-list-item {:width 42 :fill "gray" :color "black" :height height :font :white :font-size 24})
+            :horizontal true
            ; :onScroll #(do
            ;              (js/console.log "on scroll >>>>"))
-           :on-touch-start #(reset! blink-cursor? false)
-           :on-touch-move #(do
-                             (reset! blink-cursor? false)
-                             (js/console.log "on touch move"))
+            :on-touch-start #(reset! blink-cursor? false)
+            :on-touch-move #(do
+                              (reset! blink-cursor? false)
+                              (js/console.log "on touch move"))
            ; :onResponderMove #(js/console.log "on responder move >>>")
            ; :onMomentumScrollBegin #(do
            ;                           (js/console.log "onmomentum scroll start >>>"))
-           :onMomentumScrollEnd #(do
+            :onMomentumScrollEnd #(do
                                     (swap! blink-cursor? not)
                                     (js/console.log "onmomentum scroll end >>>"))
-           :onScrollBeginDrag #(do (reset! blink-cursor? false)
-                                   (js/console.log "on scroll begin >>>"))
-           :onScrollEndDrag #(do
-                               (js/console.log "on scroll end >>>"))}]]]])))
+            :onScrollBeginDrag #(do (reset! blink-cursor? false)
+                                    (js/console.log "on scroll begin >>>"))
+            :onScrollEndDrag #(do
+                                (js/console.log "on scroll end >>>"))}]]]]
+       [candidates/views]])))
+
 (def key-style
   {
           :flex-direction "row"
@@ -96,9 +102,15 @@
           :color "#222222"
           :width 42})
 
-(def key-list [["ᠴ᠊" "ᠸ᠊" "ᠡ" "ᠷ᠊" "ᠲ᠊" "ᠶ᠊" "ᠦ᠊" "ᠢ" "ᠥ" "ᠫ᠊"]
-               ["ᠠ" "ᠰ᠊" "ᠳ" "ᠹ᠊" "ᠭ᠊" "ᠬ᠊" "ᠵ᠊" "ᠺ᠊" "ᠯ᠊" " ᠩ"]
-               ["ᠽ᠊" "ᠱ᠊" "ᠣ" "ᠤ᠊" "ᠪ᠊" "ᠨ᠊" "ᠮ᠊"]])
+(def key-list [[{:label "ᠣ" :code "q"} {:label "ᠸ᠊" :code "w"} {:label "ᠡ" :code "e"} 
+                {:label "ᠷ᠊" :code "r"} {:label "ᠲ᠊" :code "t"} {:label "ᠶ᠊" :code "y"} 
+                {:label "ᠦ᠊" :code "u"} {:label "ᠢ" :code "i"} {:label "ᠥ" :code "o"} {:label "ᠫ᠊" :code "p"}]
+               [{:label "ᠠ" :code "a"} {:label "ᠰ᠊" :code "s"} {:label "ᠳ" :code "d"} {:label "ᠹ᠊" :code "f"} 
+                {:label "ᠭ᠊" :code "g"} {:label "ᠬ᠊" :code "h"} {:label "ᠵ᠊" :code "j"} 
+                {:label "ᠺ᠊" :code "k"} {:label "ᠯ᠊" :code "l"} {:label " ᠩ" :code "ng"}]
+               [{:label "ᠽ᠊" :code "z"} {:label "ᠱ᠊" :code "x"} {:label "ᠴ᠊" :code "c"}
+                {:label "ᠤ᠊" :code "v"} {:label "ᠪ᠊" :code "b"}
+                {:label "ᠨ᠊" :code "n"} {:label "ᠮ᠊" :code "m"}]])
 
 (defn keyboard-view []
   (let [h (reagent/atom nil)]
@@ -133,8 +145,13 @@
                     (doall (for [kk k]
                              ^{:key kk}
                              [rn/view {:style key-con-style}
-                              [:> ripple {:rippleColor "#000" :style key-style}
-                                (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} kk)))]]))]))
+                              [:> ripple {:rippleColor "#000" :style key-style
+                                          :on-press #(dispatch [:candidates-index-concat (:code kk)])}
+                                (text/text-line
+                                 {:width 38}
+                                 (first (text/text-component
+                                         {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24}
+                                         (:label kk))))]]))]))
          [rn/view {:style {:flex 1 :flex-direction "row"
                            :alignItems "center"
                            :justifyContent "center"}}
@@ -145,10 +162,12 @@
           (doall (for [kk (nth key-list 2)]
                    ^{:key kk}
                    [rn/view {:style key-con-style}
-                    [:> ripple {:rippleColor "#000" :style key-style}
-                      (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} kk)))]]))
+                    [:> ripple {:rippleColor "#000" :style key-style
+                                :on-press #(dispatch [:candidates-index-concat (:code kk)])}
+                      (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} (:label kk))))]]))
           [rn/view {:style (merge key-con-style {:flex 1.5})}
-           [:> ripple {:rippleColor "#000" :style key-style}
+           [:> ripple {:rippleColor "#000" :style key-style
+                       :on-press #(dispatch [:keyboard-delete])}
             [rn/view {:style {:height "100%" :alignItems "center" :justifyContent "center"}}
              [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]]
          [rn/view {:style {:flex 1 :flex-direction "row"
@@ -175,6 +194,7 @@
             [rn/view {:style {:height "100%" :alignItems "center" :justifyContent "center"}}
              [rn/text {} ""]]]]
           [rn/view {:style (merge key-con-style {:flex 1.5})}
-           [:> ripple {:rippleColor "#000" :style key-style}
+           [:> ripple {:rippleColor "#000" :style key-style
+                       :on-press #(dispatch [:candidates-query 2])}
             [rn/view {:style {:height "100%" :alignItems "center" :justifyContent "center"}}
              [ui/ion-icons {:name "ios-return-down-back-sharp" :color "gray" :size 30}]]]]]]]])))

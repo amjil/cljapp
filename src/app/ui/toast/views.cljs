@@ -82,18 +82,18 @@
             (bean/->js {:toValue         0.6
                         :duration        500
                         :useNativeDriver false}))
-          (.start))
-        (js/setTimeout
-          #(do
-            (js/console.log "set timeout >>>")
-            (.setValue (j/get-in this [:state :alphaValue]) 0)
-            (->
-              (.timing animated
-                (j/get-in this [:state :alphaValue])
-                (bean/->js {:toValue         0
-                            :duration        500
-                            :useNativeDriver false}))))
-          2000))
+          (.start)))
+        ; (js/setTimeout
+        ;   #(do
+        ;     (js/console.log "set timeout >>>")
+        ;     (.setValue (j/get-in this [:state :alphaValue]) 0)
+        ;     (->
+        ;       (.timing animated
+        ;         (j/get-in this [:state :alphaValue])
+        ;         (bean/->js {:toValue         0
+        ;                     :duration        500
+        ;                     :useNativeDriver false}))))
+        ;   2000))
      ; :component-did-update
      :display-name "test-view2"
      ;; render does not receive this as first argument
