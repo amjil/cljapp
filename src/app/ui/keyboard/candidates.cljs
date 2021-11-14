@@ -41,12 +41,12 @@
         ;; :data []
         :data      (cond
                      (not-empty candidates)
-                     (bean/->clj candidates)
+                     candidates
 
                      :else 
                      [])
         :render-fn (fn [x]
-                     [touchable/touchable-opacity {}
+                     [touchable/touchable-opacity {:on-press #(dispatch [:candidate-select x])}
                       [rn/view {:style {}}
                        [text/text-inline {:width 30
                                           :fill "black"

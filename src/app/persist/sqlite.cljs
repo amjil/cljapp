@@ -47,9 +47,10 @@
 
 (defn rows-data [rows]
   (-> rows
-    last
-    (j/get :rows)
-    (j/call :raw)))
+      last
+      (j/get :rows)
+      (j/call :raw)
+      (bean/->clj)))
 
 (defn candidates [index-str return-fn]
   (cond
@@ -66,8 +67,49 @@
       (p/let [result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
         (p/then result #(return-fn (rows-data %)))))))
 
+(defn next-words [candidate return-fn]
+  (js/console.log "next-words " (:id candidate))
+  (cond
+    (empty? candidate)
+    []
+
+    :else
+    (let [id (:id candidate)
+          table (first (:short_index candidate))
+          sql (hsql/format {:select [:t2 :id2]
+                            :from [:phrase1]
+                            :where [:and
+                                    [:= :id1 id]
+                                    [:= :t1 table]]})]
+      (p/let [result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
+        (p/then
+         result
+         #(let [next-data  (rows-data %)]
+            (cond
+              (empty? next-data)
+              []
+
+              :else
+              (let [next-grouped (group-by (fn [x] (:t2 x)) next-data)
+                    tables (keys next-grouped)
+                    sqls (map (fn [[k v]]
+                                {:select [:id :full_index :short_index :char_word :active_order]
+                                 :from   [(keyword k)]
+                                 :where  [:in :id (map (fn [x] (:id2 x)) v)]})
+                              next-grouped)
+                    sql (hsql/format {:select [:*]
+                                      :from [{:union sqls}]
+                                      :order-by [[:active_order :desc]]})]
+                (js/console.log "sql = " (bean/->js sql))
+                (p/let [sql-result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
+                  (p/then sql-result
+                          (fn [res]
+                            (return-fn (rows-data res)))))))))))))
 (open)
 (comment
+  (next-words {:id 665 :short_index "ab"} js/console.log)
+  (hsql/format {:union [{:select [:*] :from [:foo]}
+                        {:select [:*] :from [:bar]}]})
   sqlite/openDatabase
   (open)
   (is-connected?)
@@ -100,7 +142,8 @@
                                   (js/console.log "result = " res)))))
    #(js/console.log "yes >>>>" %))
 
-  (candidates "sd" js/console.log)
+  (candidates "ab" js/console.log)
+  (next-words {:id 665 :short_index "ab"} js/console.log)
 
   hsql/format
   asql

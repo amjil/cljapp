@@ -11,6 +11,14 @@
     value 
     #(re-frame/dispatch [:set-candidates-list %]))))
 
+(re-frame/reg-fx
+ :candidates-query-next
+ (fn [value]
+   (js/console.log "candidates next")
+   (sqlite/next-words
+    value
+    #(re-frame/dispatch [:set-candidates-list %]))))
+
 (re-frame/reg-event-fx
  :set-candidates-list
  (fn [{db :db} [_ value]]
@@ -37,17 +45,24 @@
    (let [old-index (get-in db [:candidates :index])
          new-index (str/join "" (drop-last old-index))]
      (cond
-       (empty? old-index)
-       {:db db
+       (or (empty? old-index) (= 1 (count old-index)))
+       {:db (assoc-in db [:candidates :index] "")
         :dispatch [:set-candidates-list []]}
 
-       (empty? new-index)
-       {:db (assoc-in db [:candidates :index] "")
+       (not-empty (get-in db [:candidates :list]))
+       {:db db
         :dispatch [:set-candidates-list []]}
 
        :else
        {:db      (assoc-in db [:candidates :index] new-index)
         :candidates-query new-index}))))
+
+;; candidate select
+(re-frame/reg-event-fx
+ :candidate-select
+ (fn [{db :db} [_ value]]
+   {:db (assoc-in db [:candidates :index] "")
+    :candidates-query-next value}))
 
 (comment 
 (str/join "" (drop-last "hello"))
@@ -56,4 +71,5 @@
 (re-frame/dispatch [:set-candidates-list []])
 (re-frame/dispatch [:candidates-query 2]) 
 (re-frame/subscribe [:candidates-index])
-(re-frame/subscribe [:candidates-list])  )
+(re-frame/subscribe [:candidates-list])  
+(re-frame/dispatch [:candidate-select {:id 665 :short_index "ab"}])  )
