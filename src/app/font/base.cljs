@@ -66,6 +66,7 @@
                          (j/get m :glyphs)
                          (->clj m))]
         (map #(hash-map :svg (svg % inner-size)
+                        :id (j/get % :id)
                         :width (* inner-size (j/get % :advanceWidth))
                         :code-points (->clj (j/get % :codePoints)))
              glyphs)))))

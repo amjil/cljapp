@@ -100,7 +100,7 @@
                     sql (hsql/format {:select [:*]
                                       :from [{:union sqls}]
                                       :order-by [[:active_order :desc]]})]
-                (js/console.log "sql = " (bean/->js sql))
+                ;; (js/console.log "sql = " (bean/->js sql))
                 (p/let [sql-result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
                   (p/then sql-result
                           (fn [res]

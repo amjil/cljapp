@@ -2,13 +2,14 @@
   (:require
    [re-frame.core :as re-frame]
    [app.persist.sqlite :as sqlite]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [app.text.index :as text]))
 
 (re-frame/reg-fx
  :candidates-query
  (fn [value]
-   (sqlite/candidates 
-    value 
+   (sqlite/candidates
+    value
     #(re-frame/dispatch [:set-candidates-list %]))))
 
 (re-frame/reg-fx
@@ -64,12 +65,30 @@
    {:db (assoc-in db [:candidates :index] "")
     :candidates-query-next value}))
 
-(comment 
-(str/join "" (drop-last "hello"))
-(re-frame/dispatch [:candidates-index-concat "ab"])  
-(re-frame/dispatch [:set-candidates-index ""])
-(re-frame/dispatch [:set-candidates-list []])
-(re-frame/dispatch [:candidates-query 2]) 
-(re-frame/subscribe [:candidates-index])
-(re-frame/subscribe [:candidates-list])  
-(re-frame/dispatch [:candidate-select {:id 665 :short_index "ab"}])  )
+;; editor events
+(re-frame/reg-event-fx
+ :set-editor-content
+ (fn [{db :db} [_ value]]
+   {:db (assoc-in db [:editor :content] value)}))
+
+(re-frame/reg-event-fx
+ :editor-content-conj 
+ (fn [{db :db} [_ value]]
+   (let [new-value (str (get-in db [:editor :content]) value)]
+     {:db      (assoc-in db [:candidates :index] new-value)
+      :dispatch [:set-editor-lines new-value]})))  
+
+(re-frame/reg-event-fx
+ :set-editor-lines 
+ (fn [{db :db} [_ value]]
+   {:db (assoc-in db [:editor :lines] value)}))
+
+(comment
+  (str/join "" (drop-last "hello"))
+  (re-frame/dispatch [:candidates-index-concat "ab"])
+  (re-frame/dispatch [:set-candidates-index ""])
+  (re-frame/dispatch [:set-candidates-list []])
+  (re-frame/dispatch [:candidates-query 2])
+  (re-frame/subscribe [:candidates-index])
+  (re-frame/subscribe [:candidates-list])
+  (re-frame/dispatch [:candidate-select {:id 665 :short_index "ab"}]))

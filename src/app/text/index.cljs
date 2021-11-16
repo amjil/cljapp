@@ -70,44 +70,46 @@
                  (conj runs (font/run font size (str (char first-char))))))))))
 
 (defn text-component [{:keys [height font font-size]} text]
-  (let [line                     (reagent/atom [])
-        line-num                 (reagent/atom 0)
-        y                        (reagent/atom 0)
-        [space-width line-width] (font/space-dimention :white font-size)
-        text-runs                (text-runs text font font-size)
-        new-line-fn              (fn [] (swap! line-num inc)
-                                        (reset! line [])
-                                        (reset! y 0))]
+  (let [[space-width line-width] (font/space-dimention :white font-size)
+        text-runs                (text-runs text font font-size)]
     (loop [lines    []
+           line []
+           y 0
            run-runs text-runs]
       (let [runs (first run-runs)]
         (cond
           (empty? run-runs)
-          (conj lines @line)
+          (conj lines (flatten line))
 
           ;; return
           (= [10] (-> runs first :code-points))
-          (let [item (conj @line (map #(assoc % :svg "" :y @y :line @line-num) runs))]
-            (new-line-fn)
+          (let [item (conj line (map #(assoc % :svg "" :y y :line (inc (count lines))) runs))]
             (recur (conj lines (flatten item))
+                   []
+                   0
                    (rest run-runs)))
 
           ;; line start with space
-          (and (= [32] (-> runs first :code-points)) (= @y 0))
-          (do
-            (swap! line conj runs)
-            (recur lines (rest run-runs)))
+          (and (= [32] (-> runs first :code-points)) (= y 0))
+          (recur lines
+                 (conj line runs)
+                 y
+                 (rest run-runs))
 
-          (in-current-line? runs height @y space-width)
-          (do
-            (doall (into-line runs line line-num y))
-            (recur lines (rest run-runs)))
+          (in-current-line? runs height y space-width)
+          (let [item-height (apply + (map :width runs))
+                widths (map :width runs)
+                runs-y (map-indexed #(assoc %2 :y (+ y (reduce + (take %1 widths)))) runs)]
+            (recur lines
+                   (conj line runs-y)
+                   (+ y item-height)
+                   (rest run-runs)))
 
           :else
-          (let [item @line]
-            (new-line-fn)
-            (recur (conj lines (flatten item))
-                   run-runs)))))))
+          (recur (conj lines (flatten line))
+                 []
+                 0
+                 run-runs))))))
 
 (defn text-component-inline [{:keys [font font-size]} text]
   (let [text-runs                (text-runs text font font-size)
@@ -173,14 +175,6 @@
                          :key      (str i)}]))
        svgs))])
 
-(comment 
-(text-component-inline 
-{:width 30
- :fill "white"
- :font :white
- :font-size 18}
-"ᠨᠢᠭᠡ" )  )
-;
 (defn text-inline [props text]
   (let [[width height text-runs]
         (doall (text-component-inline (select-keys props [:font :font-size]) text))]
@@ -294,4 +288,7 @@
   (nth (text-component 0 500 :white 24 font/mlongstr) 0)
   (text-component 0 500 :white 24 font/mlongstr)
   (map #(dissoc % :svg) ( first (text-component 0 500 :white 24 font/mlongstr)))
+  (map #(dissoc % :svg) (first (text-component {:width 0 :fill "gray" :color "black" :height 300 :font :white :font-size 24} font/mstr)))
+  (text-component {:width 0 :fill "gray" :color "black" :height 300 :font :white :font-size 24} font/mstr)
+  (text-runs font/mstr :white 24)
   (font/space-dimention :white 24))
