@@ -147,11 +147,8 @@
                              [rn/view {:style key-con-style}
                               [:> ripple {:rippleColor "#000" :style key-style
                                           :on-press #(dispatch [:candidates-index-concat (:code kk)])}
-                                (text/text-line
-                                 {:width 38}
-                                 (first (text/text-component
-                                         {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24}
-                                         (:label kk))))]]))]))
+                               [rn/view {:style {:height "100%" :width "100%"}}
+                                [text/text-inline {:width 38 :fill "black" :font :white :font-size 18} (:label kk)]]]]))]))
          [rn/view {:style {:flex 1 :flex-direction "row"
                            :alignItems "center"
                            :justifyContent "center"}}
@@ -164,7 +161,8 @@
                    [rn/view {:style key-con-style}
                     [:> ripple {:rippleColor "#000" :style key-style
                                 :on-press #(dispatch [:candidates-index-concat (:code kk)])}
-                      (text/text-line {:width 38} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} (:label kk))))]]))
+                     [rn/view {:style {:height "100%" :width "100%"}} 
+                      [text/text-inline {:width 38 :fill "black" :font :white :font-size 18} (:label kk)]]]]))
           [rn/view {:style (merge key-con-style {:flex 1.5})}
            [:> ripple {:rippleColor "#000" :style key-style
                        :on-press #(dispatch [:keyboard-delete])}

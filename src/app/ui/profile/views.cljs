@@ -10,19 +10,20 @@
 
 
 (defn profile-flat-item [props item]
-  (if (:text item)
-    [touchable/touchable-highlight {:underlayColor "#DDDDDD"
-                                    :activeOpacity 0.6
-                                    :onPress #(re-frame/dispatch [:navigate-to :keyboard])}
-     [rn/view {:style {:width 52 :height "100%" :padding-right 20}} ;{:padding-horizontal 30}} ;:margin-vertical 10}}
-      [text/text-line props (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size 24} (:text item)))]]]
-    [rn/view {:style {:width 10 :backgroundColor "lightgrey"}}]))
+  [touchable/touchable-highlight {:underlayColor "#DDDDDD"
+                                  :activeOpacity 0.6
+                                  :onPress #(re-frame/dispatch [:navigate-to :keyboard])}
+   [rn/view {:style {:width 52 :height "100%" :padding-right 20}}
+    [text/text-inline props (:text item)]]])
 
 (defn profile []
  [rn-list/flat-list
   {:key-fn    identity
-   :data      [{:key 0} {:text "ᠳᠡᠪᠢᠰᠭᠡᠷ"} {:text "ᠳᠠᠭᠠᠪᠤᠷᠢ"} {:text "abc"} {:key 1} {:text "mgl"} {:key 2}]
-   :render-fn (partial profile-flat-item {:width 42})
+   :data      [{:text "bbb"} {:text "aaa"} {:text "abc"}]
+  ;;  :render-fn (partial profile-flat-item {:width 42})
+   :render-fn (partial profile-flat-item {:width 42 :fill "black"
+                                          :font :white
+                                          :font-size 18})
    :horizontal true
    :showsVerticalScrollIndicator false
    :contentContainerStyle {:flexGrow 1 :alignSelf "center" :flexDirection "row"}

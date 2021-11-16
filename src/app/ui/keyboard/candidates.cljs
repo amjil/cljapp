@@ -60,18 +60,3 @@
                                             :font :white
                                             :font-size 18} (:char_word x)]]])
           :horizontal true}]]])))
-    ;; [text/text-inline {:width 30
-    ;;                    :fill "black"
-    ;;                    :font :white
-    ;;                    :font-size 18}
-    ;;  "ᠨᠢᠭᠡ"]
-    ;; [text/text-inline {:width 30
-    ;;                    :fill "black"
-    ;;                    :font :white
-    ;;                    :font-size 18}
-    ;;  "ᠬᠤᠶᠠᠷ"]
-    ;; [text/text-inline {:width 30
-    ;;                    :fill "black"
-    ;;                    :font :white
-    ;;                    :font-size 18}
-    ;;  "ᠭᠤᠷᠪᠠ"]
