@@ -20,14 +20,15 @@
    ["react-native-advanced-ripple" :as ripple]))
 
 (defn text-editor [height text]
-  (let [text-svgs (text/text-component {:width 0 :fill "gray" :color "black" :height height :font :white :font-size 18} text)
+  (let [[line-width text-svgs] (text/text-component {:width 0 :fill "black" :color "black" :height height :font :white :font-size 20} text)
         runs (last (last text-svgs))
         x (reagent/atom nil)
         y (reagent/atom nil)
         blink-cursor? (reagent/atom true)
-        touch-state (reagent/atom 0)]
+        touch-state (reagent/atom 0)
+        line-width (/ line-width 2)]
     (reset! y (:y runs))
-    (reset! x (* 32 (dec (count text-svgs))))
+    (reset! x (+ line-width (* 32 (dec (count text-svgs)))))
     (fn []
       [rn/view {}
        [gesture/tap-gesture-handler
@@ -35,12 +36,12 @@
                                   (let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
                                      ; (js/console.log "x = " ex " y = " ey)
                                     (reset! blink-cursor? true)
-                                    (reset! x ex)
+                                    (reset! x (+ line-width ex))
                                     (reset! y ey)))}
         [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
                                                         ; (js/console.log "x = " ex " y = " ey)
                                                          (reset! blink-cursor? true)
-                                                         (reset! x ex)
+                                                         (reset! x (+ line-width ex))
                                                          (reset! y ey))}
          [rn/view {:style {:height "100%" :width "100%"}}
           (when @blink-cursor?
@@ -48,7 +49,6 @@
              [rn/view {:style {:position :absolute :top (or @y 0) :left (or @x 0)}}
               [:> svg/Svg {:width 32 :height 2}
                [:> svg/Rect {:x "0" :y "0" :width 32 :height 2 :fill "blue"}]]]])
-         ; [text/flat-list-text {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text-svgs]]]])))
           [rn-list/flat-list
            {:key-fn    identity
             :data      text-svgs

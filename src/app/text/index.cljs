@@ -62,7 +62,7 @@
                  (conj runs (font/run font size (str (char first-char))))))))))
 
 (defn text-component [{:keys [height font font-size]} text]
-  (let [[space-width _] (font/space-dimention :white font-size)
+  (let [[space-width line-width] (font/space-dimention :white font-size)
         text-runs                (text-runs text font font-size)]
     (loop [lines    []
            line []
@@ -71,7 +71,7 @@
       (let [runs (first run-runs)]
         (cond
           (empty? run-runs)
-          (conj lines (flatten line))
+          [line-width (conj lines (flatten line))]
 
           ;; return
           (= [10] (-> runs first :code-points))
@@ -225,10 +225,5 @@
   (apply str (map char [6196 6176 6192 6180 6194 6180]))
   (is-shape-char? \space)
   (text-runs font/mlongstr :white 24)
-  (nth (text-component 0 500 :white 24 font/mlongstr) 0)
-  (text-component 0 500 :white 24 font/mlongstr)
-  (map #(dissoc % :svg) ( first (text-component 0 500 :white 24 font/mlongstr)))
-  (map #(dissoc % :svg) (first (text-component {:width 0 :fill "gray" :color "black" :height 300 :font :white :font-size 24} font/mstr)))
-  (text-component {:width 0 :fill "gray" :color "black" :height 300 :font :white :font-size 24} font/mstr)
   (text-runs font/mstr :white 24)
   (font/space-dimention :white 24))
