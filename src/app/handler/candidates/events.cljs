@@ -47,15 +47,11 @@
          new-index (str/join "" (drop-last old-index))]
      (cond
        (or (empty? old-index) (= 1 (count old-index)))
-       {:db (assoc-in db [:candidates :index] "")
-        :dispatch [:set-candidates-list []]}
-
-       (not-empty (get-in db [:candidates :list]))
-       {:db db
+       {:db       (assoc-in db [:candidates :index] "")
         :dispatch [:set-candidates-list []]}
 
        :else
-       {:db      (assoc-in db [:candidates :index] new-index)
+       {:db               (assoc-in db [:candidates :index] new-index)
         :candidates-query new-index}))))
 
 ;; candidate select
