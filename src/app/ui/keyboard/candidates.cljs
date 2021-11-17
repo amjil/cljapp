@@ -54,9 +54,11 @@
                        [])
           :render-fn (fn [x]
                        [touchable/touchable-opacity {:on-press #(dispatch [:candidate-select x])}
-                        [rn/view {:style {}}
+                        [rn/view {:style {:height "100%"}}
                          [text/text-inline {:width 30
                                             :fill "black"
                                             :font :white
                                             :font-size 18} (:char_word x)]]])
+          :initialNumToRender 7
+          :showsHorizontalScrollIndicator false
           :horizontal true}]]])))

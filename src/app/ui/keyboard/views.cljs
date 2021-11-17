@@ -20,24 +20,24 @@
    ["react-native-advanced-ripple" :as ripple]))
 
 (defn text-editor [height text]
-  (let [text-svgs (text/text-component {:width 0 :fill "gray" :color "black" :height height :font :white :font-size 24} text)
+  (let [text-svgs (text/text-component {:width 0 :fill "gray" :color "black" :height height :font :white :font-size 18} text)
         runs (last (last text-svgs))
         x (reagent/atom nil)
         y (reagent/atom nil)
         blink-cursor? (reagent/atom true)
         touch-state (reagent/atom 0)]
     (reset! y (:y runs))
-    (reset! x (* 42 (dec (count text-svgs))))
+    (reset! x (* 32 (dec (count text-svgs))))
     (fn []
       [rn/view {}
        [gesture/tap-gesture-handler
         {:onHandlerStateChange #(if (gesture/tap-state-end (j/get % :nativeEvent))
-                                  (let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 42 text-svgs)]
+                                  (let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
                                      ; (js/console.log "x = " ex " y = " ey)
                                     (reset! blink-cursor? true)
                                     (reset! x ex)
                                     (reset! y ey)))}
-        [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 42 text-svgs)]
+        [gesture/pan-gesture-handler {:onGestureEvent #(let [[ex ey] (text/cursor-location (j/get % :nativeEvent) 32 text-svgs)]
                                                         ; (js/console.log "x = " ex " y = " ey)
                                                          (reset! blink-cursor? true)
                                                          (reset! x ex)
@@ -46,14 +46,14 @@
           (when @blink-cursor?
             [:> blinkview {"useNativeDriver" false}
              [rn/view {:style {:position :absolute :top (or @y 0) :left (or @x 0)}}
-              [:> svg/Svg {:width 42 :height 2}
-               [:> svg/Rect {:x "0" :y "0" :width 42 :height 2 :fill "black"}]]]])
+              [:> svg/Svg {:width 32 :height 2}
+               [:> svg/Rect {:x "0" :y "0" :width 32 :height 2 :fill "blue"}]]]])
          ; [text/flat-list-text {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24} text-svgs]]]])))
           [rn-list/flat-list
            {:key-fn    identity
             :data      text-svgs
            ; :render-fn text-list-item
-            :render-fn (partial text/flat-list-item {:width 42 :fill "gray" :color "black" :height height :font :white :font-size 24})
+            :render-fn (partial text/flat-list-item {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24})
             
             :horizontal true
            ; :onScroll #(do
@@ -148,7 +148,9 @@
                              [rn/view {:style key-con-style}
                               [:> ripple {:rippleColor "#000" :style key-style
                                           :on-press #(dispatch [:candidates-index-concat (:code kk)])}
-                               [rn/view {:style {:height "100%" :width "100%"}}
+                               [rn/view {:style {:height "100%" :width "100%"
+                                                 :alignItems "center"
+                                                 :justifyContent "center"}}
                                 [text/text-inline {:width 38 :fill "black" :font :white :font-size 18} (:label kk)]]]]))]))
          [rn/view {:style {:flex 1 :flex-direction "row"
                            :alignItems "center"
@@ -162,7 +164,9 @@
                    [rn/view {:style key-con-style}
                     [:> ripple {:rippleColor "#000" :style key-style
                                 :on-press #(dispatch [:candidates-index-concat (:code kk)])}
-                     [rn/view {:style {:height "100%" :width "100%"}} 
+                     [rn/view {:style {:height "100%" :width "100%"
+                                       :alignItems "center"
+                                       :justifyContent "center"}} 
                       [text/text-inline {:width 38 :fill "black" :font :white :font-size 18} (:label kk)]]]]))
           [rn/view {:style (merge key-con-style {:flex 1.5})}
            [:> ripple {:rippleColor "#000" :style key-style
