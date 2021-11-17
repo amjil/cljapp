@@ -35,22 +35,22 @@
                     :else
                     (get size-text gap))]
     (reagent/as-element
-      [rn/view (merge {    :justifyContent "center"
-                           :alignItems "center"
-                           :marginTop 10
-                           :marginBottom 10
-                           :paddingTop 30
-                           :paddingBottom 30
-                           :paddingLeft 10
-                           :paddingRight 10
-                           :height 300
-                           :borderWidth 3
-                           :borderRadius 10}
-                    {:opacity opacity
-                     :borderColor (if (= index @selected)
-                                    "#ABC9AF" "transparent")
-                     :width "auto"})
-        [text/text-line {:width 42} (first (text/text-component {:width 0 :fill "gray" :color "black" :height 400 :font :white :font-size font-size} item))]])))
+      [rn/view (merge {:justifyContent "center"
+                       :alignItems "center"
+                       :marginTop 10
+                       :marginBottom 10
+                       :paddingTop 30
+                       :paddingBottom 30
+                       :paddingLeft 10
+                       :paddingRight 10
+                       :height 300
+                       :borderWidth 3
+                       :borderRadius 10}
+                      {:opacity opacity
+                       :borderColor (if (= index @selected)
+                                      "#ABC9AF" "transparent")
+                       :width "auto"})
+       [text/text-inline {:width 42 :fill "black" :font :white :font-size font-size} item]])))
 
 
 (defn picker []

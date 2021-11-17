@@ -62,7 +62,9 @@
 (re-frame/reg-event-fx
  :candidate-select
  (fn [{db :db} [_ value]]
-   {:db (assoc-in db [:candidates :index] "")
+   {:db (-> db
+            (assoc-in [:candidates :index] "")
+            (assoc-in [:candidates :list] []))
     :candidates-query-next value}))
 
 ;; editor events
@@ -75,13 +77,18 @@
  :editor-content-conj 
  (fn [{db :db} [_ value]]
    (let [new-value (str (get-in db [:editor :content]) value)]
-     {:db      (assoc-in db [:candidates :index] new-value)
+     {:db       (assoc-in db [:candidates :index] new-value)
       :dispatch [:set-editor-lines new-value]})))  
 
 (re-frame/reg-event-fx
  :set-editor-lines 
  (fn [{db :db} [_ value]]
    {:db (assoc-in db [:editor :lines] value)}))
+
+(re-frame/reg-event-fx
+ :set-editor-cursor
+ (fn [{db :db} [_ value]]
+   {:db (assoc-in db [:editor :cursor] value)}))
 
 (comment
   (str/join "" (drop-last "hello"))

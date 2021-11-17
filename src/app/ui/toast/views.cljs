@@ -109,12 +109,7 @@
                     :height 200
                     :alignItems "center"
                     :justifyContent "center"}}
-           [text/text-line {:width 30
-                            :fill "white"}
-            (first (text/text-component
-                     {:width 0
-                      :height 200 :font :white :font-size 18}
-                     "ᠪᠤᠷᠤᠭᠤ ᠭᠠᠷᠪᠠ"))]]))}))
+           [text/text-inline {:width 30 :fill "white" :font :white :font-size 18} "ᠪᠤᠷᠤᠭᠤ ᠭᠠᠷᠪᠠ"]]))}))
 
 (defn view []
   (let [flag (reagent/atom false)]

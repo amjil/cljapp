@@ -16,14 +16,6 @@
   (let [runs-length (apply + (map :width runs))]
     (>= (- h y) (+ space-length runs-length))))
 
-(defn into-line [runs line num y]
-  "line y is atom"
-  (for [run runs]
-    (let [width (:width run)
-          run-y (assoc run :y @y :line @num)]
-      (swap! line conj run-y)
-      (swap! y + width))))
-
 ;; var px = evt.nativeEvent.localtionX / PixelRatio.get();
 ;; if one word longer then height
 (defn is-shape-char? [c]
@@ -134,84 +126,32 @@
                    (rest run-runs)
                    (concat result-runs runs-y))))))))
 
-(defn text-area [props text-svgs]
-  (let [line-height (:line-height props)
-        half-line-h (/ line-height 2)]
-    (if (font/get-font :white)
-      [:> svg/Svg (merge {:width  "100%"
-                          :height "100%"}
-                         props)
-       (doall
-         (map-indexed
-          (fn [idx item]
-            (doall
-              (map-indexed
-               (fn [i run]
-                 (if-not (empty? (:svg run))
-                    ;; default is padding left
-                   (let [x (str (+ half-line-h (* idx line-height)))]
-                     [:> svg/Path {:d        (:svg run)
-                                   :x        x
-                                   :y        (str (:y run))
-                                   :rotation "90"
-                                   :key      (str idx "-" i)}])))
-               item)))
-          text-svgs))])))
-
-(defn text-line [props svgs]
-  [:> svg/Svg (merge {:height "100%"
-                      :fill "black"}
-                     props
-                     {:width (str (:width props))})
-
+(defn draw-text [props svgs]
+  [:> svg/Svg (merge {:fill "black"}
+                     props)
    (doall
      (map-indexed
        (fn [i run]
          (if-not (empty? (:svg run))
            [:> svg/Path {:d        (:svg run)
-                         :x        10;(/ (:width props) 2)
+                         :x        (/ (:width props) 2)
                          :y        (str (:y run))
                          :rotation "90"
                          :key      (str i)}]))
        svgs))])
 
 (defn text-inline [props text]
-  (let [[width height text-runs]
-        (doall (text-component-inline (select-keys props [:font :font-size]) text))]
-    
-    [:> svg/Svg (merge {:fill "white"
-                        :height height}
-                       props)
-
-     (doall
-      (map-indexed
-       (fn [i run]
-         (if-not (empty? (:svg run))
-           [:> svg/Path {:d        (:svg run)
-                         :x        6;(/ width 2)
-
-                         :y        (str (:y run))
-                         :rotation "90"
-                         :key      (str i)}]))
-       text-runs))]))
+  (let [[line-width height text-runs] (text-component-inline (select-keys props [:font :font-size]) text)
+        props                    (merge {:fill   "white"
+                                         :height height
+                                         :width line-width}
+                                        props)]
+    [draw-text props text-runs]))
 
 (defn flat-list-item [props svgs]
-  [touchable/touchable-opacity {}
-   [rn/view {:style {}} ;{:padding-horizontal 30}} ;:margin-vertical 10}}
-    ;; TODO if no text tag svg can't render, test later
-    ; [rn/text {} ""]
-    [text-line props svgs]]])
-
-(defn flat-list-text [props text-svgs]
-  (if (font/get-font :white)
-    [rn-list/flat-list
-     {:key-fn    identity
-      :data      text-svgs
-      ; :render-fn text-list-item
-      :render-fn (partial flat-list-item props)
-      :horizontal true
-      :onScrollBeginDrag #(js/console.log "on scroll begin >>>")
-      :onScrollEndDrag #(js/console.log "on scroll end >>>")}]))
+  [touchable/touchable-without-feedback {}
+   [rn/view {:style {}}
+    [draw-text props svgs]]])
 
 (defn cursor-location [evt line-height svgs]
   (let [ex (j/get evt :x)
@@ -261,20 +201,13 @@
     [(* line-height x) y]))
 
 
-
-;; (def inner-size 0)
-(def font (font/get-font :white))
-(def word font/mstr)
-;; (require '[cljs-bean.core :refer [bean ->clj ->js]])
-;; (def glyphs     (-> font
-;;                     (j/call :layout word)
-;;                     (j/get :glyphs)
-;;                     (->clj)))
-;; (def glyph (first glyphs))
-; (def runs (font/run :white 24 font/mstr))
 (comment
   (prn 'Hi)
   font/fonts
+  (font/space-dimention :white 24)
+  (js/console.log 
+  (j/get (font/get-font :white) :bbox))
+  (j/get (font/get-font :white) :capHeight)
   (js/console.log (:white @font/fonts))
   (is-shape-char? (first (seq font/mlongstr)))
   ;; :f

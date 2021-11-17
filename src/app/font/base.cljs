@@ -55,7 +55,7 @@
                       last)
             inner-size (font-size font size)]
         [(* inner-size (j/get glyph :advanceWidth))
-         (* inner-size (j/get glyph :advanceHeight))]))))
+         (* inner-size (j/get font :capHeight))]))))
 
 (defn run [font-name size word]
   (let [font (get-font font-name)]

@@ -54,6 +54,7 @@
             :data      text-svgs
            ; :render-fn text-list-item
             :render-fn (partial text/flat-list-item {:width 42 :fill "gray" :color "black" :height height :font :white :font-size 24})
+            
             :horizontal true
            ; :onScroll #(do
            ;              (js/console.log "on scroll >>>>"))

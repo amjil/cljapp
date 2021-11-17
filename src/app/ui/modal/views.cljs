@@ -63,9 +63,6 @@
               :key idx
               :onPress #(do (js/console.log "pressed >>>> " idx)
                             (reset! is-visible false))}
-             [text/text-line {:width 36}
-              (first (text/text-component
-                       {:width 0 :fill (if (= idx (dec (count items))) "#fa1616" "rgb(0,98,255)")
-                        :height 200 :font :white :font-size 18}
-                       (:label item)))]])
+
+             [text/text-inline {:width 36 :fill "black" :font :white :font-size 18} (:label item)]])
           items))]]))
