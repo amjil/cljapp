@@ -62,7 +62,7 @@
                  (conj runs (font/run font size (str (char first-char))))))))))
 
 (defn text-component [{:keys [height font font-size]} text]
-  (let [[space-width line-width] (font/space-dimention :white font-size)
+  (let [[space-width _] (font/space-dimention :white font-size)
         text-runs                (text-runs text font font-size)]
     (loop [lines    []
            line []
@@ -88,6 +88,7 @@
                  y
                  (rest run-runs))
 
+          ;; in current line
           (in-current-line? runs height y space-width)
           (let [item-height (apply + (map :width runs))
                 widths (map :width runs)
@@ -97,6 +98,7 @@
                    (+ y item-height)
                    (rest run-runs)))
 
+          ;; new line
           :else
           (recur (conj lines (flatten line))
                  []
@@ -142,7 +144,7 @@
 
 (defn text-inline [props text]
   (let [[line-width height text-runs] (text-component-inline (select-keys props [:font :font-size]) text)
-        props                    (merge {:fill   "white"
+        props                    (merge {:fill   "black"
                                          :height height
                                          :width line-width}
                                         props)]
@@ -184,10 +186,15 @@
         ; _ (js/console.log "xxx >>> " item-count)
         y (loop [i      0]
             ; (js/console.log "xxx111>> " i)
-            (if (= item-count i)
+            (cond
+              (empty? svgs)
+              0
+
+              (= item-count i)
               (let [item (last line)]
                 (+ (:y item) (:width item)))
 
+              :else
               (let [item (nth line i)
                     item-y (+ (:y item) (:width item))]
                 (cond
