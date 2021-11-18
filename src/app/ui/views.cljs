@@ -22,6 +22,7 @@
    ["react-native-smooth-blink-view" :default blinkview]
    ["react-native-svg" :as svg]
 
+   [app.ui.home.views :as home]
    [app.ui.profile.views :as profile]
    [app.ui.picker.views :as picker]
    [app.ui.modal.views :as modal]
@@ -97,7 +98,7 @@
                                      [ui/ion-icons {:name icon :color color :size 20}])))})))}
 
    [{:name      :home
-     :component home}
+     :component home/home}
     {:name      :book
      :component component-modal}
     {:name      :edit

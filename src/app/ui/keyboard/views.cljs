@@ -20,7 +20,9 @@
    ["react-native-advanced-ripple" :as ripple]))
 
 (defn text-editor [height text]
-  (let [[line-width text-svgs] (text/text-component {:width 0 :fill "black" :color "black" :height height :font :white :font-size 20} text)
+  (let [[line-width text-svgs] 
+        (text/text-component {:width 0 :fill "black" :color "black" :height height :font :white :font-size 20} 
+                             text)
         runs (last (last text-svgs))
         x (reagent/atom nil)
         y (reagent/atom nil)
@@ -50,12 +52,13 @@
               [:> svg/Svg {:width 32 :height 2}
                [:> svg/Rect {:x "0" :y "0" :width 32 :height 2 :fill "blue"}]]]])
           [rn-list/flat-list
-           {:key-fn    identity
+           {:key-fn    (fn [item index] (str "editor-" index))
             :data      text-svgs
            ; :render-fn text-list-item
             :render-fn (partial text/flat-list-item {:width 32 :fill "gray" :color "black" :height height :font :white :font-size 24})
             
             :horizontal true
+            :initialNumToRender 20
            ; :onScroll #(do
            ;              (js/console.log "on scroll >>>>"))
             :on-touch-start #(reset! blink-cursor? false)

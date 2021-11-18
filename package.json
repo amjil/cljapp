@@ -21,6 +21,7 @@
     "react-dom": "17.0.1",
     "react-native": "0.65.1",
     "react-native-advanced-ripple": "^1.0.0",
+    "react-native-anchor-point": "^1.0.6",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-modal": "^13.0.0",
@@ -32,6 +33,7 @@
     "react-native-smooth-picker": "^1.1.5",
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-svg": "^12.1.1",
+    "react-native-text-size": "^4.0.0-rc.1",
     "react-native-vector-icons": "^8.1.0",
     "shadow-cljs": "^2.15.9"
   },

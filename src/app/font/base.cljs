@@ -74,6 +74,7 @@
 ;a
 
 (def mstr "ᠡᠷᠬᠡ")
+(def mspecial " ᠢᠶᠡᠨ")
 (def mlongstr "ᠴᠠᠰᠤᠲᠤ ᠬᠠᠢᠷᠬᠠᠨ ᠬᠥᠪᠴᠢ ᠬᠠᠩᠭᠠᠢ ᠡᠯᠡᠰᠦᠨ ᠮᠠᠩᠬ᠎ᠠ ᠨᠢ ᠴᠠᠭ ᠊ᠤᠨ ᠤᠷᠲᠤ ᠳᠤ ᠬᠤᠪᠢᠷᠠᠭ᠎ᠠ ᠦᠭᠡᠢ ᠡᠭᠡᠯ ᠲᠥᠷᠬᠦ ᠲᠠᠢ ᠠᠭᠤᠯᠠ ᠤᠰᠤ ᠤᠷᠭᠤᠮᠠᠯ ᠠᠮᠢᠲᠠᠨ ᠪᠤᠭᠤᠷᠤᠯ ᠳᠡᠭᠡᠳᠦᠰ ᠮᠢᠨᠢ abc ")
 ;; (def mlongstr "ᠴᠠᠰᠤᠲᠤ ᠬᠠᠷᠠᠬᠠᠨ ")
 
@@ -100,32 +101,25 @@
            (->clj)))
 
   fonts
-  (time (get-font :whtie))
-  (time (get-glyphs :white mstr))
-  (time (* 100 12 13))
-  (-> (get-glyphs :white mstr)
-      last)
 
-  (time
-   (-> (get-glyphs :white mstr)
-       last
-       (j/get :path)
-       (j/call :scale 1 -1)
-       (j/call :rotate (str (* 1 (.-PI js/Math))))
-       (j/call :scale (* 0.12 (font-scale :white)))
-       (j/call :toSVG)))
-
-
-  (time
-   (map #(width :white 24 %) (get-glyphs :white mstr)))
   (map #(svg % :white 24) (get-glyphs :white mstr))
   (map #(svg % :white 24) (get-glyphs :white mlongstr))
+  (js/console.log 
+  (j/call (get-font :white) :layout mspecial "mong"))
+  (js/console.log 
+  (aget (.-glyphs (j/call (get-font :white) :layout mspecial)) 1))
+  (.-features (j/call (get-font :white) :glyphsForString mspecial))
+  (js/console.log 
+(aget (j/call (get-font :white) :glyphsForString mspecial) 1))
+(-> (aget (j/call (get-font :white) :glyphsForString mspecial) 0)
+    (.-codePoints)
+    (aget 0))
+(js->clj (.-GSUB (get-font :white)))
+(.keys js/Object (.-lookupList (.-GSUB (get-font :white))))
+(j/get (.-GSUB (get-font :white)) :lookupList)
+(js/console.log  (.-items (.-lookupList (.-GSUB (get-font :white)))))
+(js->clj (.-items (.-lookupList (.-GSUB (get-font :white)))))
 
-  mlongstr
-  mstr
-  (require '[clojure.string :as str])
-  (time
-   (->>
-    (str/split mlongstr #" ")
-    (map #(get-glyphs :white %))
-    (map (fn [x] (map #(width :white 24 %) x))))))
+  
+  
+  )
