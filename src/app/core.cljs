@@ -5,7 +5,7 @@
    [app.ui.views :as views]
    [honey.sql :as hsql]
    ["react-native-sqlite-storage" :as sqlite]
-   ["react-native-text-size" :as rnsize]
+   ["react-native-measure-text-chars" :refer [measure]]
    app.events
    app.subs))
 

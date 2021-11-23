@@ -6152,6 +6152,11 @@ react-native-gesture-handler@^1.10.3:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-measure-text-chars@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-measure-text-chars/-/react-native-measure-text-chars-0.1.2.tgz#12ea59b995d18d085daa51984a071cacc49be6f5"
+  integrity sha512-18l3QnIhvlj5m7R0gRwShu3Shbj+KjqdsIGDueciuqSq1T1pF6wtBcfkujTVpAHQsvIEAIcFYl+WAfb8xYzsQw==
+
 react-native-modal@^13.0.0:
   version "13.0.0"
   resolved "https://registry.nlark.com/react-native-modal/download/react-native-modal-13.0.0.tgz#b7117400cae8548e713eed760077dee44f78628e"
@@ -6213,11 +6218,6 @@ react-native-svg@^12.1.1:
   dependencies:
     css-select "^2.1.0"
     css-tree "^1.0.0-alpha.39"
-
-react-native-text-size@^4.0.0-rc.1:
-  version "4.0.0-rc.1"
-  resolved "https://registry.npm.taobao.org/react-native-text-size/download/react-native-text-size-4.0.0-rc.1.tgz#1e048d345dd6a5a8e1269e0585c1a5948c478da5"
-  integrity sha1-HgSNNF3WpajhJp4FhcGllIxHjaU=
 
 react-native-vector-icons@^8.1.0:
   version "8.1.0"
