@@ -5,40 +5,66 @@
    [cljs-bean.core :as bean]
    [applied-science.js-interop :as j]
    [steroid.rn.core :as rn]
+   [steroid.rn.components.list :as rnlist]
+   [steroid.rn.components.touchable :as touchable]
    [promesa.core :as p]
    [re-frame.core :refer [dispatch subscribe]]
    ["react-native-measure-text-chars" :as rntext]))
 
 (defn text-view [props]
-  (let [info (atom nil)
-        h (reagent/atom nil)]
+  (let [info (reagent/atom nil)
+        h (reagent/atom nil)
+        data (reagent/atom nil)]
 
     (fn []
-      [rn/view {:style {:width "100%"
-                        :flex 2}
+      [rn/view {:style {;:width "100%"
+                        :flex-direction "row"
+                        :flex 1}
 
                 :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
 
                               (reset! h height)
 
                               (p/then
-                               (rntext/measure (bean/->js (assoc props :height height)))
+                               (rntext/measure (bean/->js (assoc props :width height)))
                                (fn [result]
-                                 (reset! info (bean/->clj result)))))}
+                                 (let [data (bean/->clj result)]
+                                   (js/console.log (:lineCount data))
+                                   (reset! info data)))))}
+
 
        (when (and @h @info)
+          (js/console.log "inner count >> " (:lineCount @info))
+
          (let [line-width (max (:line-width props) (/ (:height @info) (:lineCount @info)))
                offset (- (/ @h 2) (/ line-width 2))
                text (:text props)]
-           (for [x (:lineInfo @info)]
-             ^{:key (gensym "key-")}
-             [rn/view {:style {:height @h :width line-width :backgroundColor "red"}}
-              [rn/text {:style {:width @h :height line-width
-                                :backgroundColor "yellow"
-                                :transform [{:rotate "90deg"}
-                                            {:translateX offset}
-                                            {:translateY offset}]}}
-               (subs text (:start x) (:end x))]])))])))
+              ;
+           [rnlist/flat-list
+            {:key-fn    (fn [item index] (str "text-" index))
+             :data    (map #(subs text (:start %) (:end %)) (:lineInfo @info))
+             :render-fn
+             (fn [x]
+               [touchable/touchable-without-feedback {}
+                 [rn/view {:style {:height @h :width line-width :backgroundColor "red"}}
+                   [rn/text {:style {:width @h :height line-width
+                                     :backgroundColor "yellow"
+                                     :transform [{:rotate "90deg"}
+                                                 {:translateX offset}
+                                                 {:translateY offset}]}}
+                    x]]])
+             :horizontal true
+             :initialNumToRender 20}]))])))
+           ; (doall
+           ;   (for [x (:lineInfo @info)]
+           ;     ^{:key (gensym "key-")}
+           ;     [rn/view {:style {:height @h :width line-width :backgroundColor "red"}}
+           ;      [rn/text {:style {:width @h :height line-width
+           ;                        :backgroundColor "yellow"
+           ;                        :transform [{:rotate "90deg"}
+           ;                                    {:translateX offset}
+           ;                                    {:translateY offset}]}}
+           ;       (subs text (:start x) (:end x))]]))))])))
 
 (defn home []
   (let [h (reagent/atom nil)
@@ -46,7 +72,7 @@
         width 20
         offset (- (/ height 2) (/ width 2))]
     (fn []
-      [ui/safe-area-consumer
+      ; [ui/safe-area-consumer
       ;; OK this style
       ;;  [rn/view {:style {}}
       ;;        [rn/text {:style {:width height :height width
@@ -84,8 +110,8 @@
       ;;                                      {:translateY offset}]}}
       ;;          "hello world!"]
       ;;        ]))]
-      [text-view {:text (apply str (repeat 1 "But it does have drawbacks: this approach will block the thread until all of the chained callbacks are executed. For small chains this is not a problem. However, if your chain has a lot of functions and requires a lot of computation time, this might cause unexpected latency. It may block other threads in the thread pool from doing other, maybe more important, tasks."))}]
-       ])))
+       [text-view {:text (apply str (repeat 100 "But it does have drawbacks: this approach will block the thread until all of the chained callbacks are executed. For small chains this is not a problem. However, if your chain has a lot of functions and requires a lot of computation time, this might cause unexpected latency. It may block other threads in the thread pool from doing other, maybe more important, tasks."))}])))
+
 
 
 
@@ -105,7 +131,7 @@
   (p/then
    (rnmeasure/measure (bean/->js {:text "hello world!"}))
    #(js/console.log "aaa " (def aa (bean/->clj %))))
-   aa
+  aa
 
   ;; (p/let [result (j/call rnsize :measure (bean/->js {:text "hello world!"}))]
   (.then (j/call rnsize :measure (bean/->js {:text "hello world!"})) #(js/console.log "aaa " %))
@@ -118,5 +144,4 @@
     "hello world!"})
 
 
-  (prn 'Hi)
-  )
+  (prn 'Hi))

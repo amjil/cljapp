@@ -6152,10 +6152,10 @@ react-native-gesture-handler@^1.10.3:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-measure-text-chars@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-measure-text-chars/-/react-native-measure-text-chars-0.1.2.tgz#12ea59b995d18d085daa51984a071cacc49be6f5"
-  integrity sha512-18l3QnIhvlj5m7R0gRwShu3Shbj+KjqdsIGDueciuqSq1T1pF6wtBcfkujTVpAHQsvIEAIcFYl+WAfb8xYzsQw==
+react-native-measure-text-chars@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/react-native-measure-text-chars/-/react-native-measure-text-chars-0.1.4.tgz#b99aec015c5a0b0fa7b929922621d9bc9a0cce3d"
+  integrity sha512-nYVueBKDzGzH89LaGFX0kCHgqJJY8sxqfKf/Ih1qun1Gp++nP041P15ITuhqV304MaaQGDjnLz3W9yl/sPpl4g==
 
 react-native-modal@^13.0.0:
   version "13.0.0"

@@ -212,8 +212,8 @@
   (prn 'Hi)
   font/fonts
   (font/space-dimention :white 24)
-  (js/console.log 
-  (j/get (font/get-font :white) :bbox))
+  (js/console.log
+   (j/get (font/get-font :white) :bbox))
   (j/get (font/get-font :white) :capHeight)
   (js/console.log (:white @font/fonts))
   (is-shape-char? (first (seq font/mlongstr)))
