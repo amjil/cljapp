@@ -27,7 +27,8 @@
    [app.ui.picker.views :as picker]
    [app.ui.modal.views :as modal]
    [app.ui.keyboard.views :as keyboard]
-   [app.ui.toast.views :as toast]))
+   [app.ui.toast.views :as toast]
+   [app.ui.drawer.index :as drawer]))
 
 
 (when platform/android?
@@ -110,13 +111,20 @@
   [safe-area/safe-area-provider
    [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
      {:on-ready #(re-frame/dispatch [:initialise-app])}     ;; when navigation initialized and mounted initialize the app
-     [stack/stack {}
-      [{:name      :main
-        :component tabs
-        :options {:title ""}}
-       {:name       :keyboard
-        :component  keyboard/keyboard-view
-        :options    {:title ""}}
-       {:name       :toast
-        :component  toast/view
-        :options    {:title ""}}]])]])
+     ; [stack/stack {}
+     ;  [{:name      :main
+     ;    :component tabs
+     ;    :options {:title ""}}
+     ;   {:name       :keyboard
+     ;    :component  keyboard/keyboard-view
+     ;    :options    {:title ""}}
+     ;   {:name       :toast
+     ;    :component  toast/view
+     ;    :options    {:title ""}}]]
+     [drawer/drawer {:screenOptions false
+                     :drawerPosition :left}
+       [{:name :main
+         :component
+         (fn []
+           [ui/safe-area-consumer
+            [rn/text "hello world!"]])}]])]])

@@ -1215,6 +1215,15 @@
     query-string "^7.0.0"
     react-is "^16.13.0"
 
+"@react-navigation/drawer@^6.1.8":
+  version "6.1.8"
+  resolved "https://registry.yarnpkg.com/@react-navigation/drawer/-/drawer-6.1.8.tgz#82e2a06d17166a82dd18233678ebf63ed523aaab"
+  integrity sha512-kYE2EO5dianUuUcaYmAlYBcgtmvGm2fxWTQ5sn103cgPNidp4KBUR9ClkhF+btfRaHKq+8Ul5M6qvL0mBAv/Lg==
+  dependencies:
+    "@react-navigation/elements" "^1.2.1"
+    color "^3.1.3"
+    warn-once "^0.1.0"
+
 "@react-navigation/elements@^1.2.1":
   version "1.2.1"
   resolved "https://registry.npmmirror.com/@react-navigation/elements/download/@react-navigation/elements-1.2.1.tgz#86f19781c6f34a5c9dd25dca99915e0306f477d1"
@@ -6152,10 +6161,10 @@ react-native-gesture-handler@^1.10.3:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-measure-text-chars@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/react-native-measure-text-chars/-/react-native-measure-text-chars-0.1.4.tgz#b99aec015c5a0b0fa7b929922621d9bc9a0cce3d"
-  integrity sha512-nYVueBKDzGzH89LaGFX0kCHgqJJY8sxqfKf/Ih1qun1Gp++nP041P15ITuhqV304MaaQGDjnLz3W9yl/sPpl4g==
+react-native-measure-text-chars@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-measure-text-chars/-/react-native-measure-text-chars-0.1.5.tgz#5571bf1ea800ff1dbd851aced583292d8293899a"
+  integrity sha512-Th/7g46U60j9FC5CGODHFWDOb29WEbosMrQygtPA4gCk8j88+nR2oRCBiR8z2s68JY/bFL2KuCa//t2pAsIeww==
 
 react-native-modal@^13.0.0:
   version "13.0.0"

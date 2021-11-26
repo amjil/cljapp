@@ -14,6 +14,7 @@
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
     "@react-navigation/bottom-tabs": "^6.0.9",
+    "@react-navigation/drawer": "^6.1.8",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/stack": "^6.0.11",
     "bluebird": "^3.7.2",
@@ -23,7 +24,7 @@
     "react-native-advanced-ripple": "^1.0.0",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
-    "react-native-measure-text-chars": "^0.1.4",
+    "react-native-measure-text-chars": "^0.1.5",
     "react-native-modal": "^13.0.0",
     "react-native-reanimated": "^2.2.2",
     "react-native-redash": "^16.2.2",
