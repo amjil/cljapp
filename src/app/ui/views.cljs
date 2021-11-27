@@ -121,10 +121,50 @@
      ;   {:name       :toast
      ;    :component  toast/view
      ;    :options    {:title ""}}]]
-     [drawer/drawer {:screenOptions false
-                     :drawerPosition :left}
+     [drawer/drawer {:screenOptions
+                     {
+                      :drawerPosition :left
+                      :swipeEdgeWidth 10
+                      :drawerStyle {:width 300}
+                      :overlayColor "00FFFFF"
+                      :drawerType :front}
+                      ; :overlayStyle {:opacity 0}};:backgroundColor :whitesmoke}}
+                      ; :header (fn [navigation route options] nil)
+                      ; :headerShown false}
+                     :drawerContent
+                     ; (fn [props]
+                     ;   (reagent/as-element
+                     ;    [drawer/drawer-content-scroll-view {}
+                     ;      [rn/text "hello hello"]]))}
+                     ;
+                     (fn [props]
+                       (reagent/as-element
+                         [rnn/navigation-container {:independent true}
+                          [drawer/drawer {:screenOptions
+                                          {
+                                           :drawerPosition :left
+                                           ; :swipeEdgeWidth 10
+                                           ; :overlayColor :transparent
+                                           ; :overlayStyle {:opacity 0 :backgroundColor "transparent"}
+                                           :overlayColor "00FFFFF"
+                                           :drawerType :slide
+                                           :drawerStyle {:width 200}
+                                                         ; :backgroundColor "transparent"}
+                                           :headerShown false}
+                                          :drawerContent
+                                          (fn [props]
+                                            (reagent/as-element
+                                             [drawer/drawer-content-scroll-view {}
+                                               [rn/text "hello Hi"]]))}
+                           [{:name :front
+                             :component
+                             (fn []
+                               [ui/safe-area-consumer
+                                [rn/text "hello world!"]])}]]]))}
+
        [{:name :main
          :component
-         (fn []
-           [ui/safe-area-consumer
-            [rn/text "hello world!"]])}]])]])
+         home/home}]])]])
+         ; (fn []
+         ;   [ui/safe-area-consumer
+         ;    [rn/text "hello world!"]])}]])]])
