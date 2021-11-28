@@ -2,6 +2,7 @@
   (:require
    [reagent.core :as reagent]
    [app.ui.components :as ui]
+   [app.font.base :as font]
    [cljs-bean.core :as bean]
    [applied-science.js-interop :as j]
    [steroid.rn.core :as rn]
@@ -46,6 +47,10 @@
                  [rn/view {:style {:height @h :width line-width :backgroundColor "red"}}
                    [rn/text {:style {:width @h :height line-width
                                      :backgroundColor "yellow"
+                                     ; :fontFamily "NotoSansMongolian-Regular"
+                                     ; :fontFamily "MongolianWhite"
+                                     ; :fontFamily "Menk Qagan Tig"
+                                     :fontSize 18
                                      :transform [{:rotate "90deg"}
                                                  {:translateX offset}
                                                  {:translateY offset}]}}
@@ -60,7 +65,7 @@
         width 20
         offset (- (/ height 2) (/ width 2))]
     (fn []
-      ; [ui/safe-area-consumer
+      [ui/safe-area-consumer
       ;; OK this style
       ;;  [rn/view {:style {}}
       ;;        [rn/text {:style {:width height :height width
@@ -98,7 +103,13 @@
       ;;                                      {:translateY offset}]}}
       ;;          "hello world!"]
       ;;        ]))]
-       [text-view {:text (apply str (repeat 20 "But it does have drawbacks: this approach will block the thread until all of the chained callbacks are executed. For small chains this is not a problem. However, if your chain has a lot of functions and requires a lot of computation time, this might cause unexpected latency. It may block other threads in the thread pool from doing other, maybe more important, tasks."))}])))
+       ; [text-view {:text (apply str (repeat 20 "But it does have drawbacks: this approach will block the thread until all of the chained callbacks are executed. For small chains this is not a problem. However, if your chain has a lot of functions and requires a lot of computation time, this might cause unexpected latency. It may block other threads in the thread pool from doing other, maybe more important, tasks."))}])))
+       [text-view {
+                   ; :fontFamily "NotoSansMongolian-Regular"
+                   ; :fontFamily "MongolianWhite"
+                   ; :fontFamily "Menk Qagan Tig"
+                   :fontSize 18
+                   :text font/mlongstr}]])))
 
 
 
