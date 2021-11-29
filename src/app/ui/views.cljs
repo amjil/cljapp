@@ -111,14 +111,14 @@
   [safe-area/safe-area-provider
    [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
      {:on-ready #(re-frame/dispatch [:initialise-app])}     ;; when navigation initialized and mounted initialize the app
-     ; [stack/stack {}
-     ;  [{:name      :main
-     ;    :component tabs
-     ;    :options {:title ""}}
-     ;   {:name       :keyboard
-     ;    :component  keyboard/keyboard-view
-     ;    :options    {:title ""}}
-     ;   {:name       :toast
-     ;    :component  toast/view
-     ;    :options    {:title ""}}]]
-     [drawer/view])]])
+     [stack/stack {}
+      [{:name      :main
+        :component tabs
+        :options {:title ""}}
+       {:name       :keyboard
+        :component  keyboard/keyboard-view
+        :options    {:title ""}}
+       {:name       :toast
+        :component  toast/view
+        :options    {:title ""}}]])]])
+     ; [drawer/view])]])

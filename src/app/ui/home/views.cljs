@@ -10,54 +10,8 @@
    [steroid.rn.components.touchable :as touchable]
    [promesa.core :as p]
    [re-frame.core :refer [dispatch subscribe]]
-   ["react-native-measure-text-chars" :as rntext]))
+   [app.ui.text.index :as text]))
 
-(defn text-view [props]
-  (let [info (reagent/atom nil)
-        h (reagent/atom nil)
-        flat-data (reagent/atom nil)]
-
-    (fn []
-      [rn/view {:style {;:width "100%"
-                        :flex-direction "row"
-                        :flex 1}
-
-                :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
-
-                              (reset! h height)
-
-                              (p/then
-                               (rntext/measure (bean/->js (assoc props :width height)))
-                               (fn [result]
-                                 (let [data (bean/->clj result)
-                                       text (:text props)]
-                                   (reset! flat-data (map (fn [x] (subs text (:start x) (:end x))) (:lineInfo data)))
-                                   (reset! info data)))))}
-
-
-       (when (and @h @info)
-         (let [line-width (max (:line-width props) (/ (:height @info) (:lineCount @info)))
-               offset (- (/ @h 2) (/ line-width 2))]
-           [rnlist/flat-list
-            {:key-fn    (fn [_ index] (str "text-" index))
-             :data    @flat-data
-             :render-fn
-             (fn [x]
-               [touchable/touchable-without-feedback {}
-                 [rn/view {:style {:height @h :width line-width :backgroundColor "red"}}
-                   [rn/text {:style {:width @h :height line-width
-                                     :backgroundColor "yellow"
-                                     ; :fontFamily "NotoSansMongolian-Regular"
-                                     ; :fontFamily "MongolianWhite"
-                                     ; :fontFamily "Menk Qagan Tig"
-                                     :fontSize 18
-                                     :transform [{:rotate "90deg"}
-                                                 {:translateX offset}
-                                                 {:translateY offset}]}}
-                    x]]])
-             :horizontal true
-             :removeClippedSubviews true
-             :initialNumToRender 20}]))])))
 
 (defn home []
   (let [h (reagent/atom nil)
@@ -104,12 +58,13 @@
       ;;          "hello world!"]
       ;;        ]))]
        ; [text-view {:text (apply str (repeat 20 "But it does have drawbacks: this approach will block the thread until all of the chained callbacks are executed. For small chains this is not a problem. However, if your chain has a lot of functions and requires a lot of computation time, this might cause unexpected latency. It may block other threads in the thread pool from doing other, maybe more important, tasks."))}])))
-       [text-view {
-                   ; :fontFamily "NotoSansMongolian-Regular"
-                   ; :fontFamily "MongolianWhite"
-                   ; :fontFamily "Menk Qagan Tig"
-                   :fontSize 18
-                   :text font/mlongstr}]])))
+       [rn/text "hello world!"]])))
+       ; [text/text-view {
+       ;                  ; :fontFamily "NotoSansMongolian-Regular"
+       ;                  ; :fontFamily "MongolianWhite"
+       ;                  ; :fontFamily "Menk Qagan Tig"
+       ;                  :fontSize 18
+       ;                  :text font/mlongstr}]])))
 
 
 
