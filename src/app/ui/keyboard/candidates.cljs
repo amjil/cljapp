@@ -8,7 +8,8 @@
    [steroid.rn.core :as rn]
    [steroid.rn.components.touchable :as touchable]
    [app.ui.components :as ui]
-   [app.ui.text.index :as text]
+   [app.text.index :as text]
+   ; [app.ui.text.index :as text]
    [steroid.rn.components.list :as rn-list]
    [steroid.rn.components.ui :as rn-ui]))
 
@@ -55,7 +56,11 @@
           :render-fn (fn [x]
                        [touchable/touchable-opacity {:on-press #(dispatch [:candidate-select x])}
                         [rn/view {:style {:height "100%"}}
-                         [text/text-view {:font-family "MongolianWhite" :text (:char_word x) :font-size 12}]]])
+                         ; [text/text-view {:text (:char_word x)}]]])
+                         [text/text-inline {:width 30
+                                            :fill "black"
+                                            :font :white
+                                            :font-size 18} (:char_word x)]]])
           :initialNumToRender 7
           :showsHorizontalScrollIndicator false
           :horizontal true}]]])))
