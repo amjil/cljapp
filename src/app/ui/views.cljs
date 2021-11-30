@@ -28,7 +28,8 @@
    [app.ui.modal.views :as modal]
    [app.ui.keyboard.views :as keyboard]
    [app.ui.toast.views :as toast]
-   [app.ui.drawer.index :as drawer]))
+   [app.ui.drawer.index :as drawer]
+   [app.ui.nativebase :as nativebase]))
 
 
 (when platform/android?
@@ -111,14 +112,22 @@
   [safe-area/safe-area-provider
    [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
      {:on-ready #(re-frame/dispatch [:initialise-app])}     ;; when navigation initialized and mounted initialize the app
-     [stack/stack {}
-      [{:name      :main
-        :component tabs
-        :options {:title ""}}
-       {:name       :keyboard
-        :component  keyboard/keyboard-view
-        :options    {:title ""}}
-       {:name       :toast
-        :component  toast/view
-        :options    {:title ""}}]])]])
-     ; [drawer/view])]])
+     [nativebase/nativebase-provider {}
+     ; [stack/stack {}
+     ;  [{:name      :main
+     ;    :component tabs
+     ;    :options {:title ""}}
+     ;   {:name       :keyboard
+     ;    :component  keyboard/keyboard-view
+     ;    :options    {:title ""}}
+     ;   {:name       :toast
+     ;    :component  toast/view
+     ;    :options    {:title ""}}]])]])
+      [nativebase/center {:flex 1 :px 3}
+       [nativebase/box {:bg "teal.400"
+                        :p "12"
+                        :rounded "lg"
+                        :_text {:fontSize "md" :color :white}
+                        :safeArea true}
+         "This is a Box with Linear Gradient"]]])]])
+      ; [drawer/view]])]])
