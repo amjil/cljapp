@@ -32,4 +32,3 @@
                                "This is a Box with Linear Gradient"
                               :height "auto"}
                              (bean/->clj props))]]]))
-                                   ; (bean/->clj (j/get props :_text)))]]]))
