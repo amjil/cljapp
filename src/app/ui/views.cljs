@@ -21,6 +21,7 @@
 
    ["react-native-smooth-blink-view" :default blinkview]
    ["react-native-svg" :as svg]
+   ["react-native-linear-gradient" :default linear-gradient]
 
    [app.ui.home.views :as home]
    [app.ui.profile.views :as profile]
@@ -112,7 +113,7 @@
   [safe-area/safe-area-provider
    [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
      {:on-ready #(re-frame/dispatch [:initialise-app])}     ;; when navigation initialized and mounted initialize the app
-     [nativebase/nativebase-provider {}
+     [nativebase/nativebase-provider {:config {:dependencies {"linear-gradient" linear-gradient}}}
      ; [stack/stack {}
      ;  [{:name      :main
      ;    :component tabs
@@ -123,11 +124,5 @@
      ;   {:name       :toast
      ;    :component  toast/view
      ;    :options    {:title ""}}]])]])
-      [nativebase/center {:flex 1 :px 3}
-       [nativebase/box {:bg "teal.400"
-                        :p "12"
-                        :rounded "lg"
-                        :_text {:fontSize "md" :color :white}
-                        :safeArea true}
-         "This is a Box with Linear Gradient"]]])]])
+      [:f> nativebase/view]])]])
       ; [drawer/view]])]])

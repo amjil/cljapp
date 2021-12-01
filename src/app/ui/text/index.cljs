@@ -43,28 +43,28 @@
                                           {:translateY (:offset props)}]})}
            x]]])}])
 
-(defn text-view [props childrens]
+(defn text-view [props]
   (let [info (reagent/atom nil)
-        h (reagent/atom nil)
+        h (reagent/atom 0)
         flat-data (reagent/atom nil)]
 
     (fn []
-      [rn/view {:style {;:width "100%"
-                        :flex-direction "row"
-                        :flex 1}
-
+      [rn/view {:style {:height @h}
                 :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
 
-                              (reset! h height)
+                              ; (reset! h height)
 
-                              (p/then
-                               (rntext/measure (bean/->js (assoc props :width height)))
-                               (fn [result]
-                                 (let [data (bean/->clj result)
-                                       text (:text props)]
-                                   (reset! flat-data (map (fn [x] (subs text (:start x) (:end x))) (:lineInfo data)))
-                                   (reset! info data)))))}
-
+                              (if-not @info
+                                (p/then
+                                 (rntext/measure (bean/->js (assoc props :width height)))
+                                 (fn [result]
+                                   (let [data (bean/->clj result)
+                                         text (:text props)]
+                                     (reset! flat-data (map (fn [x] (subs text (:start x) (:end x))) (:lineInfo data)))
+                                     (reset! info data)
+                                     (reset! h (if (= "auto" (:height props))
+                                                 (:width data)
+                                                 height)))))))}
 
        (when (and @h @info)
          (let [line-width (max (:line-width props) (/ (:height @info) (:lineCount @info)))
