@@ -9,15 +9,19 @@
    ["native-base" :refer [NativeBaseProvider
                           Center
                           Box
-                          useStyledSystemPropsResolver]]))
+                          Button
+                          useStyledSystemPropsResolver
+                          useToast]]))
 
 (def nativebase-provider (reagent/adapt-react-class NativeBaseProvider))
 
 (def box (reagent/adapt-react-class Box))
 
+(def button (reagent/adapt-react-class Button))
+
 (def center (reagent/adapt-react-class Center))
 
-(defn view []
+(defn view2 []
   (let [text-props {:fontSize "md" :color :white}
         [props _] (useStyledSystemPropsResolver (bean/->js text-props))]
     [center {:flex 1 :px 3 :safeArea true}
@@ -33,3 +37,13 @@
                               :height "auto"}
                              (bean/->clj props))]]]))
                                    ; (bean/->clj (j/get props :_text)))]]]))
+
+(defn view []
+  (let [text-props {:fontSize "md" :color :white}
+        [props _] (useStyledSystemPropsResolver (bean/->js text-props))
+        toast (useToast)]
+    (js/console.log "props = " (bean/->js props))
+    [center {:flex 1 :px 3 :safeArea true}
+     [button {:onPress (fn [] (j/call toast :show (bean/->js {:render (fn [] (reagent/as-element [box {:bg "emerald.500" :px "2" :py "1" :rounded "sm" :mb 5}
+                                                                                                      "Hello! Have a nice day"]))})))}
+       "Custom Toast"]]))
