@@ -7097,10 +7097,15 @@ react-native-gesture-handler@^1.10.3:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-measure-text-chars@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/react-native-measure-text-chars/-/react-native-measure-text-chars-0.1.5.tgz#5571bf1ea800ff1dbd851aced583292d8293899a"
-  integrity sha512-Th/7g46U60j9FC5CGODHFWDOb29WEbosMrQygtPA4gCk8j88+nR2oRCBiR8z2s68JY/bFL2KuCa//t2pAsIeww==
+react-native-linear-gradient@^2.5.6:
+  version "2.5.6"
+  resolved "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
+  integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
+
+react-native-measure-text-chars@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.npmjs.org/react-native-measure-text-chars/-/react-native-measure-text-chars-0.1.8.tgz#024f0130f745270b70a00274c0a97427440bba4d"
+  integrity sha512-X8dy65dnHQ8Id986RYuLFXjMDCGAPcupN/mKtYjU1b35bZdPJ8slS4VJr79VQFnEy6vQpWJCv9esBzSSNSFOCw==
 
 react-native-modal@^13.0.0:
   version "13.0.0"

@@ -36,7 +36,20 @@
                                "This is a Box with Linear Gradient"
                               :height "auto"}
                              (bean/->clj props))]]]))
-                                   ; (bean/->clj (j/get props :_text)))]]]))
+
+(defn toast-render [props text]
+  (bean/->js
+    {:render
+     (fn []
+       (reagent/as-element
+         [box {:bg "emerald.500" :px "2" :py "1" :rounded "sm" :mb 5}
+          [text/text-view (merge {:text
+                                  text
+                                  :height "auto"}
+                                (bean/->clj props))]]))
+     :placement :bottom-left
+     :flexDirection "row"}))
+
 
 (defn view []
   (let [text-props {:fontSize "md" :color :white}
@@ -44,6 +57,9 @@
         toast (useToast)]
     (js/console.log "props = " (bean/->js props))
     [center {:flex 1 :px 3 :safeArea true}
-     [button {:onPress (fn [] (j/call toast :show (bean/->js {:render (fn [] (reagent/as-element [box {:bg "emerald.500" :px "2" :py "1" :rounded "sm" :mb 5}
-                                                                                                      "Hello! Have a nice day"]))})))}
-       "Custom Toast"]]))
+     [button
+      {:onPress (fn [] (j/call toast
+                         :show (toast-render props "Hello! Have a nice day")))}
+
+
+      "Custom Toast"]]))

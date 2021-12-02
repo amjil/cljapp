@@ -49,22 +49,35 @@
         flat-data (reagent/atom nil)]
 
     (fn []
-      [rn/view {:style {:height @h}
+      [rn/view {:style {:height (cond
+                                  (= "auto" (:height props))
+                                  (if @h @h 0)
+
+                                  :else
+                                  "100%")}
+
+
                 :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
 
                               ; (reset! h height)
 
                               (if-not @info
-                                (p/then
-                                 (rntext/measure (bean/->js (assoc props :width height)))
-                                 (fn [result]
-                                   (let [data (bean/->clj result)
-                                         text (:text props)]
-                                     (reset! flat-data (map (fn [x] (subs text (:start x) (:end x))) (:lineInfo data)))
-                                     (reset! info data)
-                                     (reset! h (if (= "auto" (:height props))
-                                                 (:width data)
-                                                 height)))))))}
+                                (let [props (if (= "auto" (:height props))
+                                              props
+                                              (assoc props :width height))]
+                                  (p/then
+                                   (rntext/measure (bean/->js props))
+                                   (fn [result]
+                                     (let [data (bean/->clj result)
+                                           text (:text props)]
+                                       (js/console.log "props = " (bean/->js props))
+                                       (js/console.log "result = " result)
+                                       (reset! flat-data (map (fn [x] (subs text (:start x) (:end x))) (:lineInfo data)))
+                                       (reset! info data)
+                                       (reset! h (if (= "auto" (:height props))
+                                                   (:width data)
+                                                   height))
+                                       (js/console.log "@h = " @h)))))))}
 
        (when (and @h @info)
          (let [line-width (max (:line-width props) (/ (:height @info) (:lineCount @info)))
