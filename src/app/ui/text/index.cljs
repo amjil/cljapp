@@ -70,14 +70,11 @@
                                    (fn [result]
                                      (let [data (bean/->clj result)
                                            text (:text props)]
-                                       (js/console.log "props = " (bean/->js props))
-                                       (js/console.log "result = " result)
                                        (reset! flat-data (map (fn [x] (subs text (:start x) (:end x))) (:lineInfo data)))
                                        (reset! info data)
                                        (reset! h (if (= "auto" (:height props))
                                                    (:width data)
-                                                   height))
-                                       (js/console.log "@h = " @h)))))))}
+                                                   height))))))))}
 
        (when (and @h @info)
          (let [line-width (max (:line-width props) (/ (:height @info) (:lineCount @info)))
