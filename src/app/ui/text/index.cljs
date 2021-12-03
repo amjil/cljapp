@@ -53,6 +53,9 @@
                                   (= "auto" (:height props))
                                   (if @h @h 0)
 
+                                  (number? (:height props))
+                                  (:height props)
+
                                   :else
                                   "100%")}
 
