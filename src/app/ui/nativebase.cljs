@@ -11,18 +11,29 @@
                           Center
                           Container
                           Box
+                          Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer
                           Heading
                           Text
-                          Button
+                          Button Button.Group
                           Pressable
+                          CheckIcon
+                          Select Select.Item
+                          Actionsheet Actionsheet.Content Actionsheet.Item
+
                           Spacer
+                          Divider
                           HStack
                           VStack
                           ZStack
                           Flex
+                          ScrollView
+
                           useStyledSystemPropsResolver
                           useThemeProps
-                          useToast]]))
+                          useToast
+                          useDisclose]]
+   ["react" :as react]))
+
 
 (def nativebase-provider (reagent/adapt-react-class NativeBaseProvider))
 
@@ -35,6 +46,22 @@
 (def text (reagent/adapt-react-class Text))
 
 (def button (reagent/adapt-react-class Button))
+(def button-group (reagent/adapt-react-class Button.Group))
+(def select (reagent/adapt-react-class Select))
+(def select-item (reagent/adapt-react-class Select.Item))
+; Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer))
+(def modal (reagent/adapt-react-class Modal))
+(def modal-content (reagent/adapt-react-class Modal.Content))
+(def modal-close-button (reagent/adapt-react-class Modal.CloseButton))
+(def modal-header (reagent/adapt-react-class Modal.Header))
+(def modal-body (reagent/adapt-react-class Modal.Body))
+(def modal-footer (reagent/adapt-react-class Modal.Footer))
+
+; Actionsheet Actionsheet.Content Actionsheet.Item
+(def actionsheet (reagent/adapt-react-class Actionsheet))
+(def actionsheet-content (reagent/adapt-react-class Actionsheet.Content))
+(def actionsheet-item (reagent/adapt-react-class Actionsheet.Item))
+(def checkicon (reagent/adapt-react-class CheckIcon))
 
 (def spacer (reagent/adapt-react-class Spacer))
 
@@ -45,10 +72,18 @@
 (def hstack (reagent/adapt-react-class HStack))
 (def vstack (reagent/adapt-react-class VStack))
 (def zstack (reagent/adapt-react-class ZStack))
+(def divider (reagent/adapt-react-class Divider))
+(def scroll-view (reagent/adapt-react-class ScrollView))
 
 (def center (reagent/adapt-react-class Center))
 
-(defn view2 []
+(defn text-view [props text]
+  (let [[props _] (useStyledSystemPropsResolver (bean/->js props))]
+    [text/text-view (merge {:text text}
+                            ; :height "auto"}
+                         (bean/->clj props))]))
+
+(defn gradient-view []
   (let [text-props {:fontSize "md" :color :white}
         [props _] (useStyledSystemPropsResolver (bean/->js text-props))]
     [center {:flex 1 :px 3 :safeArea true}
@@ -76,6 +111,7 @@
                                 (bean/->clj props))]]))
      :placement :bottom-left}))
 
+; (defn view []
 (defn toast-view []
   (let [text-props {:fontSize "md" :color :white}
         [props _] (useStyledSystemPropsResolver (bean/->js text-props))
@@ -89,10 +125,10 @@
                            :show (toast-render props "ᠠᠰᠠᠭᠤᠳᠠᠯ ᠲᠠᠢ ᠠᠩᠬᠠᠷ")))}
 
       [box {:bg "emerald.500" :p "2" :rounded "sm"}
-       ; [text/text-view (merge {:text "ᠰᠢᠯᠭᠠᠵᠤ ᠦᠵᠡᠶ᠎ᠡ"
-                               ; :height "auto"
-                            ; (bean/->clj props)}]]]))
-       "Custom Toast"]]]))
+       [:f> text-view (merge
+                        {:height "auto"}
+                        (bean/->clj props))
+        "Custom Toast"]]]]))
 
 (defn container-view []
   (let [text-props (bean/->js (useThemeProps "Heading" #js {:height "80%"}))
@@ -118,22 +154,14 @@
        [heading  {:color "emerald.500"} "React Ecosystem"]]]]))
 
 
-(defn view11 []
-  [center {:flex 1 :px 3 :safeArea true}
-   [box {:bg "emerald.500" :px "2" :py "1" :rounded "sm" :mb 5}
-    [text "abc"]]])
-
-(defn text-view [props text]
-  (let [[props _] (useStyledSystemPropsResolver (bean/->js props))]
-    [text/text-view (merge {:text text}
-                            ; :height "auto"}
-                         (bean/->clj props))]))
-
-(defn view []
+(defn pressable-view []
+; (defn view []
   [center {:flex 1 :py 3 :safeArea true}
    [pressable
     (fn [x]
       (let [{:keys [isHovered isFocused isPressed]} (j/lookup x)]
+        (if isPressed
+          (js/console.log ">>>>>>>"))
         (reagent/as-element
          [box {:bg (cond
                      isPressed "cyan.900"
@@ -142,9 +170,6 @@
                :p "5"
                :rounded "8"
                :style {:transform [{:scale (if isPressed 0.96 1)}]}}
-           ; [hstack {:alignItems "flex-start"}]
-            ; [text {:fontSize 12 :color "cyan.50" :fontWeight "medium"} "Business"]
-            ; [text {:fontSize 10 :color "cyan.100"} "1 month ago"]]]])))]])
           [hstack {:alignItems "flex-start"}
            [vstack
             [:f> text-view {:height "auto" :fontSize 12 :color "cyan.50" :fontWeight "medium"} "Business"]
@@ -174,18 +199,132 @@
               [:f> text-view {:height "auto" :ml "2"
                               :fontSize 12 :fontWeight "medium" :color "cyan.400"}
                "Read More"])]]])))]])
-           ; [text {:color "cyan.50" :mt "3" :fontWeight "medium" :fontSize 20}
-           ;  "Marketing License"]
-           ; [text {:mt "2" :fontSize 14 :color "cyan.100"}
-           ;  "Unlock powerfull time-saving tools for creating email delivery and collecting marketing data"]
-           ; [flex
-           ;  (if isFocused
-           ;    [text {:mt "2"
-           ;           :fontSize 12
-           ;           :fontWeight "medium"
-           ;           :bg "cyan.500"
-           ;           :color "cyan.200"
-           ;           :alignSelf "flex-start"}
-           ;       "Read More"]
-           ;    [text {:mt "2" :fontSize 12 :fontWeight "medium" :color "cyan.400"}
-           ;     "Read More"])]]])))]])
+
+(defn button-view [props text]
+  (let [text-props (bean/->js (useThemeProps "Button" (bean/->js props)))]
+    [button props
+     [:f> text-view (merge {:height "auto"} (:_text (bean/->clj text-props)))
+      text]]))
+
+(defn modal-view []
+; (defn view []
+  (let [[modalVisible, setModalVisible] (.useState react false)]
+    [center {:flex 1 :py 3 :safeArea true}
+     [button {:onPress #(setModalVisible true)} "Button"]
+     [modal {:isOpen modalVisible :onClose setModalVisible}
+      [modal-content {:maxWidth "80%" :maxH "300px" :style {:flexDirection "row"}}
+       ; [modal-close-button]
+       [modal-header
+        [:f> text-view {:height "auto" :ml "2"
+                        :fontSize 12 :fontWeight "medium" :color "cyan.400"}
+         "Contact Us"]]
+       [modal-body
+        ; [scroll-view]
+        ; [text "Create a 'Return Request' under “My Orders” section of App/Website. Follow the screens that come up after tapping on the 'Return’ button. Please make a note of the Return ID that we generate at the end of the process. Keep the item ready for pick up or ship it to us basis on the return mode."]
+        [:f> text-view {:height 250} "Create a 'Return Request' under “My Orders” section of App/Website. Follow the screens that come up after tapping on the 'Return’ button. Please make a note of the Return ID that we generate at the end of the process. Keep the item ready for pick up or ship it to us basis on the return mode."]]
+       [modal-footer
+        [button-group {:space 2 :direction "column"}
+         [:f> button-view {:variant "ghost"
+                           :colorScheme "blueGray"
+                           :onPress #(setModalVisible false)
+                           :on-layout (fn [x] (js/console.log "on-layout >>>>"))}
+           "Cancel"]
+         [:f> button-view {}
+           "Save"]]]]]]))
+
+(defn actionsheet-item-view [props text]
+  (let [text-props (bean/->js (useThemeProps "ActionsheetItem" (bean/->js props)))]
+    [actionsheet-item props
+     [:f> text-view (merge {:height "auto"} (if (:height props) {:height (:height props)}) (:_text (bean/->clj text-props)))
+      text]]))
+
+; (defn actionsheet-view [])
+(defn view []
+  (let [disclose-props (useDisclose)
+        {:keys [isOpen onOpen onClose]} (j/lookup disclose-props)]
+    [center {:flex 1 :py 3} ;:safeArea true}
+     [:f> button-view {:onPress onOpen} "ActionSheet"]
+     [actionsheet {:isOpen isOpen :onClose onClose :safeArea true}
+      [actionsheet-content {:maxH 300}
+       [container {:flexDirection "row"}
+        [box {:h "100%" :w 12 :py 4 :justifyContent "center"}
+         [:f> text-view {:fontSize "16"
+                         :color "gray.500"
+                         :_dark {:color "gray.300"}}
+           "Albums"]]
+        [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4} "Delete"]
+        [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4} "Share"]
+        [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4} "Play"]
+        [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4} "Favourite"]
+        [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4} "Cancel"]]]]]))
+
+; (defn select-item-view [props text]
+;   (let [text-props (bean/->js (useThemeProps "ActionsheetItem" (bean/->js props)))]
+;     [select-item props
+;      [:f> text-view (merge {:height "auto"} (if (:height props) {:height (:height props)}) (:_text (bean/->clj text-props)))
+;       text]]))
+
+(defn select-view []
+; (defn view []
+  (let [[service, setService] (.useState react "")
+        [label setLabel] (.useState react "")]
+    [center {:flex 1 :py 3 :safeArea true}
+      [vstack {:alignItems "center" :space 4}
+       [select {;:selectedValue "web"
+                :minWidth "200"
+                :accessibilityLabel "Web Development"
+                :placeholder "Choose Service"
+                :_selectedItem
+                {
+                  :bg "teal.600"
+                  :endIcon (reagent/as-element [checkicon {:size "5"}])}
+                :onValueChange #(js/console.log ">>>> " %)
+                :mt 1}
+                ; :_actionSheetContent}
+                ; {:flexDirection "row"}}
+
+        [container {:flexDirection "row"}
+         ; [box {:height "250" :w 14 :py 4 :justifyContent "center"}
+         ;  [:f> text-view {:fontSize "16"
+         ;                  :color "gray.500"
+         ;                  :_dark {:color "gray.300"}}
+         ;    "Development"]]
+         [select-item {:label (reagent/as-element
+                                [:f> text-view {:height 250 :w 10 :py 4}  "UX Research"])
+                       :value "ux" :_stack { :direction "column"} :w 12}]
+         [select-item {:label (reagent/as-element
+                                [:f> text-view {:height 250 :w 12 :py 4} "Web Development"])
+                       :value "web" :_stack { :direction "column"} :w 12}]
+         [select-item {:label (reagent/as-element
+                                [:f> text-view {:height 250 :w 12 :py 4}"Cross Platform Development"])
+                       :value "cross" :_stack { :direction "column"} :w 12}]
+         [select-item {:label (reagent/as-element
+                                [:f> text-view {:height 250 :w 12 :py 4}"UI Designing"])
+                       :value "ui" :_stack { :direction "column"} :w 12}]
+         [select-item {:label (reagent/as-element
+                                [:f> text-view {:height 250 :w 12 :py 4}"Backend Development"])
+                       :value "backend" :_stack { :direction "column"} :w 12}]]]]]))
+
+(defn view012 []
+  ; (let [[service, setService] (.useState react "")])
+  [center {:flex 1 :py 3 :safeArea true}
+    [vstack {:alignItems "center" :space 4}
+     [select {;:selectedValue "web"
+              :minHeight "200"
+              :accessibilityLabel "Choose Service"
+              :placeholder "Choose Service"
+              :_selectedItem
+              {
+                :bg "teal.600"
+                :endIcon (reagent/as-element [checkicon {:size "5"}])}
+              ; :_actionSheetContent
+              ; (reagent/as-element
+              ;   [box {:bg "emerald.500" :p "2" :rounded "sm"}
+              ;    "Custom ActionSheet"])
+              :mt 1}
+              ; :onValueChange (fn [itemValue] (setService itemValue))}
+      [select-item {:label "UX Research" :value "ux"}]
+      [select-item {:label "Web Development" :value "web"}]
+      [select-item {:label "Cross Platform Development" :value "cross"}]
+      [select-item {:label "UI Designing" :value "ui"}]
+      [select-item {:label "Backend Development" :value "backend"}]]]])

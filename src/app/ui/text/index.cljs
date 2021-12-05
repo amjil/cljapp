@@ -12,7 +12,7 @@
     ["react-native-measure-text-chars" :as rntext]))
 
 (defn single-line [props text]
-  [touchable/touchable-without-feedback {}
+  ; [touchable/touchable-without-feedback {}
    [rn/view {:style {:height (:height props) :width (:line-width props)}} ;:backgroundColor "red"}}
     [rn/text {:style (merge
                        (dissoc props :data :text :offset :line-width)
@@ -20,7 +20,7 @@
                         :transform [{:rotate "90deg"}
                                     {:translateX (:offset props)}
                                     {:translateY (:offset props)}]})}
-     (:text props)]]])
+     (:text props)]])
 
 (defn multi-line [props]
   [rnlist/flat-list
@@ -31,7 +31,7 @@
     :initialNumToRender 20
     :render-fn
     (fn [x]
-      [touchable/touchable-without-feedback {}
+      ; [touchable/touchable-without-feedback {}
         [rn/view {:style {:height (:height props) :width (:line-width props)}}; :backgroundColor "red"}}
           [rn/text {:style (merge
                              (dissoc props :data :text :offset :line-width)
@@ -41,7 +41,7 @@
                               :transform [{:rotate "90deg"}
                                           {:translateX (:offset props)}
                                           {:translateY (:offset props)}]})}
-           x]]])}])
+           x]])}])
 
 (defn text-view [props]
   (let [info (reagent/atom nil)
