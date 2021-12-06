@@ -130,30 +130,6 @@
                         (bean/->clj props))
         "Custom Toast"]]]]))
 
-(defn container-view []
-  (let [text-props (bean/->js (useThemeProps "Heading" #js {:height "80%"}))
-        text "A component library for the React Ecosystem"
-        [props _] (useStyledSystemPropsResolver (bean/->js text-props))
-        data (reagent/atom nil)
-        width 200
-        height 400
-        offset (- (/ height 2) (/ width 2))]
-
-    (js/console.log "props = " (bean/->js props))
-    [center {:flex 1 :px 3 :safeArea true}
-     [container {:style {:width width
-                         :height height}}
-
-      [heading  {:style {:width height :height width
-                         :transform [{:rotateY "180deg"}
-                                     {:rotate "90deg"}
-                                     {:translateX offset}
-                                     {:translateY (- (/ offset 2))}]}
-                 :selectable true}
-       "A component library for the "
-       [heading  {:color "emerald.500"} "React Ecosystem"]]]]))
-
-
 (defn pressable-view []
 ; (defn view []
   [center {:flex 1 :py 3 :safeArea true}
@@ -233,13 +209,14 @@
            "Save"]]]]]]))
 
 (defn actionsheet-item-view [props text]
-  (let [text-props (bean/->js (useThemeProps "ActionsheetItem" (bean/->js props)))]
+  (let [text-p (bean/->js (useThemeProps "ActionsheetItem" (bean/->js props)))
+        [text-props _] (useStyledSystemPropsResolver (bean/->js (j/get text-p :_text)))]
     [actionsheet-item props
-     [:f> text-view (merge {:height "auto"} (if (:height props) {:height (:height props)}) (:_text (bean/->clj text-props)))
+     [:f> text-view (merge {:height "auto"} (if (:height props) {:height (:height props)}) (bean/->clj text-props))
       text]]))
 
-; (defn actionsheet-view [])
-(defn view []
+(defn actionsheet-view []
+; (defn view []
   (let [disclose-props (useDisclose)
         {:keys [isOpen onOpen onClose]} (j/lookup disclose-props)]
     [center {:flex 1 :py 3} ;:safeArea true}
@@ -258,13 +235,15 @@
         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4} "Favourite"]
         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4} "Cancel"]]]]]))
 
-; (defn select-item-view [props text]
-;   (let [text-props (bean/->js (useThemeProps "ActionsheetItem" (bean/->js props)))]
-;     [select-item props
-;      [:f> text-view (merge {:height "auto"} (if (:height props) {:height (:height props)}) (:_text (bean/->clj text-props)))
-;       text]]))
+(defn select-item-view [props text]
+  (let [text-props (bean/->js (useThemeProps "ActionsheetItem" (bean/->js props)))]
+    [select-item (merge {:label (reagent/as-element
+                                 [:f> text-view (merge (:_text (bean/->clj text-props)) {:height 250})  text])}
+                                 ; [:f> text-view {:height 250}  text])}
+                      props)]))
 
-(defn select-view []
+
+(defn select-view2 []
 ; (defn view []
   (let [[service, setService] (.useState react "")
         [label setLabel] (.useState react "")]
@@ -284,47 +263,82 @@
                 ; {:flexDirection "row"}}
 
         [container {:flexDirection "row"}
-         ; [box {:height "250" :w 14 :py 4 :justifyContent "center"}
-         ;  [:f> text-view {:fontSize "16"
-         ;                  :color "gray.500"
-         ;                  :_dark {:color "gray.300"}}
-         ;    "Development"]]
-         [select-item {:label (reagent/as-element
-                                [:f> text-view {:height 250 :w 10 :py 4}  "UX Research"])
-                       :value "ux" :_stack { :direction "column"} :w 12}]
-         [select-item {:label (reagent/as-element
-                                [:f> text-view {:height 250 :w 12 :py 4} "Web Development"])
-                       :value "web" :_stack { :direction "column"} :w 12}]
-         [select-item {:label (reagent/as-element
-                                [:f> text-view {:height 250 :w 12 :py 4}"Cross Platform Development"])
-                       :value "cross" :_stack { :direction "column"} :w 12}]
-         [select-item {:label (reagent/as-element
-                                [:f> text-view {:height 250 :w 12 :py 4}"UI Designing"])
-                       :value "ui" :_stack { :direction "column"} :w 12}]
-         [select-item {:label (reagent/as-element
-                                [:f> text-view {:height 250 :w 12 :py 4}"Backend Development"])
-                       :value "backend" :_stack { :direction "column"} :w 12}]]]]]))
+         [box {:height "250" :w 14 :py 4 :justifyContent "center"}
+          [:f> text-view {:fontSize "16"
+                          :color "gray.500"
+                          :_dark {:color "gray.300"}}
+            "Development"]]
+         [:f> select-item-view {:value "ux" :_stack { :direction "column"} :w 12} "UX Research"]
+         [:f> select-item-view {:value "web" :_stack { :direction "column"} :w 12} "Web Development"]
+         [:f> select-item-view {:value "cross" :_stack { :direction "column"} :w 12} "Cross Platform Development"]]]]]))
+         ; [select-item {:label (reagent/as-element
+         ;                       [:f> text-view (merge (bean/->clj text-props) {:height 250 :w 12 :py 4})  "UX Research"])
+         ;               :value "ux" :_stack { :direction "column"} :w 12}]]]]]))
+         ; [select-item {:label (reagent/as-element
+         ;                        [:f> text-view {:height 250 :w 12 :py 4} "Web Development"])
+         ;               :value "web" :_stack { :direction "column"} :w 12}]
+         ; [select-item {:label (reagent/as-element
+         ;                        [:f> text-view {:height 250 :w 12 :py 4} "Cross Platform Development"])
+         ;               :value "cross" :_stack { :direction "column"} :w 12}]
+         ; [select-item {:label (reagent/as-element
+         ;                        [:f> text-view {:height 250 :w 12 :py 4} "UI Designing"])
+         ;               :value "ui" :_stack { :direction "column"} :w 12}]
+         ; [select-item {:label (reagent/as-element
+         ;                        [:f> text-view {:height 250 :w 12 :py 4} "Backend Development"])
+         ;               :value "backend" :_stack { :direction "column"} :w 12}]]]]]))
 
-(defn view012 []
+(defn select-view [value]
+  (let [props (useThemeProps "Input" #js {})
+        text-props {:color "#1f2937" :fontFamily "body" :fontSize  12}
+        props (bean/->clj props)
+        disclose-props (useDisclose)
+        {:keys [isOpen onOpen onClose onToggle]} (j/lookup disclose-props)]
+    (js/console.log (bean/->js props))
+    [center {:flex 1 :py 3 :safeArea true}
+     [box (merge {:borderWidth 1 :borderColor "transparent"} props)
+      [pressable {:onPress (fn []
+                              (onToggle))
+                  :accessibilityLabel "button1"
+                  :accessibilityRole "button"}
+       (if (empty? @value)
+         [:f> text-view (merge text-props {:height "300" :color (:placeholderTextColor props)}) "Choose Service"]
+         [:f> text-view (merge text-props {:height "300"}) @value])]
+      [actionsheet {:isOpen isOpen :onClose onClose :safeArea true}
+       [actionsheet-content {:maxH 300}
+        [container {:flexDirection "row"}
+         [box {:h "100%" :w 12 :py 4 :justifyContent "center"}
+          [:f> text-view {:fontSize "16"
+                          :color "gray.500"
+                          :_dark {:color "gray.300"}}
+            "Development"]]
+         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "UX Research") (onToggle))}   "UX Research"]
+         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "Web Development") (onToggle))} "Web Development"]
+         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "Cross Platform Development") (onToggle))} "Cross Platform Development"]
+         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "UI Designing") (onToggle))} "UI Designing"]
+         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "Backend Development") (onToggle))} "Backend Development"]]]]]]))
+
+(defn view []
+  (let [value (reagent/atom "")]
+    [:f> select-view value]))
   ; (let [[service, setService] (.useState react "")])
-  [center {:flex 1 :py 3 :safeArea true}
-    [vstack {:alignItems "center" :space 4}
-     [select {;:selectedValue "web"
-              :minHeight "200"
-              :accessibilityLabel "Choose Service"
-              :placeholder "Choose Service"
-              :_selectedItem
-              {
-                :bg "teal.600"
-                :endIcon (reagent/as-element [checkicon {:size "5"}])}
-              ; :_actionSheetContent
-              ; (reagent/as-element
-              ;   [box {:bg "emerald.500" :p "2" :rounded "sm"}
-              ;    "Custom ActionSheet"])
-              :mt 1}
-              ; :onValueChange (fn [itemValue] (setService itemValue))}
-      [select-item {:label "UX Research" :value "ux"}]
-      [select-item {:label "Web Development" :value "web"}]
-      [select-item {:label "Cross Platform Development" :value "cross"}]
-      [select-item {:label "UI Designing" :value "ui"}]
-      [select-item {:label "Backend Development" :value "backend"}]]]])
+
+    ; [vstack {:alignItems "center" :space 4}
+    ;  [select {;:selectedValue "web"
+    ;           :minHeight "200"
+    ;           :accessibilityLabel "Choose Service"
+    ;           :placeholder "Choose Service"
+    ;           :_selectedItem
+    ;           {
+    ;             :bg "teal.600"
+    ;             :endIcon (reagent/as-element [checkicon {:size "5"}])}
+    ;           ; :_actionSheetContent
+    ;           ; (reagent/as-element
+    ;           ;   [box {:bg "emerald.500" :p "2" :rounded "sm"}
+    ;           ;    "Custom ActionSheet"])
+    ;           :mt 1}
+    ;           ; :onValueChange (fn [itemValue] (setService itemValue))}
+    ;   [select-item {:label "UX Research" :value "ux"}]
+    ;   [select-item {:label "Web Development" :value "web"}]
+    ;   [select-item {:label "Cross Platform Development" :value "cross"}]
+    ;   [select-item {:label "UI Designing" :value "ui"}]
+    ;   [select-item {:label "Backend Development" :value "backend"}]]]])
