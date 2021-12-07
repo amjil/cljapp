@@ -292,74 +292,47 @@
          ;                        [:f> text-view {:height 250 :w 12 :py 4} "Backend Development"])
          ;               :value "backend" :_stack { :direction "column"} :w 12}]]]]]))
 
-(defn select-view [value]
-; (defn view []
-  (let [props (useThemeProps "Input" #js {})
-        text-props {:color "#1f2937" :fontFamily "body" :fontSize  12}
-        props (bean/->clj props)
-        disclose-props (useDisclose)
-        {:keys [isOpen onOpen onClose onToggle]} (j/lookup disclose-props)]
-    (js/console.log (bean/->js props))
-    [center {:flex 1 :py 3 :safeArea true}
-     [box (merge {:borderWidth 1 :borderColor "transparent"} props)
-      [pressable {:onPress (fn []
-                              (onToggle))
-                  :accessibilityLabel "button1"
-                  :accessibilityRole "button"}
-       (if (empty? @value)
-         [:f> text-view (merge text-props {:height "300" :color (:placeholderTextColor props)}) "Choose Service"]
-         [:f> text-view (merge text-props {:height "300"}) @value])]
-      [actionsheet {:isOpen isOpen :onClose onClose :safeArea true}
-       [actionsheet-content {:maxH 300}
-        [container {:flexDirection "row"}
-         [box {:h "100%" :w 12 :py 4 :justifyContent "center"}
-          [:f> text-view {:fontSize "16"
-                          :color "gray.500"
-                          :_dark {:color "gray.300"}}
-            "Development"]]
-         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "UX Research") (onToggle))}   "UX Research"]
-         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "Web Development") (onToggle))} "Web Development"]
-         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "Cross Platform Development") (onToggle))} "Cross Platform Development"]
-         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "UI Designing") (onToggle))} "UI Designing"]
-         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "Backend Development") (onToggle))} "Backend Development"]]]]]]))
 
-(defn view-s []
-  (let [value (reagent/atom "")]
-    [:f> select-view value]))
 
 (defn rotated-text [props width height t]
   (let [offset (js/Math.abs (- (/ height 2) (/ width 2)))]
-    [text {:style {:width height :height width
-                   :transform [{:rotate "90deg"}
-                               {:translateX offset}
-                               {:translateY offset}]}}
+    [text (merge props {:style {:width height :height width
+                                :transform [{:rotate "90deg"}
+                                            {:translateX offset}
+                                            {:translateY offset}]}})
       t]))
 
-(defn measured-text [props t info]
-  (if @info
-    (let [height (or (:height props) (:width @info))
-          width (/ (:height @info) (:lineCount @info))
-          offset (- (/ height 2) (/ width 2))]
-      (cond
-        (nil? @info)
-        [text "empty ...."]
+(defn measured-text
+  ([props t]
+   (let [info {:width (:height props) :height (:width props) :lineCount 1}]
+     (measured-text props t info)))
+  ([props t info]
+   (if info
+     (let [height (or (:height props) (:width info))
+           width (/ (:height info) (:lineCount info))
+           offset (- (/ height 2) (/ width 2))]
+       (cond
+         (nil? info)
+         [text "empty ...."]
 
-        (= 1 (:lineCount @info))
-        [rotated-text props width height @t]
+         (= 1 (:lineCount info))
+         [box {:style {:width (:height info)
+                       :height height}}
+          [rotated-text props width height t]]
 
-        :else
-        [box {:style {:width (:height @info)
-                      :height height}}
-         [flat-list
-          {:horizontal true
-           :keyExtractor    (fn [_ index] (str "text-" index))
-           :data (map (fn [x] (subs @t (:start x) (:end x))) (:lineInfo @info))
-           :renderItem
-           (fn [x]
-             (let [{:keys [item index separators]} (j/lookup x)]
-               (reagent/as-element
-                 [box {:width width :height height}
-                  [rotated-text props width height item]])))}]]))))
+         :else
+         [box {:style {:width (:height info)
+                       :height height}}
+          [flat-list
+           {:horizontal true
+            :keyExtractor    (fn [_ index] (str "text-" index))
+            :data (map (fn [x] (subs t (:start x) (:end x))) (:lineInfo info))
+            :renderItem
+            (fn [x]
+              (let [{:keys [item index separators]} (j/lookup x)]
+                (reagent/as-element
+                  [box {:width width :height height}
+                   [rotated-text props width height item]])))}]])))))
 
 (defn track-text [t info]
   (let [tt @(reagent/track (fn [] t))]
@@ -369,7 +342,8 @@
         (reset! info (bean/->clj result))))
     tt))
 
-(defn view []
+(defn measured-view []
+; (defn view []
   (let [value (reagent/atom "ZZ Hello abc, This is the normal text!")
         info (reagent/atom nil)
         vv @(reagent/track track-text value info)]
@@ -381,4 +355,59 @@
         [button {:onPress #(reset! value "Hello def, This is test normal text for display vertical")}
          "button2"]
         ; [text @value]]])))
-        [measured-text {:fontSize 14 :width 100} value info]]])))
+        [measured-text {:fontSize 14 :width 100} @value @info]]])))
+
+(defn actionsheet-item-view2 [props text]
+  (let [text-p (bean/->js (useThemeProps "ActionsheetItem" (bean/->js props)))
+        [text-props _] (useStyledSystemPropsResolver (bean/->js (j/get text-p :_text)))]
+    [actionsheet-item props
+     [measured-text (merge (bean/->clj text-props) {:height 250 :width 12})
+      text]]))
+
+(declare select-view3)
+(defn select-view [value]
+; (defn view []
+  (let [props (useThemeProps "Input" #js {})
+        text-props {:color "#1f2937" :fontSize  12}
+        props (bean/->clj props)]
+    (js/console.log (:placeholderTextColor props))
+    (js/console.log (bean/->js props))
+    [select-view3 props text-props]))
+
+(defn select-view3 [props text-props]
+  (let [value (reagent/atom "")
+        isopen (reagent/atom false)
+        press-fn (fn [t] (reset! value t) (reset! isopen false))
+        item-props (fn [t]
+                     (merge
+                       {:height 250 :w 12 :py 4 :onPress (fn [] (press-fn t))}
+                       (if (= @value t)
+                         {
+                          :bg "teal.600"
+                          :endIcon (reagent/as-element [checkicon {:size "5"}])})))]
+    (fn []
+      [center {:flex 1 :py 3 :safeArea true}
+       [box (merge {:borderWidth 1 :borderColor "transparent"} props)
+        [pressable {:onPress (fn []
+                                (reset! isopen true))
+                    :accessibilityLabel "button1"
+                    :accessibilityRole "button"}
+         (if (empty? @value)
+           [measured-text (merge text-props {:height 300 :width 16 :color (:placeholderTextColor props)}) "Choose Service"]
+           [measured-text (merge text-props {:height 300 :width 16}) @value])]
+        [actionsheet {:isOpen @isopen :onClose #(reset! isopen false) :safeArea true}
+         [actionsheet-content {:maxH 300}
+          [container {:flexDirection "row"}
+           [box {:h "100%" :w 12 :py 4 :justifyContent "center"}
+            [:f> text-view {:fontSize "16"
+                            :color "gray.500"
+                            :_dark {:color "gray.300"}}
+              "Development"]]
+           [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (press-fn "UX Research"))} "UX Research"]
+           [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (press-fn "Web Development"))} "Web Development"]
+           [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (press-fn "Cross Platform Development"))} "Cross Platform Development"]
+           [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (press-fn "UI Designing"))} "UI Designing"]
+           [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (press-fn "Backend Development"))} "Backend Development"]]]]]])))
+
+(defn view []
+  [:f> select-view])
