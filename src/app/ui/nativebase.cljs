@@ -6,6 +6,8 @@
    [steroid.rn.core :as rn]
    [steroid.rn.navigation.core :as rnn]
    [app.ui.text.index :as text]
+   [promesa.core :as p]
+   [promesa.exec :as exec]
    ["react-native-measure-text-chars" :as rntext]
    ["native-base" :refer [NativeBaseProvider
                           Center
@@ -26,6 +28,8 @@
                           VStack
                           ZStack
                           Flex
+
+                          FlatList
                           ScrollView
 
                           useStyledSystemPropsResolver
@@ -74,6 +78,7 @@
 (def zstack (reagent/adapt-react-class ZStack))
 (def divider (reagent/adapt-react-class Divider))
 (def scroll-view (reagent/adapt-react-class ScrollView))
+(def flat-list (reagent/adapt-react-class FlatList))
 
 (def center (reagent/adapt-react-class Center))
 
@@ -288,6 +293,7 @@
          ;               :value "backend" :_stack { :direction "column"} :w 12}]]]]]))
 
 (defn select-view [value]
+; (defn view []
   (let [props (useThemeProps "Input" #js {})
         text-props {:color "#1f2937" :fontFamily "body" :fontSize  12}
         props (bean/->clj props)
@@ -311,34 +317,68 @@
                           :color "gray.500"
                           :_dark {:color "gray.300"}}
             "Development"]]
-         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "UX Research") (onToggle))}   "UX Research"]
-         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "Web Development") (onToggle))} "Web Development"]
-         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "Cross Platform Development") (onToggle))} "Cross Platform Development"]
-         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "UI Designing") (onToggle))} "UI Designing"]
-         [:f> actionsheet-item-view {:height 250 :h "100%" :w 12 :py 4 :onPress (fn [] (reset! value "Backend Development") (onToggle))} "Backend Development"]]]]]]))
+         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "UX Research") (onToggle))}   "UX Research"]
+         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "Web Development") (onToggle))} "Web Development"]
+         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "Cross Platform Development") (onToggle))} "Cross Platform Development"]
+         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "UI Designing") (onToggle))} "UI Designing"]
+         [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (reset! value "Backend Development") (onToggle))} "Backend Development"]]]]]]))
 
-(defn view []
+(defn view-s []
   (let [value (reagent/atom "")]
     [:f> select-view value]))
-  ; (let [[service, setService] (.useState react "")])
 
-    ; [vstack {:alignItems "center" :space 4}
-    ;  [select {;:selectedValue "web"
-    ;           :minHeight "200"
-    ;           :accessibilityLabel "Choose Service"
-    ;           :placeholder "Choose Service"
-    ;           :_selectedItem
-    ;           {
-    ;             :bg "teal.600"
-    ;             :endIcon (reagent/as-element [checkicon {:size "5"}])}
-    ;           ; :_actionSheetContent
-    ;           ; (reagent/as-element
-    ;           ;   [box {:bg "emerald.500" :p "2" :rounded "sm"}
-    ;           ;    "Custom ActionSheet"])
-    ;           :mt 1}
-    ;           ; :onValueChange (fn [itemValue] (setService itemValue))}
-    ;   [select-item {:label "UX Research" :value "ux"}]
-    ;   [select-item {:label "Web Development" :value "web"}]
-    ;   [select-item {:label "Cross Platform Development" :value "cross"}]
-    ;   [select-item {:label "UI Designing" :value "ui"}]
-    ;   [select-item {:label "Backend Development" :value "backend"}]]]])
+(defn rotated-text [props width height t]
+  (let [offset (js/Math.abs (- (/ height 2) (/ width 2)))]
+    [text {:style {:width height :height width
+                   :transform [{:rotate "90deg"}
+                               {:translateX offset}
+                               {:translateY offset}]}}
+      t]))
+
+(defn measured-text [props t info]
+  (if @info
+    (let [height (or (:height props) (:width @info))
+          width (/ (:height @info) (:lineCount @info))
+          offset (- (/ height 2) (/ width 2))]
+      (cond
+        (nil? @info)
+        [text "empty ...."]
+
+        (= 1 (:lineCount @info))
+        [rotated-text props width height @t]
+
+        :else
+        [box {:style {:width (:height @info)
+                      :height height}}
+         [flat-list
+          {:horizontal true
+           :keyExtractor    (fn [_ index] (str "text-" index))
+           :data (map (fn [x] (subs @t (:start x) (:end x))) (:lineInfo @info))
+           :renderItem
+           (fn [x]
+             (let [{:keys [item index separators]} (j/lookup x)]
+               (reagent/as-element
+                 [box {:width width :height height}
+                  [rotated-text props width height item]])))}]]))))
+
+(defn track-text [t info]
+  (let [tt @(reagent/track (fn [] t))]
+    (p/then (rntext/measure
+             (bean/->js (merge {:fontSize 14 :width 100} {:text @t})))
+      (fn [result]
+        (reset! info (bean/->clj result))))
+    tt))
+
+(defn view []
+  (let [value (reagent/atom "ZZ Hello abc, This is the normal text!")
+        info (reagent/atom nil)
+        vv @(reagent/track track-text value info)]
+    (fn []
+      [center {:flex 1 :py 3 :safeArea true}
+       [box {}
+        [button {:onPress #(reset! value "Hello abc, This is the normal text!")}
+         "button1"]
+        [button {:onPress #(reset! value "Hello def, This is test normal text for display vertical")}
+         "button2"]
+        ; [text @value]]])))
+        [measured-text {:fontSize 14 :width 100} value info]]])))
