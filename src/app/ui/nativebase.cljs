@@ -311,35 +311,35 @@
 
 (defn measured-text
   ([props t]
-   (let [info {:width (:height props) :height (or (:width props) (line-height (or (:fontSize props) (:font-size props) 12))) :lineCount 1}]
-     (measured-text props t info)))
+   (let [width (:height props)
+         info (rntext/measure (bean/->js (merge (assoc props :text t) (if width {:width width}))))]
+     (measured-text props t (bean/->clj info))))
   ([props t info]
-   (if info
-     (let [height (or (:height props) (:width info))
-           width (/ (:height info) (:lineCount info))
-           offset (- (/ height 2) (/ width 2))]
-       (cond
-         (nil? info)
-         [text "empty ...."]
+   (let [height (or (:height props) (:width info))
+         width (/ (:height info) (:lineCount info))
+         offset (- (/ height 2) (/ width 2))]
+     (cond
+       (nil? info)
+       [text "empty ...."]
 
-         (= 1 (:lineCount info))
-         [box {:style {:width (:height info)
-                       :height height}}
-          [rotated-text props width height t]]
+       (= 1 (:lineCount info))
+       [box {:width (:height info)
+             :height height}
+        [rotated-text props width height t]]
 
-         :else
-         [box {:style {:width (:height info)
-                       :height height}}
-          [flat-list
-           {:horizontal true
-            :keyExtractor    (fn [_ index] (str "text-" index))
-            :data (map (fn [x] (subs t (:start x) (:end x))) (:lineInfo info))
-            :renderItem
-            (fn [x]
-              (let [{:keys [item index separators]} (j/lookup x)]
-                (reagent/as-element
-                  [box {:width width :height height}
-                   [rotated-text props width height item]])))}]])))))
+       :else
+       [box {:style {:width (:height info)
+                     :height height}}
+        [flat-list
+         {:horizontal true
+          :keyExtractor    (fn [_ index] (str "text-" index))
+          :data (map (fn [x] (subs t (:start x) (:end x))) (:lineInfo info))
+          :renderItem
+          (fn [x]
+            (let [{:keys [item index separators]} (j/lookup x)]
+              (reagent/as-element
+                [box {:width width :height height}
+                 [rotated-text props width height item]])))}]]))))
 
 (defn track-text [props t info]
   (let [tt @(reagent/track (fn [] t))]
@@ -428,17 +428,17 @@
 (defn badge-view [props t]
   (let [text-props (theme-text-props props)]
     [badge props
-     [measured-text (merge (bean/->clj text-props) {:width 20 :height 100})  t]]))
+     [measured-text (bean/->clj text-props)  t]]))
 
 (defn multi-badge-view []
   [hstack {:space {:base "2" :md "4"}
            :mx {:base "auto" :md "0"}}
    (for [item ["solid" "outline" "subtle"]]
      [vstack {:key item :space 4}
-      [:f> badge-view {:alignSelf "center" :variant item} "DEFAULT"]
-      [:f> badge-view {:colorScheme "success" :variant item :alignSelf "center"} "SUCCESS"]
-      [:f> badge-view {:colorScheme "danger" :variant item :alignSelf "center"} "DANGER"]
-      [:f> badge-view {:colorScheme "info" :variant item :alignSelf "center"} "INFO"]])])
+      [:f> badge-view {:py 4 :alignSelf "center" :variant item} "DEFAULT"]
+      [:f> badge-view {:py 4 :colorScheme "success" :variant item :alignSelf "center"} "SUCCESS"]
+      [:f> badge-view {:py 4 :colorScheme "danger" :variant item :alignSelf "center"} "DANGER"]
+      [:f> badge-view {:py 4 :colorScheme "info" :variant item :alignSelf "center"} "INFO"]])])
 
 (defn view []
   [center {:flex 1 :py 3 :safeArea true}
