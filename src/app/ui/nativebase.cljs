@@ -15,8 +15,10 @@
                           Box
                           Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer
                           Heading
+
                           Text
                           Button Button.Group
+                          Badge
                           Pressable
                           CheckIcon
                           Select Select.Item
@@ -42,6 +44,7 @@
 (def nativebase-provider (reagent/adapt-react-class NativeBaseProvider))
 
 (def box (reagent/adapt-react-class Box))
+(def badge (reagent/adapt-react-class Badge))
 
 (def container (reagent/adapt-react-class Container))
 
@@ -302,9 +305,13 @@
                                             {:translateY offset}]}})
       t]))
 
+(defn line-height [font-size]
+  (* font-size
+    (if (> font-size 20) 1.5 1)))
+
 (defn measured-text
   ([props t]
-   (let [info {:width (:height props) :height (:width props) :lineCount 1}]
+   (let [info {:width (:height props) :height (or (:width props) (line-height (or (:fontSize props) (:font-size props) 12))) :lineCount 1}]
      (measured-text props t info)))
   ([props t info]
    (if info
@@ -409,5 +416,41 @@
            [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (press-fn "UI Designing"))} "UI Designing"]
            [:f> actionsheet-item-view {:height 250 :w 12 :py 4 :onPress (fn [] (press-fn "Backend Development"))} "Backend Development"]]]]]])))
 
-(defn view []
+; (defn view [])
+(defn select3-view []
   [:f> select-view])
+
+(defn theme-text-props [props]
+  (let [theme-props (bean/->js (useThemeProps "Badge" (bean/->js props)))
+        [text-props _] (useStyledSystemPropsResolver (bean/->js (j/get theme-props :_text)))]
+    text-props))
+
+(defn badge-view [props t]
+  (let [text-props (theme-text-props props)]
+    [badge props
+     [measured-text (merge (bean/->clj text-props) {:width 20 :height 100})  t]]))
+
+(defn multi-badge-view []
+  [hstack {:space {:base "2" :md "4"}
+           :mx {:base "auto" :md "0"}}
+   (for [item ["solid" "outline" "subtle"]]
+     [vstack {:key item :space 4}
+      [:f> badge-view {:alignSelf "center" :variant item} "DEFAULT"]
+      [:f> badge-view {:colorScheme "success" :variant item :alignSelf "center"} "SUCCESS"]
+      [:f> badge-view {:colorScheme "danger" :variant item :alignSelf "center"} "DANGER"]
+      [:f> badge-view {:colorScheme "info" :variant item :alignSelf "center"} "INFO"]])])
+
+
+(defn badge-solid-view []
+  (let [props {:colorScheme "success"
+               ; :variant "solid"
+               ; :variant "outline"
+               :variant "subtle"}
+        theme-props (bean/->js (useThemeProps "Badge" (bean/->js props)))
+        [text-props _] (useStyledSystemPropsResolver (bean/->js (j/get theme-props :_text)))]
+    [badge props
+     [measured-text (merge (bean/->clj text-props) {:width 20 :height 100})  "SUCCESS"]]))
+
+(defn view []
+  [center {:flex 1 :py 3 :safeArea true}
+   [multi-badge-view]])
