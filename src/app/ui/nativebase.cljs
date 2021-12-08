@@ -341,10 +341,10 @@
                   [box {:width width :height height}
                    [rotated-text props width height item]])))}]])))))
 
-(defn track-text [t info]
+(defn track-text [props t info]
   (let [tt @(reagent/track (fn [] t))]
     (p/then (rntext/measure
-             (bean/->js (merge {:fontSize 14 :width 100} {:text @t})))
+             (bean/->js (merge props {:text @t})))
       (fn [result]
         (reset! info (bean/->clj result))))
     tt))
@@ -353,7 +353,7 @@
 ; (defn view []
   (let [value (reagent/atom "ZZ Hello abc, This is the normal text!")
         info (reagent/atom nil)
-        vv @(reagent/track track-text value info)]
+        vv @(reagent/track track-text {:fontSize 14 :width 100} value info)]
     (fn []
       [center {:flex 1 :py 3 :safeArea true}
        [box {}
@@ -439,17 +439,6 @@
       [:f> badge-view {:colorScheme "success" :variant item :alignSelf "center"} "SUCCESS"]
       [:f> badge-view {:colorScheme "danger" :variant item :alignSelf "center"} "DANGER"]
       [:f> badge-view {:colorScheme "info" :variant item :alignSelf "center"} "INFO"]])])
-
-
-(defn badge-solid-view []
-  (let [props {:colorScheme "success"
-               ; :variant "solid"
-               ; :variant "outline"
-               :variant "subtle"}
-        theme-props (bean/->js (useThemeProps "Badge" (bean/->js props)))
-        [text-props _] (useStyledSystemPropsResolver (bean/->js (j/get theme-props :_text)))]
-    [badge props
-     [measured-text (merge (bean/->clj text-props) {:width 20 :height 100})  "SUCCESS"]]))
 
 (defn view []
   [center {:flex 1 :py 3 :safeArea true}
