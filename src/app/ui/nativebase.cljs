@@ -40,8 +40,10 @@
                           ScrollView
 
                           Collapse
+                          Spinner
 
                           useStyledSystemPropsResolver
+                          usePropsResolution
                           useThemeProps
                           useToast
                           useDisclose]]
@@ -70,6 +72,7 @@
 (def alert (reagent/adapt-react-class Alert))
 (def alert-icon (reagent/adapt-react-class Alert.Icon))
 (def collapse (reagent/adapt-react-class Collapse))
+(def spinner (reagent/adapt-react-class Spinner))
 ; Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer))
 (def modal (reagent/adapt-react-class Modal))
 (def modal-content (reagent/adapt-react-class Modal.Content))
@@ -439,6 +442,11 @@
         [text-props _] (useStyledSystemPropsResolver (bean/->js (j/get theme-props :_text)))]
     text-props))
 
+(defn theme-props [name props]
+  (let [theme-props (bean/->js (useThemeProps name (bean/->js props)))
+        [text-props _] (useStyledSystemPropsResolver (bean/->js theme-props))]
+    (bean/->clj text-props)))
+
 (defn badge-view [props t]
   (let [text-props (theme-text-props "Badge" props)]
     [badge props
@@ -480,6 +488,40 @@
                         :icon (reagent/as-element [close-icon {:color "coolGray.600" :size 3}])
                         :onPress #(reset! show false)}]]]]
        [:f> styled-button-view {:size "sm" :onPress #(reset! show true) :my 8 :mx "auto"} "Re-Open"]])))
+
+(defn progress-view [p]
+  ;; {:height 100 :w "sm"}
+  (let [props (bean/->clj (usePropsResolution "Progress" (bean/->js (dissoc p :height :width :value))))
+        min-num (or (:min p) (:min props))
+        max-num (or (:max p) (:max props))
+        value (:value p)
+        h (cond
+            (> max-num value min-num)
+            (str (* 100.0 (/ (- value min-num) (- max-num min-num) 1.0)) "%")
+            (> value min-num) "100%"
+            :else "0%")]
+    [box (merge props p)
+      [box (merge (:_filledTrack props) {:width "100%" :height h})]]))
+
+(defn multi-progress-view []
+  [hstack {:space "md"}
+   (for [item ["primary" "secondary" "emerald" "warning" "light"]]
+     ^{:key item}
+     [:f> progress-view {:height 200 :width "2" :value 77 :colorScheme item}])])
+
+(defn spinner-view [p]
+  (let [props (theme-props "Heading" (merge {:color "primary.500" :fontSize "md"} p))]
+  ; (let [props (useThemeProps "Heading" (bean/->js {:color "primary.500" :fontSize "md"}))]
+    [vstack {:space 2 :alightItems "center"}
+     [spinner p]
+     [measured-text props "Loading"]]))
+
+(defn multi-spinner-view []
+  [hstack {:space "md"}
+   (for [item ["emerald.500" "warning.500" "indigo.500" "cyan.500"]]
+     ^{:key item}
+     [:f> spinner-view {:color item}])])
+
 (defn view []
   [center {:flex 1 :py 3 :safeArea true}
-   [alert-view]])
+   [multi-spinner-view]])
