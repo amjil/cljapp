@@ -323,8 +323,8 @@
        [text "empty ...."]
 
        (= 1 (:lineCount info))
-       [box {:width (:height info)
-             :height height}
+       [box {:style {:width (:height info)
+                     :height height}}
         [rotated-text props width height t]]
 
        :else
