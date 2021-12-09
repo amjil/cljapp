@@ -16,8 +16,13 @@
                           Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer
                           Heading
 
+                          Alert Alert.Icon
+
                           Text
                           Button Button.Group
+                          CloseIcon
+                          IconButton
+
                           Badge
                           Pressable
                           CheckIcon
@@ -33,6 +38,8 @@
 
                           FlatList
                           ScrollView
+
+                          Collapse
 
                           useStyledSystemPropsResolver
                           useThemeProps
@@ -54,8 +61,15 @@
 
 (def button (reagent/adapt-react-class Button))
 (def button-group (reagent/adapt-react-class Button.Group))
+
+(def icon-button (reagent/adapt-react-class IconButton))
+(def close-icon (reagent/adapt-react-class CloseIcon))
+
 (def select (reagent/adapt-react-class Select))
 (def select-item (reagent/adapt-react-class Select.Item))
+(def alert (reagent/adapt-react-class Alert))
+(def alert-icon (reagent/adapt-react-class Alert.Icon))
+(def collapse (reagent/adapt-react-class Collapse))
 ; Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer))
 (def modal (reagent/adapt-react-class Modal))
 (def modal-content (reagent/adapt-react-class Modal.Content))
@@ -420,15 +434,25 @@
 (defn select3-view []
   [:f> select-view])
 
-(defn theme-text-props [props]
-  (let [theme-props (bean/->js (useThemeProps "Badge" (bean/->js props)))
+(defn theme-text-props [name props]
+  (let [theme-props (bean/->js (useThemeProps name (bean/->js props)))
         [text-props _] (useStyledSystemPropsResolver (bean/->js (j/get theme-props :_text)))]
     text-props))
 
 (defn badge-view [props t]
-  (let [text-props (theme-text-props props)]
+  (let [text-props (theme-text-props "Badge" props)]
     [badge props
      [measured-text (bean/->clj text-props)  t]]))
+
+(defn styled-text-view [props t]
+  (let [[text-props _] (useStyledSystemPropsResolver (bean/->js props))]
+    [measured-text (bean/->clj text-props) t]))
+
+(defn styled-button-view [props t]
+  (let [text-props (bean/->clj (theme-text-props "Button" props))]
+    [button props
+     [measured-text text-props t]]))
+
 
 (defn multi-badge-view []
   [hstack {:space {:base "2" :md "4"}
@@ -440,6 +464,22 @@
       [:f> badge-view {:py 4 :colorScheme "danger" :variant item :alignSelf "center"} "DANGER"]
       [:f> badge-view {:py 4 :colorScheme "info" :variant item :alignSelf "center"} "INFO"]])])
 
+(defn alert-view []
+  (let [show (reagent/atom false)]
+    (fn []
+      [box
+       [collapse {:isOpen @show}
+        [alert {};:status "default"}
+         [hstack {:space 1 :flexShrink 1}
+          [vstack {:space 1}
+           [alert-icon]
+           [:f> styled-text-view {:fontSize "md" :_dark {:color "coolGray.800"}} "Please try again later!"]]
+          [box {:pl "6" :pt "2"}
+           [:f> styled-text-view {:height 150} "Your coupon could not be processed at this time."]]
+          [icon-button {:variant "unstyled"
+                        :icon (reagent/as-element [close-icon {:color "coolGray.600" :size 3}])
+                        :onPress #(reset! show false)}]]]]
+       [:f> styled-button-view {:size "sm" :onPress #(reset! show true) :my 8 :mx "auto"} "Re-Open"]])))
 (defn view []
   [center {:flex 1 :py 3 :safeArea true}
-   [multi-badge-view]])
+   [alert-view]])
