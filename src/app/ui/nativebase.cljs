@@ -20,8 +20,11 @@
 
                           Text
                           Button Button.Group
+                          Input
+                          Link
                           CloseIcon
                           IconButton
+                          Icon
 
                           Badge
                           Pressable
@@ -60,9 +63,13 @@
 (def heading (reagent/adapt-react-class Heading))
 
 (def text (reagent/adapt-react-class Text))
+(def input (reagent/adapt-react-class Input))
 
 (def button (reagent/adapt-react-class Button))
 (def button-group (reagent/adapt-react-class Button.Group))
+
+(def link (reagent/adapt-react-class Link))
+(def icon (reagent/adapt-react-class Icon))
 
 (def icon-button (reagent/adapt-react-class IconButton))
 (def close-icon (reagent/adapt-react-class CloseIcon))
@@ -521,6 +528,9 @@
    (for [item ["emerald.500" "warning.500" "indigo.500" "cyan.500"]]
      ^{:key item}
      [:f> spinner-view {:color item}])])
+
+(defn input-view [])
+
 
 (defn view []
   [center {:flex 1 :py 3 :safeArea true}

@@ -30,7 +30,8 @@
    [app.ui.keyboard.views :as keyboard]
    [app.ui.toast.views :as toast]
    [app.ui.drawer.index :as drawer]
-   [app.ui.nativebase :as nativebase]))
+   [app.ui.nativebase :as nativebase]
+   [app.ui.user.login :as login]))
 
 
 (when platform/android?
@@ -124,5 +125,6 @@
      ;   {:name       :toast
      ;    :component  toast/view
      ;    :options    {:title ""}}]])]])
-      [:f> nativebase/view]])]])
+      ; [:f> nativebase/view]])]])
       ; [drawer/view]])]])
+      [login/view]])]])
