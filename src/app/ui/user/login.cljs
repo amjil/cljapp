@@ -2,6 +2,7 @@
   (:require
    [app.ui.nativebase :as nbase]
    [app.ui.components :as ui]
+   [steroid.rn.core :as rn]
    [reagent.core :as reagent]
    ["native-base" :refer [ArrowForwardIcon]]
    ["react-native-vector-icons/Ionicons" :default Ionicons]
@@ -16,10 +17,11 @@
          [nbase/hstack {}
           [nbase/measured-text {} "mobile"]
           [nbase/measured-text {} "number"]]
-         [nbase/input {:keyboardType "number-pad" :placeholder "Input Mobile"
+         [nbase/input {:keyboardType "number-pad"
+                       :placeholder "Input Mobile"
                        :onFocus #(reset! show false)
                        :onBlur #(reset! show true)}]
-         [nbase/flex {:direction "row" :justifyContent "space-between"}
+         [nbase/flex {:flexDirection "row" :justifyContent "space-between"}
           [nbase/hstack {:space 2}
            [nbase/pressable
             {:onPress #(js/console.log "aaa")}

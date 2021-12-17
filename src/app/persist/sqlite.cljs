@@ -128,12 +128,12 @@
                  %)))
 
   (.then (.executeSql @conn "select * from a where short_index = ?" ["ab"])
-         #(js/console.log "result = " ))
+         #(js/console.log "result = "))
   (.then (.executeSql @conn (first asql) (bean/->js (rest asql)))
         ;;  #(js/console.log "result = " (.item (.-rows (aget % 0)) 0)))
          #(js/console.log "result = "  (bean/->js (.raw (rows-data %)))))
 
-  
+
   (.then
    (.transaction @conn
                  (fn [tx]
@@ -150,9 +150,8 @@
   (require '[honey.sql :as sql])
   (def asql
     (hsql/format {:select [:id :full_index :short_index]
-                 :from   [:a]
-                 :where  [:= :a.short_index "ab"]}))
-  
+                  :from   [:a]
+                  :where  [:= :a.short_index "ab"]}))
+
   (range 2)
-  (first "ab")
-  )
+  (first "ab"))
