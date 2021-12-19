@@ -64,13 +64,13 @@
                            (fn [props]
                              (reagent/as-element
                                [drawer-content-scroll-view {}
-                                [safe-area/safe-area-view
+                                [ui/safe-area-consumer
                                  [rn/text "hello Hi"]]]))}
                    [{:name :front
                      :component
                      (fn []
-                       ; [safe-area/safe-area-view
-                        [rn/text "hello world!"])}]]]))}
+                       [safe-area/safe-area-view
+                        [rn/text "hello world!"]])}]]]))}
 
     [{:name :main
       :component
