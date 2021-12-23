@@ -59,11 +59,12 @@
 
     :else
     (let [table (first index-str)
-          sql (hsql/format {:select [:id :full_index :short_index :char_word :active_order]
-                            :from   [(keyword table)]
-                            :where  [:or [:= :full_index index-str]
-                                     [:= :short-index index-str]]
-                            :order-by [[:active_order :desc]]})]
+          sql (hsql/format {:select   [:id :full_index :short_index :char_word :active_order]
+                            :from     [(keyword table)]
+                            :where    [:or [:= :full_index index-str]
+                                       [:= :short-index index-str]]
+                            :order-by [[:active_order :desc]]
+                            :limit    20})]
       (p/let [result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
         (p/then result #(return-fn (rows-data %)))))))
 
@@ -99,7 +100,8 @@
                               next-grouped)
                     sql (hsql/format {:select [:*]
                                       :from [{:union sqls}]
-                                      :order-by [[:active_order :desc]]})]
+                                      :order-by [[:active_order :desc]]
+                                      :limit 20})]
                 ;; (js/console.log "sql = " (bean/->js sql))
                 (p/let [sql-result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
                   (p/then sql-result
