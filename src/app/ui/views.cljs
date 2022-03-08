@@ -105,7 +105,7 @@
    [{:name      :home
      :component home/home}
     {:name      :book
-     :component component-modal}
+     :component webview/view}
     {:name      :edit
      :component picker/picker}
     {:name      :profile
@@ -116,10 +116,10 @@
    [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
      {:on-ready #(re-frame/dispatch [:initialise-app])}     ;; when navigation initialized and mounted initialize the app
      [nativebase/nativebase-provider {:config {:dependencies {"linear-gradient" linear-gradient}}}
-     ; [stack/stack {}
-     ;  [{:name      :main
-     ;    :component tabs
-     ;    :options {:title ""}}
+      [stack/stack {}
+       [{:name      :main
+         :component tabs
+         :options {:title ""}}]]])]])
      ;   {:name       :keyboard
      ;    :component  keyboard/keyboard-view
      ;    :options    {:title ""}}
@@ -129,4 +129,4 @@
       ; [:f> nativebase/view]])]])
       ; [drawer/view]])]])
       ; [login/view]])]])
-      [webview/view]])]])
+      ; [webview/view]])]])
