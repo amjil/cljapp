@@ -105,22 +105,18 @@
 
   (map #(svg % :white 24) (get-glyphs :white mstr))
   (map #(svg % :white 24) (get-glyphs :white mlongstr))
-  (js/console.log 
-  (j/call (get-font :white) :layout mspecial "mong"))
-  (js/console.log 
-  (aget (.-glyphs (j/call (get-font :white) :layout mspecial)) 1))
+  (js/console.log
+   (j/call (get-font :white) :layout mspecial "mong"))
+  (js/console.log
+   (aget (.-glyphs (j/call (get-font :white) :layout mspecial)) 1))
   (.-features (j/call (get-font :white) :glyphsForString mspecial))
-  (js/console.log 
-(aget (j/call (get-font :white) :glyphsForString mspecial) 1))
-(-> (aget (j/call (get-font :white) :glyphsForString mspecial) 0)
-    (.-codePoints)
-    (aget 0))
-(js->clj (.-GSUB (get-font :white)))
-(.keys js/Object (.-lookupList (.-GSUB (get-font :white))))
-(j/get (.-GSUB (get-font :white)) :lookupList)
-(js/console.log  (.-items (.-lookupList (.-GSUB (get-font :white)))))
-(js->clj (.-items (.-lookupList (.-GSUB (get-font :white)))))
-
-  
-  
-  )
+  (js/console.log
+   (aget (j/call (get-font :white) :glyphsForString mspecial) 1))
+ (-> (aget (j/call (get-font :white) :glyphsForString mspecial) 0)
+     (.-codePoints)
+     (aget 0))
+ (js->clj (.-GSUB (get-font :white)))
+ (.keys js/Object (.-lookupList (.-GSUB (get-font :white))))
+ (j/get (.-GSUB (get-font :white)) :lookupList)
+ (js/console.log  (.-items (.-lookupList (.-GSUB (get-font :white)))))
+ (js->clj (.-items (.-lookupList (.-GSUB (get-font :white))))))

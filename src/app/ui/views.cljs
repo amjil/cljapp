@@ -31,7 +31,8 @@
    [app.ui.toast.views :as toast]
    [app.ui.drawer.index :as drawer]
    [app.ui.nativebase :as nativebase]
-   [app.ui.user.login :as login]))
+   [app.ui.user.login :as login]
+   [app.ui.webview :as webview]))
 
 
 (when platform/android?
@@ -127,4 +128,5 @@
      ;    :options    {:title ""}}]])]])
       ; [:f> nativebase/view]])]])
       ; [drawer/view]])]])
-      [login/view]])]])
+      ; [login/view]])]])
+      [webview/view]])]])
