@@ -13,12 +13,15 @@
     "android" "file:///android_asset/fonts/MongolianBaiZheng.ttf"
     "ios" "MongolianBaiZheng.ttf"))
 
+; src:local('MongolianBaiZheng')  url('" font-url "') format('truetype')
+;ios >>>>>>
+;src: local('MongolianBaiZheng'), url('" font-url "');
 (def css (str "<style>
   @font-face {
      font-family: 'MongolianBaiZheng';
-     src:url('" font-url "')
+     src: local('MongolianBaiZheng'), url('" font-url "');
   }
-      body {font-family: MongolianBaiZheng; caret-color: black; writing-mode: vertical-lr;-webkit-text-orientation: sideways-right; overflow-x: hidden; -webkit-overflow-scrolling: touch;}
+      body {font-family: MongolianBaiZheng; caret-color: black; writing-mode: vertical-lr; -webkit-text-orientation: sideways-right;overflow-x: hidden; -webkit-overflow-scrolling: touch;}
       .pell { height: 100%; width: 100%;} .pell-content { outline: 0; overflow-x: auto;padding: 10px;width: 100%; -webkit-overflow-scrolling: touch;}
       video {max-width: 98%;margin-left:auto;margin-right:auto;display: block;}
       img {max-width: 98%;vertical-align: middle;}
@@ -35,15 +38,15 @@
 (def content "
 <br/>
 
-<h1 style=\"font-family:MongolianBaiZheng\">ᠪᠢ ᠮᠣᠩᠭᠤᠯ ᠬᠥᠮᠦᠨ</h1>
+<h1>aaaaᠪᠢ ᠮᠣᠩᠭᠤᠯ ᠬᠥᠮᠦᠨ</h1>
 <h2>ᠴ᠂ ᠴᠢᠮᠡᠳ</h2>
-<p style=\"font-family:MongolianBaiZheng\">ᠠᠷᠭᠠᠯ᠎ᠤᠨ ᠤᠲᠤᠭ᠎ᠠ ᠪᠤᠷᠭᠢᠯᠤᠭᠰᠠᠨ</p>
-<p>ᠮᠠᠯᠴᠢᠨ᠎ᠤ ᠭᠡᠷ᠎ᠲᠦ ᠲᠥᠷᠦᠭᠰᠡᠨ ᠪᠢ</p>
-<p>ᠠᠲᠠᠷ ᠬᠡᠭᠡᠷ᠎ᠡ ᠨᠤᠲᠤᠭ᠎ᠢᠶᠠᠨ</p>
+<p>ᠠᠷᠭᠠᠯ ᠤᠨ ᠤᠲᠤᠭ᠎ᠠ ᠪᠤᠷᠭᠢᠯᠤᠭᠰᠠᠨ</p>
+<p>ᠮᠠᠯᠴᠢᠨ ᠤ ᠭᠡᠷ᠎ ᠲᠥ ᠲᠥᠷᠦᠭᠰᠡᠨ ᠪᠢ</p>
+<p>ᠠᠲᠠᠷ ᠬᠡᠭᠡᠷ᠎ᠡ ᠨᠤᠲᠤᠭ  ᠢᠢᠡᠨ</p>
 <p>ᠥᠯᠦᠭᠡᠢ᠎ᠮᠢᠨᠢ ᠭᠡᠵᠦ ᠪᠣᠳᠤᠳᠠᠭ᠃</p>
 <p>&nbsp;</p>
 <p>ᠴᠡᠩᠬᠡᠷ ᠮᠠᠨᠠᠨ ᠰᠤᠭᠤᠨᠠᠭᠯᠠᠭᠰᠠᠨ</p>
-<p>ᠠᠯᠤᠰ᠎ᠤᠨ ᠪᠠᠷ᠎ᠠ᠎ᠶᠢ ᠰᠢᠷᠲᠡᠭᠡᠳ</p>
+<p>ᠠᠯᠤᠰ᠎ ᠤᠨ ᠪᠠᠷ᠎ᠠ᠎ ᠶᠢ ᠰᠢᠷᠲᠡᠭᠡᠳ</p>
 <p>ᠴᠡᠯᠡᠭᠡᠷ ᠰᠠᠢᠬᠠᠨ ᠨᠤᠲᠤᠭ᠎ᠢᠶᠠᠨ</p>
 <p>ᠰᠡᠳᠭᠢᠯ ᠪᠠᠬᠠᠳᠤᠨ ᠬᠠᠷᠠᠬᠤ᠎ᠳᠤ</p>
 <p>ᠦᠯᠢᠶᠡᠵᠦ ᠪᠠᠢᠭ᠎ᠠ ᠰᠠᠯᠬᠢ᠎ᠨᠢ</p>
@@ -118,27 +121,36 @@
 
 (def html (str "<html><head><meta name=\"viewport\" content=\"user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0\">" css "</head><body>" content "</body></html>"))
 
+(declare web-content)
+
 (defn view []
   (let [webview-height (reagent/atom 0)
         on-message (fn [e]
                      (js/console.log  (j/get-in e [:nativeEvent :data]))
                      (reset! webview-height (j/get-in e [:nativeEvent :data])))]
     (fn []
-     [nbase/box {:h "100%" :safeArea true}
+     [nbase/box {:h "100%"}; :safeArea true}
       [nbase/measured-text {:fontFamily "MongolianBaiZheng"} "ᠴ᠂ ᠴᠢᠮᠡᠳ"]
       [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-height}
                           :horizontal true}
        ; [:> WebView {:source {:uri "https://reactnative.dev/"}}]]])
-       [:> WebView {:useWebKit true
-                    :scrollEnabled false
-                    :hideKeyboardAccessoryView true
-                    :keyboardDisplayRequiresUserAction false
-                    :originWhitelist ["*"]
-                    :bounces false
-                    :javaScriptEnabled true
-                    :automaticallyAdjustContentInsets true
-                    :source {:html html :baseUrl ""}
-                    :onMessage on-message
-                    :injectedJavaScript "window.ReactNativeWebView.postMessage(Math.max(document.body.offsetWidth, document.body.scrollWidth));"
-                    :style {:height "100%"
-                            :width "100%"}}]]])))
+       [web-content html on-message]]])))
+
+(defn web-content [html on-message]
+  [:> WebView {:useWebKit true
+               :cacheEnabled false
+               :scrollEnabled false
+               :scrollEventThrottle 10
+               :hideKeyboardAccessoryView true
+               :keyboardDisplayRequiresUserAction false
+               :originWhitelist ["*"]
+               :startInLoadingState true
+               :bounces false
+               :javaScriptEnabled true
+               ; :automaticallyAdjustContentInsets false
+               :source {:html html :baseUrl ""}
+               :onMessage on-message
+               :injectedJavaScript "window.ReactNativeWebView.postMessage(Math.max(document.body.offsetWidth, document.body.scrollWidth));"
+               :style {:height "100%"
+                       :width "100%"
+                       :margin-bottom 10}}])

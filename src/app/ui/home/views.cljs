@@ -10,7 +10,8 @@
    [steroid.rn.components.touchable :as touchable]
    [promesa.core :as p]
    [re-frame.core :refer [dispatch subscribe]]
-   [app.ui.text.index :as text]))
+   [app.ui.text.index :as text]
+   [app.ui.webview :as webview]))
 
 
 (defn home []
