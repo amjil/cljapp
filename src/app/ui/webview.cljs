@@ -176,7 +176,8 @@
                          "initHeight" (reset! webview-height (:message data))
                          "onChange" (reset! content (:message data))
                          "updateSelection" (do (js/console.log (j/get-in e [:nativeEvent :data]))
-                                               (reset! cursor (:message data))
+                                               (if (not= 0 (-> data :message :left))
+                                                 (reset! cursor (:message data)))
                                                (reset! is-caret true))
 
                          "initRange" (do (js/console.log (j/get-in e [:nativeEvent :data]))
