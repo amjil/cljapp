@@ -2,12 +2,17 @@
   (:require
    [app.ui.nativebase :as nbase]
    [app.ui.components :as ui]
+   [app.ui.html :as html]
+   [app.handler.gesture :as gesture]
    [reagent.core :as reagent]
    [applied-science.js-interop :as j]
    ["react-native" :as rn]
-   ["react-native-webview" :refer [WebView]]))
+   ["react-native-webview" :refer [WebView]]
+   ["react-native-smooth-blink-view" :default blinkview]
+   ["react-native-svg" :as svg]))
 
 (def platform (j/get-in rn [:Platform :OS]))
+
 (def font-url
   (condp = platform
     "android" "file:///android_asset/fonts/MongolianBaiZheng.ttf"
@@ -57,65 +62,6 @@
 <p>ᠡᠯᠢᠭᠡ ᠵᠢᠷᠦᠬᠡ᠎ᠮᠢᠨᠢ ᠳᠣᠭᠳᠣᠯᠵᠣ</p>
 <p>ᠬᠣᠣᠰ᠎ᠦᠭᠡᠢ ᠪᠠᠶᠠᠷ᠎ᠤᠨ ᠨᠢᠯᠪᠤᠰᠤ</p>
 <p>ᠬᠣᠶᠠᠷ ᠨᠢᠳᠦ᠎ᠶᠢ᠎ᠮᠢᠨᠢ ᠪᠦᠷᠬᠦᠳᠡᠭ᠃</p>
-<p>&nbsp;</p>
-<p>ᠥᠷᠭᠡᠨ ᠰᠠᠢᠬᠠᠨ ᠨᠤᠲᠤᠭ᠎ᠤᠨ᠎ᠢᠶᠠᠨ</p>
-<p>ᠡᠪᠴᠢᠭᠦᠨ ᠳᠡᠭᠡᠷ᠎ᠡ᠎ᠨᠢ ᠲᠥᠷᠥᠭᠡᠳ</p>
-<p>ᠥᠨᠢᠷ ᠠᠭᠤᠳᠠᠮ ᠲᠠᠯ᠎ᠠ᠎ᠶᠢᠨ᠎ᠢᠶᠠᠨ</p>
-<p>ᠥᠩᠭᠡᠲᠦ ᠠᠮᠢᠳᠤᠷᠠᠯ᠎ᠤᠨ ᠲᠥᠯᠦᠭᠡ</p>
-<p>ᠠᠮᠢ ᠪᠡᠶ᠎ᠡ᠎ᠪᠡᠨ ᠵᠣᠷᠢᠭᠤᠯᠳᠠᠭ</p>
-<p>ᠠᠷᠢᠭᠤᠨ ᠨᠠᠨᠳᠢᠨ ᠵᠠᠩᠰᠢᠯ᠎ᠲᠠᠢ</p>
-<p>ᠡᠪᠦᠭᠡᠳ ᠬᠥᠭᠰᠢᠳ ᠳᠡᠭᠡᠳᠦᠰ᠎ᠦᠨ᠎ᠮᠢᠨᠢ</p>
-<p>ᠦᠷ᠎ᠡ᠎ᠪᠡᠨ ᠭᠡᠵᠦ ᠨᠠᠢᠳᠠᠭᠠᠳ</p>
-<p>ᠦᠯᠡᠳᠡᠭᠡᠵᠦ ᠨᠠᠳᠠ᠎ᠳᠤ ᠥᠭᠭᠦᠭᠰᠡᠨ</p>
-<p>ᠥᠨᠢᠷ ᠮᠣᠩᠭᠤᠯ ᠣᠷᠤᠨ᠎ᠤ</p>
-<p>ᠨᠠᠷᠠ᠎ᠨᠢ ᠨᠠᠮᠠᠢ ᠭᠡᠢᠭᠦᠯᠵᠦ</p>
-<p>ᠨᠠᠷᠢᠨ ᠰᠠᠯᠬᠢ᠎ᠨᠢ ᠦᠯᠢᠶᠡᠵᠦ</p>
-<p>ᠨᠠᠮᠢᠷᠠᠭ᠎ᠠ ᠬᠤᠷ᠎ᠠ᠎ᠨᠢ ᠲᠡᠵᠢᠭᠡᠵᠦ</p>
-<p>ᠨᠠᠢᠷᠲᠠᠢ ᠰᠠᠢᠬᠠᠨ ᠣᠷᠤᠨ᠎ᠮᠢᠨᠢ</p>
-<p>ᠨᠠᠳᠠ᠎ᠲᠠᠢ ᠬᠤᠪᠢ ᠨᠢᠭᠡᠲᠡᠢ ᠪᠠᠢᠳᠠᠭ᠎ᠲᠤᠯᠠ</p>
-<p>ᠤᠨᠠᠭᠰᠠᠨ ᠡᠨᠡ ᠨᠤᠲᠤᠭ᠎ᠢᠶᠠᠨ ᠪᠢ</p>
-<p>ᠥᠪᠡᠷ᠎ᠦᠨ ᠪᠡᠶ᠎ᠡ᠎ᠰᠢᠭ ᠬᠠᠢᠷᠠᠯᠠᠵᠤ</p>
-<p>ᠤᠭᠢᠶᠠᠭᠰᠠᠨ ᠲᠤᠩᠭᠠᠯᠠᠭ ᠮᠥᠷᠡᠨ᠎ᠢᠶᠡᠨ ᠪᠢ</p>
-<p>ᠡᠬᠡ᠎ᠶᠢᠨ ᠰᠦ᠋᠎ᠰᠢᠭ ᠰᠠᠨᠠᠳᠠᠭ᠃</p>
-<p>&nbsp;</p>
-<p>ᠡᠨᠡ ᠨᠤᠲᠤᠭ᠎ᠲᠠᠭᠠᠨ ᠪᠢ ᠡᠵᠡᠨ᠎ᠨᠢ᠎ᠶᠦᠮ</p>
-<p>ᠡᠩᠬᠦᠷᠡᠢᠯᠡᠯ᠎ᠳᠦ᠎ᠨᠢ ᠥᠰᠦᠭᠰᠡᠨ ᠬᠦᠦ᠎ᠨᠢ᠎ᠶᠦᠮ</p>
-<p>ᠢᠷᠡᠭᠡᠳᠦᠢ᠎ᠶᠢ᠎ᠨᠢ ᠲᠦᠮᠡᠨ᠎ᠲᠡᠢ᠎ᠪᠡᠨ ᠪᠣᠰᠭᠠᠯᠴᠠᠬᠤ</p>
-<p>ᠶᠡᠬᠡ ᠡᠭᠦᠷᠭᠡ ᠬᠦᠯᠢᠶᠡᠭᠰᠡᠨ᠎ᠶᠦᠮ᠃</p>
-<p>&nbsp;</p>
-<p>ᠬᠡᠷᠪᠡ ᠬᠥᠮᠦᠨ ᠡᠭᠡ ᠣᠷᠤᠨ᠎ᠢᠶᠠᠨ</p>
-<p>ᠬᠠᠮᠤᠭ᠎ᠠᠴᠠ ᠦᠨᠡᠲᠡᠢ ᠭᠡᠳᠡᠭ ᠪᠣᠯ</p>
-<p>ᠬᠡᠭᠡᠷ᠎ᠡ ᠲᠠᠯ᠎ᠠ ᠨᠤᠲᠤᠭ᠎ᠢᠶᠠᠨ</p>
-<p>ᠶᠠᠭᠤ᠎ᠠᠴᠠ᠎ᠴᠤ ᠢᠯᠡᠭᠦᠦ ᠰᠠᠨᠠᠳᠠᠭ ᠪᠣᠯ</p>
-<p>ᠠᠵᠢᠯᠯᠠᠬᠤ ᠬᠥᠳᠡᠯᠬᠦ ᠪᠦᠷᠢ᠎ᠳᠡᠭᠡᠨ</p>
-<p>ᠠᠷᠠᠳ ᠲᠦᠮᠡᠨ᠎ᠦ᠎ᠪᠡᠨ ᠲᠥᠯᠦᠭᠡ ᠪᠣᠯ</p>
-<p>ᠠᠯᠬᠤᠬᠤ ᠭᠢᠰᠭᠢᠬᠦ ᠪᠣᠯᠭᠠᠨ᠎ᠳᠠᠭᠠᠨ</p>
-<p>ᠠᠤᠭ᠎ᠠ ᠣᠷᠤᠨ᠎ᠤ᠎ᠪᠠᠨ ᠲᠥᠯᠦᠭᠡ ᠪᠣᠯ</p>
-<p>ᠠᠯᠲᠠᠨ ᠰᠢᠷᠤᠢ ᠤᠷᠤᠭᠤ᠎ᠪᠠᠨ ᠳᠠᠭᠠᠷᠢᠭᠰᠠᠨ</p>
-<p>ᠠᠲᠠᠭᠠᠲᠠᠨ᠎ᠤ ᠬᠣᠣᠷᠲᠤ ᠰᠤᠮᠤ᠎ᠶᠢ</p>
-<p>ᠠᠶᠤᠰᠢ᠎ᠰᠢᠭ᠋ ᠴᠡᠭᠡᠵᠢ᠎ᠪᠡᠷ᠎ᠢᠶᠡᠨ ᠲᠠᠭᠯᠠᠨ</p>
-<p>ᠠᠮᠢ᠎ᠪᠠᠨ ᠥᠭᠬᠦ᠎ᠡᠴᠡ ᠪᠤᠴᠠᠬᠤ᠎ᠦᠭᠡᠢ ᠪᠣᠯ</p>
-<p>ᠡᠨᠡ ᠬᠥᠮᠦᠨ ᠮᠣᠩᠭᠤᠯ ᠬᠥᠮᠦᠨ</p>
-<p>ᠡᠬᠡ ᠣᠷᠤᠨ᠎ᠳᠠᠭᠠᠨ ᠬᠠᠢᠷᠠᠲᠠᠢ ᠬᠥᠮᠦᠨ</p>
-<p>ᠡᠨᠡ ᠬᠠᠢᠷ᠎ᠠ᠎ᠨᠢ ᠮᠣᠩᠭᠤᠯᠴᠤᠳ᠎ᠲᠤ</p>
-<p>ᠡᠷᠲᠡᠨ᠎ᠡᠴᠡ ᠬᠡᠪᠰᠢᠭᠰᠡᠨ ᠬᠠᠢᠷ᠎ᠠ ᠭᠡᠨ᠎ᠡ᠃</p>
-<p>&nbsp;</p>
-<p>ᠪᠢ ᠮᠣᠩᠭᠤᠯ ᠬᠥᠮᠦᠨ ᠪᠣᠯᠬᠣᠷ</p>
-<p>ᠪᠢᠳᠤᠷᠶ᠎ᠠ ᠨᠤᠲᠤᠭ᠎ᠤᠨ᠎ᠢᠶᠠᠨ ᠲᠥᠯᠦᠭᠡ</p>
-<p>ᠠᠮᠢ ᠪᠡᠶ᠎ᠡ᠂ ᠪᠦᠬᠦ ᠨᠠᠰᠤ᠎ᠪᠠᠨ</p>
-<p>ᠠᠪᠴᠤ ᠪᠠᠢᠭ᠎ᠠ ᠠᠮᠢᠰᠭᠤᠭ᠎ᠠ᠎ᠪᠠᠨ</p>
-<p>ᠣᠷᠭᠢᠯᠵᠤ ᠪᠠᠢᠭ᠎ᠠ ᠵᠣᠷᠢᠭ᠎ᠢᠶᠠᠨ</p>
-<p>ᠠᠯᠢ᠎ᠶᠢ᠎ᠨᠢ᠎ᠴᠤ ᠬᠠᠢᠷᠠᠯᠠᠯ᠎ᠦᠭᠡᠢ ᠵᠣᠷᠢᠭᠤᠯᠤᠨ᠎ᠠ᠃</p>
-<p>&nbsp;</p>
-<p>ᠲᠥᠷᠦᠯᠬᠢ ᠨᠤᠲᠤᠭ᠎ᠢᠶᠠᠨ ᠭᠡᠢᠭᠦᠯᠦᠭᠰᠡᠨ</p>
-<p>ᠨᠠᠷᠠᠨ᠎ᠤ ᠲᠤᠶᠠᠭᠠᠨ᠎ᠳᠤ ᠬᠠᠢᠷᠠᠲᠠᠢ ᠪᠢ</p>
-<p>ᠲᠦᠪᠰᠢᠨ ᠲᠠᠯ᠎ᠠ᠎ᠳᠠᠭᠠᠨ ᠴᠤᠤᠷᠢᠶᠠᠲᠤᠭᠰᠠᠨ</p>
-<p>ᠡᠭᠡᠰᠢᠭᠲᠦ ᠲᠠᠭᠤᠨ᠎ᠳᠤ ᠳᠤᠷᠠᠲᠠᠢ ᠪᠢ</p>
-<p>ᠬᠠᠨᠠᠭᠠᠷ ᠴᠢᠯᠦᠭᠡᠲᠦ ᠨᠤᠲᠤᠭ᠎ᠢᠶᠠᠨ</p>
-<p>ᠬᠠᠷᠠᠬᠤ ᠳᠣᠲᠣᠮ᠎ᠢᠶᠠᠨ ᠪᠠᠶᠠᠰᠴᠤ ᠪᠠᠢᠨ᠎ᠠ</p>
-<p>ᠬᠠᠯᠠᠭᠤᠨ ᠠᠮᠢ᠎ᠪᠠᠨ ᠲᠦᠢᠬᠦ᠎ᠦᠭᠡᠢ</p>
-<p>ᠵᠢᠳᠭᠦᠬᠦ ᠵᠣᠷᠢᠭ ᠨᠡᠮᠡᠭᠳᠡᠵᠦ ᠪᠠᠢᠨ᠎ᠠ᠃</p>
-
 <br/>
 ")
 
@@ -154,3 +100,154 @@
                :style {:height "100%"
                        :width "100%"
                        :margin-bottom 10}}])
+
+(defn web-view-message []
+  (let [webref (reagent/atom nil)
+        on-message (fn [data] (js/alert (j/get-in data [:nativeEvent :data])))]
+    (fn []
+      [nbase/box {:h "100%"};
+       [nbase/center
+        [nbase/pressable
+         {:on-press (fn [e] (js/console.log "pressed ....")
+                      (j/call @webref :postMessage "Data from React Native App"))
+          :p 20 :width 300 :mt 100 :bg "#6751ff" :alignItems "center"}
+         [nbase/text {:fontSize 20 :color "white"}
+          "Send Data To WebView / Website"]]]
+       [:> WebView
+        {:ref (fn [r]
+                (js/console.log ">>>> " r)
+                (reset! webref r))
+         :scalesPageToFit false
+         :mixedContentMode "compatibility"
+         :onMessage on-message
+         :source { :html "
+                          <html>
+                          <head>
+                            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+                          </head>
+                          <body
+                            style=\"
+                              display: flex;
+                              justify-content: center;
+                              flex-direction: column;
+                              align-items: center;
+                            \"
+                          >
+                            <button
+                            onclick=\"sendDataToReactNativeApp()\"
+                              style=\"
+                                padding: 20;
+                                width: 200;
+                                font-size: 20;
+                                color: white;
+                                background-color: #6751ff;
+                              \"
+                            >
+                              Send Data To React Native App
+                            </button>
+                            <script>
+                              const sendDataToReactNativeApp = async () => {
+                                window.ReactNativeWebView.postMessage('Data from WebView / Website');
+                              };
+                              window.addEventListener(\"message\", message => {
+                                alert(message.data)
+                              });
+                            </script>
+                          </body>
+                          </html>
+
+
+
+                 "}}]])))
+
+; (def quill-html (js/require "../assets/quill.html"))
+(declare quill-html)
+
+(defn webview-editor []
+  (let [webview-height (reagent/atom 0)
+        webref (reagent/atom nil)
+        content (reagent/atom nil)
+        cursor (reagent/atom nil)
+        is-caret (reagent/atom true)
+        on-message (fn [e]
+                     (let [data (js->clj (j/call js/JSON :parse (j/get-in e [:nativeEvent :data]))
+                                   :keywordize-keys true)]
+                       (condp = (:type data)
+                         "initHeight" (reset! webview-height (:message data))
+                         "onChange" (reset! content (:message data))
+                         "updateSelection" (do (js/console.log (j/get-in e [:nativeEvent :data]))
+                                               (reset! cursor (:message data))
+                                               (reset! is-caret true))
+
+                         "initRange" (do (js/console.log (j/get-in e [:nativeEvent :data]))
+                                       (reset! range (:message data))
+                                       (reset! is-caret false))
+                         "updateRange" (do (js/console.log (j/get-in e [:nativeEvent :data]))
+                                         (reset! range (:message data))
+                                         (reset! is-caret false)))))
+        options (.stringify js/JSON
+                     (clj->js
+                             {
+                              :modules #js {:toolbar false}
+                              :theme "snow"
+                              :readOnly true}))]
+                              ; :debug "info"
+                              ; :placeholder "ᠠᠭᠤᠯᠭ᠎ᠠ ᠪᠠᠨ ᠨᠠᠢᠷᠠᠭᠤᠯᠤᠶ᠎ᠠ ..."}))]
+    (fn []
+      [nbase/box {:h "100%"}
+       [nbase/pressable
+        {:on-press (fn [e]
+                     (j/call @webref :postMessage
+                       ; (j/call js/JSON :stringify #js {:type "testMessage" :message "Data from React Native App"})
+                       ; (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x 30, :y 40}})))}
+                       (j/call js/JSON :stringify #js {:type "insertText" :message #js {:index 5, :text " new text"}}))
+                       ; (j/call js/JSON :stringify #js {:type "initRange" :message #js {:x 30, :y 20}})
+                       ; (j/call js/JSON :stringify #js {:type "updateRange" :message (clj->js {:start {:x 17, :y 13} :end {:x 17, :y 50}})})))}
+                     (js/console.log "pressed ...."))}
+        [nbase/text
+         "button"]]
+       [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-height}
+                           :horizontal true
+                           :on-press #(js/console.log "scroll-view on press")}
+        [nbase/zstack {:width "100%" :height "100%"}
+         [:> WebView {:useWebKit true
+                      :ref (fn [r] (reset! webref r))
+                      :cacheEnabled false
+                      :scrollEnabled false
+                      :scrollEventThrottle 10
+                      :hideKeyboardAccessoryView true
+                      :keyboardDisplayRequiresUserAction false
+                      :originWhitelist ["*"]
+                      :startInLoadingState true
+                      :bounces false
+                      :javaScriptEnabled true
+                      :source {:html html/quill-html
+                               :baseUrl ""}
+                      :onMessage on-message
+                      :injectedJavaScriptBeforeContentLoaded (str "window.options=" options)
+                      :injectedJavaScript "
+                                          //window.ReactNativeWebView.postMessage(Math.max(document.body.offsetWidth, document.body.scrollWidth));
+
+
+                                          _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)})
+                                          "
+                      :style {:height "100%"
+                              :width "100%"
+                              :margin-bottom 10}}]
+         [nbase/box {:style {:margin-top (:top @cursor) :margin-left (:left @cursor)}
+                     :flex-direction "row"}
+          [:> blinkview {"useNativeDriver" false}
+           [:> svg/Svg {:width 18 :height 2}
+            [:> svg/Rect {:x "0" :y "0" :width 18 :height 2 :fill "blue"}]]]
+          [nbase/box {:flex-direction "row" :mt -2}
+           [nbase/box {:w 0 :h 0
+                       :mr -2
+                       :border-right-width 15
+                       :border-right-color "blue.600"
+                       :border-top-color "transparent"
+                       :border-top-width 10
+                       :border-bottom-color "transparent"
+                       :border-bottom-width 10
+                       :border-left-color "transparent"
+                       :border-left-width 0}]
+           [nbase/box {:w 5 :h 5 :border-radius 50 :bg "blue.600"}]]]]]])))

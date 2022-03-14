@@ -105,7 +105,7 @@
    [{:name      :home
      :component home/home}
     {:name      :book
-     :component webview/view}
+     :component webview/webview-editor}
     {:name      :edit
      :component picker/picker}
     {:name      :profile
