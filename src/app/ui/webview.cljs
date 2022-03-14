@@ -199,8 +199,8 @@
         {:on-press (fn [e]
                      (j/call @webref :postMessage
                        ; (j/call js/JSON :stringify #js {:type "testMessage" :message "Data from React Native App"})
-                       ; (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x 30, :y 40}})))}
-                       (j/call js/JSON :stringify #js {:type "insertText" :message #js {:index 5, :text " new text"}}))
+                       (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x 28, :y 57}}))
+                       ; (j/call js/JSON :stringify #js {:type "insertText" :message #js {:index 5, :text " new text"}}))
                        ; (j/call js/JSON :stringify #js {:type "initRange" :message #js {:x 30, :y 20}})
                        ; (j/call js/JSON :stringify #js {:type "updateRange" :message (clj->js {:start {:x 17, :y 13} :end {:x 17, :y 50}})})))}
                      (js/console.log "pressed ...."))}
@@ -239,15 +239,26 @@
           [:> blinkview {"useNativeDriver" false}
            [:> svg/Svg {:width 18 :height 2}
             [:> svg/Rect {:x "0" :y "0" :width 18 :height 2 :fill "blue"}]]]
-          [nbase/box {:flex-direction "row" :mt -2}
-           [nbase/box {:w 0 :h 0
-                       :mr -2
-                       :border-right-width 15
-                       :border-right-color "blue.600"
-                       :border-top-color "transparent"
-                       :border-top-width 10
-                       :border-bottom-color "transparent"
-                       :border-bottom-width 10
-                       :border-left-color "transparent"
-                       :border-left-width 0}]
-           [nbase/box {:w 5 :h 5 :border-radius 50 :bg "blue.600"}]]]]]])))
+          [gesture/tap-gesture-handler
+           {:onHandlerStateChange #(do
+                                     (if (gesture/tap-state-end (j/get % :nativeEvent))
+                                       (js/console.log "tap gesture")))}
+           [gesture/pan-gesture-handler
+            {:onGestureEvent
+             (fn [e] (let [x (+ (j/get-in e [:nativeEvent :translationX]) 15)
+                           y (j/get-in e [:nativeEvent :translationY])]
+                       (js/console.log "x = " x " y = " y)
+                       (j/call @webref :postMessage
+                         (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x x :y y}}))))}
+            [nbase/box {:flex-direction "row" :mt -2}
+             [nbase/box {:w 0 :h 0
+                         :mr -2
+                         :border-right-width 15
+                         :border-right-color "blue.600"
+                         :border-top-color "transparent"
+                         :border-top-width 10
+                         :border-bottom-color "transparent"
+                         :border-bottom-width 10
+                         :border-left-color "transparent"
+                         :border-left-width 0}]
+             [nbase/box {:w 5 :h 5 :border-radius 50 :bg "blue.600"}]]]]]]]])))

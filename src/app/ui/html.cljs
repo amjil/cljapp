@@ -1065,9 +1065,7 @@
         });
 
       var message = function (event) {
-          alert('message111');
           const obj = JSON.parse(event.data);
-          alert('message' + obj.type);
           switch (obj.type) {
               case 'testMessage':
                   alert(obj.message);
