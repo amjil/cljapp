@@ -66,7 +66,7 @@
         height: 100%;
         outline: none;
         overflow-y: auto;
-        padding: 12px 15px;
+        padding: 22px 25px;
         tab-size: 4;
         -moz-tab-size: 4;
         text-align: left;
@@ -972,7 +972,7 @@
         color: #06c;
       }
       .ql-container.ql-snow {
-        border: 1px solid #ccc;
+        //border: 1px solid #ccc;
       }
     </style>
   </head>
@@ -1017,15 +1017,57 @@
       //quill.enable(false);
 
       function pointFromSelection(index) {
-        var leaf = quill.getLeaf(index);
-        var blot = leaf[0];
-        var flag = (blot.domNode.nodeType == 3) && (leaf[1] == blot.domNode.length);
+        var [leaf, offset] = quill.getLeaf(index);
+        var flag = (leaf.domNode.nodeType == 3) && (offset == leaf.domNode.length);
         var sindex = flag ? index - 1 : index;
         var bounds = quill.getBounds(sindex, 1);
         var top = flag? bounds.bottom : bounds.top;
 
-        return {index: index, left: bounds.left, top: top};
+        return {index: index, left: bounds.left, top: top, width: bounds.width};
       };
+
+      function selectionLines(index, length) {
+        var startLeaf = quill.getLeaf(index);
+        var endLeaf = quill.getLeaf(index + length);
+
+        var lines = quill.getLines(index, length);
+        var ranges = [];
+
+        lines.forEach((line, i) => {
+          if (!line.children) {
+            const singleElementRange = document.createRange();
+            singleElementRange.selectNode(line.domNode);
+            return ranges.concat(singleElementRange);
+          }
+          const [rangeStart, startOffset] = i === 0 ?
+            startLeaf :
+            line.path(0).pop();
+
+          const [rangeEnd, endOffset] = i === lines.length - 1 ?
+            endLeaf :
+            line.path(line.length() - 1).pop();
+
+          const range = document.createRange();
+
+
+          if (rangeStart.domNode.nodeType === Node.TEXT_NODE) {
+            range.setStart(rangeStart.domNode, startOffset);
+          } else {
+            range.setStartBefore(rangeStart.domNode);
+          }
+
+          if (rangeEnd.domNode.nodeType === Node.TEXT_NODE) {
+            range.setEnd(rangeEnd.domNode, endOffset);
+          } else {
+            range.setEndAfter(rangeEnd.domNode);
+          }
+
+          ranges.push(range.getBoundingClientRect());
+        });
+
+        return ranges;
+      }
+
       function selectionFromPoint(point) {
           var range = document.caretRangeFromPoint(point.x, point.y);
           var blot = Quill.find(range.endContainer);
@@ -1035,7 +1077,7 @@
           var bounds = quill.getBounds(index, 1);
           var top = flag? bounds.bottom : bounds.top;
 
-          return {index: selectionIndex, left: bounds.left, top: top};
+          return {index: selectionIndex, left: bounds.left, top: top, width: bounds.width};
       };
 
       function insertText(data) {
@@ -1046,15 +1088,14 @@
       };
 
       function deleteText(data) {
-        quill.deleteText(data.index, data.length);
-        var index = data.index - data.length;
-        var range = pointFromSelection(index);
+        quill.deleteText(data.start, data.end - data.start);
+        var range = pointFromSelection(data.start);
         return range;
       }
 
-      function getText(data) {
-        var text = quill.getText(data.index, data.length);
-        return {text: text};
+      function copyText(data) {
+        var text = quill.getText(data.start, data.end - data.start);
+        return text;
       }
 
       quill.root.addEventListener('touchstart', (e) => {
@@ -1070,6 +1111,11 @@
               case 'testMessage':
                   alert(obj.message);
                   break;
+              case 'initSelection':
+                  var length = quill.getLength();
+                  var range = pointFromSelection(length - 1);
+                  _postMessage({type: 'updateSelection', message: range});
+                  break;
               case 'setSelection':
                   var range = selectionFromPoint(obj.message);
                   quill.setSelection(range.index);
@@ -1081,11 +1127,12 @@
                   break;
               case 'deleteText':
                   var range = deleteText(obj.message);
-                  _postMessage({type: 'updateRange', message: range});
+                  _postMessage({type: 'updateSelection', message: range});
                   break;
-              case 'getText':
-                  var result = getText(obj.message);
-                  _postMessage({type: 'getText', message: result});
+              case 'copyText':
+                  var total = quill.getLength();
+                  var result = copyText(obj.message);
+                  _postMessage({type: 'copyText', message: result});
                   break;
               case 'initRange':
                   var range = document.caretRangeFromPoint(obj.message.x, obj.message.y);
@@ -1129,7 +1176,7 @@
                   var bounds1 = quill.getBounds(index1, 1);
                   var top1 = flag1 ? bounds1.bottom : bounds1.top;
                   var startInfo = {
-                    index: boundaries.start, left: bounds1.left, top: top1
+                    index: boundaries.start, left: bounds1.left, top: top1, width: bounds1.width
                   }
 
                   var endLeaf = quill.getLeaf(boundaries.end);
@@ -1140,16 +1187,26 @@
                   var top2 = flag2 ? bounds2.bottom : bounds2.top;
 
                   var endInfo = {
-                    index: boundaries.end, left: bounds2.left, top: top2
+                    index: boundaries.end, left: bounds2.left, top: top2, width: bounds2.width
                   }
 
+                  var ranges = selectionLines(boundaries.start, boundaries.end - boundaries.start);
 
-                  _postMessage({type: 'initRange', message: {start: startInfo, end: endInfo}});
+                  _postMessage({type: 'initRange', message: {start: startInfo, end: endInfo, ranges: ranges}});
               case 'updateRange':
                   var rangeStart = selectionFromPoint(obj.message.start)
                   var rangeEnd = selectionFromPoint(obj.message.end)
 
-                  _postMessage({type: 'updateRange', message: {start: rangeStart, end: rangeEnd}});
+                  var ranges = selectionLines(rangeStart.index, rangeEnd.index - rangeStart.index);
+                  _postMessage({type: 'updateRange', message: {start: rangeStart, end: rangeEnd, ranges: ranges}});
+                  break;
+              case 'selectAll':
+                  var total = quill.getLength();
+                  var rangeStart = pointFromSelection(0);
+                  var rangeEnd = pointFromSelection(total - 1);
+
+                  var ranges = selectionLines(0, total - 1);
+                  _postMessage({type: 'updateRange', message: {start: rangeStart, end: rangeEnd, ranges: ranges}});
                   break;
               default:
                   break;
@@ -1158,7 +1215,6 @@
       window.addEventListener('message', message, false);
       document.addEventListener('message', message, false);
 
-      alert('xxx11');
     </script>
   </body>
   </html>

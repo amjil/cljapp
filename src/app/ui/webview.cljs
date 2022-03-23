@@ -1,15 +1,19 @@
 (ns app.ui.webview
   (:require
+   [cljs-bean.core :as bean]
    [app.ui.nativebase :as nbase]
    [app.ui.components :as ui]
    [app.ui.html :as html]
    [app.handler.gesture :as gesture]
    [reagent.core :as reagent]
    [applied-science.js-interop :as j]
-   ["react-native" :as rn]
+   ["@react-native-clipboard/clipboard" :default Clipboard]
+   ["react-native" :as rn :refer [Dimensions]]
    ["react-native-webview" :refer [WebView]]
    ["react-native-smooth-blink-view" :default blinkview]
-   ["react-native-svg" :as svg]))
+   ["react-native-svg" :as svg])
+  (:import
+   [goog.async Debouncer]))
 
 (def platform (j/get-in rn [:Platform :OS]))
 
@@ -167,25 +171,46 @@
   (let [webview-height (reagent/atom 0)
         webref (reagent/atom nil)
         content (reagent/atom nil)
+        scroll-position (reagent/atom 0)
         cursor (reagent/atom nil)
-        is-caret (reagent/atom true)
+        cursor-dot (reagent/atom false)
+        cursor-dot-fn (Debouncer. (fn [] (reset! cursor-dot false)) 2000)
+        cursor-dot-delay (reagent/atom false)
+        cursor-dot-delay-fn (Debouncer. (fn [] (reset! cursor-dot-delay false)) 500)
+        range (reagent/atom nil)
+        is-caret (reagent/atom nil)
+        is-menu (reagent/atom true)
+        init-selection (Debouncer.
+                          (fn []
+                            (j/call @webref :postMessage
+                              (j/call js/JSON :stringify #js {:type "initSelection" :message  0})))
+                          500)
+
         on-message (fn [e]
                      (let [data (js->clj (j/call js/JSON :parse (j/get-in e [:nativeEvent :data]))
                                    :keywordize-keys true)]
                        (condp = (:type data)
-                         "initHeight" (reset! webview-height (:message data))
+                         "initHeight" (do
+                                        (reset! webview-height (:message data))
+                                        (.fire init-selection))
                          "onChange" (reset! content (:message data))
                          "updateSelection" (do (js/console.log (j/get-in e [:nativeEvent :data]))
                                                (if (not= 0 (-> data :message :left))
                                                  (reset! cursor (:message data)))
                                                (reset! is-caret true))
+                         "copyText" (do (.setString Clipboard (:message data))
+                                      (js/console.log (j/get-in e [:nativeEvent :data])))
 
-                         "initRange" (do (js/console.log (j/get-in e [:nativeEvent :data]))
-                                       (reset! range (:message data))
+                         "initRange" (do (js/console.log (j/get-in e [:nativeEvent :data])
+                                           (reset! range (:message data)))
                                        (reset! is-caret false))
                          "updateRange" (do (js/console.log (j/get-in e [:nativeEvent :data]))
-                                         (reset! range (:message data))
+                                         (let [end-position (-> data :message :end)]
+                                           (if (and (not= 0 (:left end-position)))
+                                             (reset! range (:message data))))
                                          (reset! is-caret false)))))
+        pan-start-location (reagent/atom nil)
+        pan-translate (reagent/atom nil)
         options (.stringify js/JSON
                      (clj->js
                              {
@@ -200,66 +225,258 @@
         {:on-press (fn [e]
                      (j/call @webref :postMessage
                        ; (j/call js/JSON :stringify #js {:type "testMessage" :message "Data from React Native App"})
-                       (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x 28, :y 57}}))
+                       ; (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x 28, :y 57}}))
                        ; (j/call js/JSON :stringify #js {:type "insertText" :message #js {:index 5, :text " new text"}}))
-                       ; (j/call js/JSON :stringify #js {:type "initRange" :message #js {:x 30, :y 20}})
-                       ; (j/call js/JSON :stringify #js {:type "updateRange" :message (clj->js {:start {:x 17, :y 13} :end {:x 17, :y 50}})})))}
+                       ; (j/call js/JSON :stringify #js {:type "initRange" :message #js {:x 30, :y 20}}))
+                       (j/call js/JSON :stringify #js {:type "updateRange" :message (clj->js {:start {:x 30, :y 20} :end {:x 60, :y 50}})}))
+                       ; (j/call js/JSON :stringify #js {:type "initSelection" :message  80}))
                      (js/console.log "pressed ...."))}
         [nbase/text
          "button"]]
-       [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-height}
-                           :horizontal true
-                           :on-press #(js/console.log "scroll-view on press")}
-        [nbase/zstack {:width "100%" :height "100%"}
-         [:> WebView {:useWebKit true
-                      :ref (fn [r] (reset! webref r))
-                      :cacheEnabled false
-                      :scrollEnabled false
-                      :scrollEventThrottle 10
-                      :hideKeyboardAccessoryView true
-                      :keyboardDisplayRequiresUserAction false
-                      :originWhitelist ["*"]
-                      :startInLoadingState true
-                      :bounces false
-                      :javaScriptEnabled true
-                      :source {:html html/quill-html
-                               :baseUrl ""}
-                      :onMessage on-message
-                      :injectedJavaScriptBeforeContentLoaded (str "window.options=" options)
-                      :injectedJavaScript "
-                                          //window.ReactNativeWebView.postMessage(Math.max(document.body.offsetWidth, document.body.scrollWidth));
+       [gesture/long-press-gesture-handler
+        {:onHandlerStateChange (fn [e]
+                                 (when (gesture/long-press-active (j/get e :nativeEvent))
+                                   (js/console.log "long press >>>>>")
+                                   (js/console.log (j/get e :nativeEvent))
+                                   (j/call @webref :postMessage
+                                     (j/call js/JSON :stringify (clj->js {:type "initRange" :message {:x (j/get-in e [:nativeEvent :x]), :y (j/get-in e [:nativeEvent :y])}})))))}
 
 
-                                          _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)})
+        [gesture/tap-gesture-handler
+         {
+           :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
+                                    (cond
+                                      (and (= 4 state) (true? @cursor-dot-delay))
+                                      (do
+                                        (js/console.log "cursor-dot delay run")
+                                        (reset! cursor-dot true)
+                                        (.fire cursor-dot-fn))
+
+                                      (and (= 4 state) (false? @cursor-dot-delay))
+                                      (do
+                                        (js/console.log "cursor-dot delay prepare")
+                                        (reset! cursor-dot-delay true)
+                                        (.fire cursor-dot-delay-fn)))
+
+                                    (js/console.log "tap gesture on scroll view" (j/get-in % [:nativeEvent :state]))
+                                    (if (gesture/tap-state-end (j/get % :nativeEvent))
+                                      (do
+                                        (j/call @webref :postMessage
+                                          (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x (j/get-in % [:nativeEvent :x]) :y (j/get-in % [:nativeEvent :y])}}))
+                                        (js/console.log "tap gesture" (j/get % :nativeEvent)))))}
+         [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-height}
+                             :horizontal true
+                             :on-press (fn [e] (js/console.log "scroll-view on press")
+                                              (js/console.log "on scroll >>>" (j/get-in e [:nativeEvent :contentOffset :x]))
+                                              (reset! scroll-position (j/get-in e [:nativeEvent :contentOffset :x])))}
+          [nbase/zstack {:width "100%" :height "100%"}
+           [:> WebView {:useWebKit true
+                        :ref (fn [r] (reset! webref r))
+                        :cacheEnabled false
+                        :scrollEnabled false
+                        :scrollEventThrottle 10
+                        :hideKeyboardAccessoryView true
+                        :keyboardDisplayRequiresUserAction false
+                        :originWhitelist ["*"]
+                        :startInLoadingState true
+                        :bounces false
+                        :javaScriptEnabled true
+                        :source {:html html/quill-html
+                                 :baseUrl ""}
+                        :focusable false
+                        :onMessage on-message
+                        :injectedJavaScriptBeforeContentLoaded (str "window.options=" options)
+                        :injectedJavaScript "
+                                          _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
                                           "
-                      :style {:height "100%"
-                              :width "100%"
-                              :margin-bottom 10}}]
-         [nbase/box {:style {:margin-top (:top @cursor) :margin-left (:left @cursor)}
-                     :flex-direction "row"}
-          [:> blinkview {"useNativeDriver" false}
-           [:> svg/Svg {:width 18 :height 2}
-            [:> svg/Rect {:x "0" :y "0" :width 18 :height 2 :fill "blue"}]]]
-          [gesture/tap-gesture-handler
-           {:onHandlerStateChange #(do
-                                     (if (gesture/tap-state-end (j/get % :nativeEvent))
-                                       (js/console.log "tap gesture")))}
-           [gesture/pan-gesture-handler
-            {:onGestureEvent
-             (fn [e] (let [x (+ (j/get-in e [:nativeEvent :translationX]) 15)
-                           y (j/get-in e [:nativeEvent :translationY])]
-                       (js/console.log "x = " x " y = " y)
-                       (j/call @webref :postMessage
-                         (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x x :y y}}))))}
-            [nbase/box {:flex-direction "row" :mt -2}
-             [nbase/box {:w 0 :h 0
-                         :mr -2
-                         :border-right-width 15
-                         :border-right-color "blue.600"
-                         :border-top-color "transparent"
-                         :border-top-width 10
-                         :border-bottom-color "transparent"
-                         :border-bottom-width 10
-                         :border-left-color "transparent"
-                         :border-left-width 0}]
-             [nbase/box {:w 5 :h 5 :border-radius 50 :bg "blue.600"}]]]]]]]])))
+                        :style {:height "100%"
+                                :width "100%"
+                                :margin-bottom 10}
+                        :pointer-events "none"}]
+
+           (if (true? @is-caret)
+             [nbase/box {:style {:margin-top (:top @cursor) :margin-left (:left @cursor)}
+                         :flex-direction "row"}
+              [:> blinkview {"useNativeDriver" false}
+               [:> svg/Svg {:width 18 :height 2}
+                [:> svg/Rect {:x "0" :y "0" :width 18 :height 2 :fill "blue"}]]]
+              (if (true? @cursor-dot)
+                [gesture/tap-gesture-handler
+                 {:onHandlerStateChange #(do
+                                           (if (gesture/tap-state-end (j/get % :nativeEvent))
+                                             (do
+                                               (js/console.log "caret dot tap gesture" (j/get % :nativeEvent)))))}
+                 [gesture/pan-gesture-handler
+                  {:onGestureEvent
+                   (fn [e] (let [x (+ (:left @pan-start-location) (j/get-in e [:nativeEvent :translationX]))
+                                 ; y (j/get-in e [:nativeEvent :translationY])
+                                 y (+ (:top @pan-start-location) (j/get-in e [:nativeEvent :translationY]))]
+                             ; (js/console.log (j/get e :nativeEvent))
+                             (js/console.log "x11 = " x " y = " y)
+                             (.fire cursor-dot-fn)
+                             (j/call @webref :postMessage
+                               (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x x :y y}}))))
+                   :onHandlerStateChange
+                   (fn [e] (when (= 2 (j/get-in e [:nativeEvent :state]))
+                             (js/console.log "caret dot set pan start location!!!!" (bean/->js @cursor))
+                             (reset! pan-start-location @cursor)))}
+
+                  [nbase/box {:style {:margin-top -9
+                                      :margin-left 5}}
+                   [nbase/box {
+                               :w 5
+                               :h 5
+                               :border-top-radius "full"
+                               :border-bottom-right-radius "full"
+                               :bg "blue.600"
+                               :style
+                               {
+                                :transform [{:rotate "45deg"}]}}]]]])])
+
+           (if (false? @is-caret)
+              [nbase/box {:style {:margin-top (- (:top (:start @range)) 20) :margin-left (+ (:left (:start @range)) 20)}}
+               [gesture/pan-gesture-handler
+                {:onGestureEvent
+                 (fn [e] (let [x (+ (:left @pan-start-location) (j/get-in e [:nativeEvent :translationX]))
+                               y (+ (:top @pan-start-location) (j/get-in e [:nativeEvent :translationY]))]
+                           (js/console.log "x = " x " y = " y)
+                           (j/call @webref :postMessage
+                             (j/call js/JSON :stringify (clj->js {:type "updateRange"
+                                                                  :message
+                                                                  {:start {:x x :y y}
+                                                                   :end {:x (:left (:end @range))
+                                                                         :y (:top (:end @range))}}})))))
+                 :onHandlerStateChange
+                 (fn [e]
+                   (condp = (j/get-in e [:nativeEvent :state])
+                     2 (do
+                         (reset! is-menu false)
+                         (reset! pan-start-location (:start @range)))
+                     5 (do (reset! is-menu true))
+                     (js/console.log "xxx " (j/get-in e [:nativeEvent :state]))))}
+                [nbase/box {
+                            :w 5
+                            :h 5
+                            :border-top-radius "full"
+                            :border-bottom-right-radius "full"
+                            :bg "blue.600"}]]])
+                            ; :style {:zIndex 300 :elevation 300}}]]])
+           (if (false? @is-caret)
+              [nbase/box {:style {:margin-top (:top (:end @range))
+                                  :margin-left (+ (:left (:end @range)) 20)
+                                  :zIndex 300}
+                          :elevation 300}
+               [gesture/tap-gesture-handler
+                {:onHandlerStateChange #(do
+                                          (if (gesture/tap-state-end (j/get % :nativeEvent))
+                                            (do
+                                              (js/console.log "range end tap gesture" (j/get % :nativeEvent)))))}
+                [gesture/pan-gesture-handler
+                 {:onGestureEvent
+                  (fn [e] (let [x (+ (:left @pan-start-location) (j/get-in e [:nativeEvent :translationX]))
+                                y (+ (:top @pan-start-location) (j/get-in e [:nativeEvent :translationY]))]
+                            (js/console.log "range end x = " x " y = " y)
+                            (j/call @webref :postMessage
+                              (j/call js/JSON :stringify (clj->js {:type "updateRange"
+                                                                   :message
+                                                                   {:start {:x (:left (:start @range))
+                                                                            :y (:top (:start @range))}
+                                                                    :end {:x x :y y}}})))))
+                  :onHandlerStateChange
+                  (fn [e]
+                    (condp = (j/get-in e [:nativeEvent :state])
+                      2 (do
+                          (reset! is-menu false)
+                          (reset! pan-start-location (:end @range)))
+                      5 (do (reset! is-menu true))
+                      (js/console.log "xxx " (j/get-in e [:nativeEvent :state]))))}
+                 [nbase/box {:w 5
+                             :h 5
+                             :border-bottom-radius "full"
+                             :border-top-right-radius "full"
+                             :bg "blue.600"}]]]])
+           (if (false? @is-caret)
+             (for [x (:ranges @range)]
+               ^{:key (str "range-area-" (:top x) "-" (:left x))}
+               [nbase/box {:style {:width (:width x)
+                                   :height (:height x)
+                                   :margin-left (:left x)
+                                   :margin-top (:top x)}
+                           :bg "blue.600:alpha.30"}]))
+           (if (and (false? @is-caret) (true? @is-menu))
+             (let [screen-width (.-width (.get Dimensions "window"))
+                   end-left (- (:left (:end @range)) @scroll-position)
+                   start-left (- (:left (:start @range)) @scroll-position)
+                   left (cond
+                          (and (neg? end-left) (neg? start-left))
+                          @scroll-position
+
+                          (and (> end-left screen-width) (> start-left screen-width))
+                          @scroll-position
+
+                          :else
+                          (+ @scroll-position end-left 60))]
+
+              [nbase/box {:style {:margin-left left
+                                  :margin-top 20
+                                  :padding 12
+                                  :zIndex 30001}
+                          :flex-grow 1
+                          :flex-shrink 1
+                          :flex-direction "column"
+                          :shadow "9"
+                          :bg "lightText"
+                          :border-radius "md"
+                          :justifyContent "flex-end"
+                          :elevation 3001}
+                          ; :w 10
+               [gesture/tap-gesture-handler
+                {:onHandlerStateChange
+                 (fn [e]
+                   (when (gesture/tap-state-end (j/get e :nativeEvent))
+                     (js/console.log "paste")
+                     (.then (.getString Clipboard)
+                       (fn [x]
+                         (j/call @webref :postMessage
+                           (j/call js/JSON :stringify
+                             (bean/->js {:type "insertText" :message {:index (:index (:start @range))
+                                                                      :text x}})))))))}
+                [nbase/pressable
+                 [nbase/measured-text {} "ᠨᠠᠭᠠᠬᠤ"]]]
+               [nbase/divider {:my 2}]
+               [gesture/tap-gesture-handler
+                {:onHandlerStateChange
+                 (fn [e]
+                   (when (gesture/tap-state-end (j/get e :nativeEvent))
+                     (js/console.log "copy")
+                     (j/call @webref :postMessage
+                       (j/call js/JSON :stringify
+                         (bean/->js {:type "copyText"
+                                     :message {:start (:index (:start @range))
+                                               :end (:index (:end @range))}})))))}
+                [nbase/pressable
+                 [nbase/measured-text {} "ᠬᠠᠭᠤᠯᠬᠤ"]]]
+               [nbase/divider {:my 2}]
+               [gesture/tap-gesture-handler
+                {:onHandlerStateChange
+                 (fn [e]
+                   (when (gesture/tap-state-end (j/get e :nativeEvent))
+                     (js/console.log "delete")
+                     (j/call @webref :postMessage
+                       (j/call js/JSON :stringify
+                         (bean/->js {:type "deleteText"
+                                     :message {:start (:index (:start @range))
+                                               :end (:index (:end @range))}})))))}
+                [nbase/pressable
+                 [nbase/measured-text {} "ᠬᠠᠰᠤᠬᠤ"]]]
+               [nbase/divider {:my 2}]
+               [gesture/tap-gesture-handler
+                {:onHandlerStateChange
+                 (fn [e]
+                   (when (gesture/tap-state-end (j/get e :nativeEvent))
+                     (j/call @webref :postMessage
+                       (j/call js/JSON :stringify
+                         (bean/->js {:type "selectAll"
+                                     :message ""})))))}
+                [nbase/pressable
+                 [nbase/measured-text {} "ᠪᠦᠭᠦᠳᠡ"]]]]))]]]]])))
