@@ -29,12 +29,13 @@
        (sqlite/openDatabase
         (bean/->js
          (merge
-          {:name "cand.db"}
+          {:name "cand"
+           :createFromLocation 1})))
 
-          (condp = platform
-            "android"
-            {:location "default"}
-            "ios" {:createFromLocation (str file-prefix "cand.db")}))))
+          ; (condp = platform
+          ;   "android"
+          ;   {:location "default"}
+          ;   "ios" {:createFromLocation (str file-prefix "cand.db")}))))
        #(reset! conn %)))))
 
 (defn close []
@@ -113,6 +114,7 @@
   (hsql/format {:union [{:select [:*] :from [:foo]}
                         {:select [:*] :from [:bar]}]})
   sqlite/openDatabase
+  open
   (open)
   (is-connected?)
   (close)
