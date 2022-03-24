@@ -1023,7 +1023,9 @@
         var bounds = quill.getBounds(sindex, 1);
         var top = flag? bounds.bottom : bounds.top;
 
-        return {index: index, left: bounds.left, top: top, width: bounds.width};
+        var char = quill.getText(index - 1, 1);
+
+        return {index: index, left: bounds.left, top: top, width: bounds.width, char: char};
       };
 
       function selectionLines(index, length) {
@@ -1077,7 +1079,9 @@
           var bounds = quill.getBounds(index, 1);
           var top = flag? bounds.bottom : bounds.top;
 
-          return {index: selectionIndex, left: bounds.left, top: top, width: bounds.width};
+          var char = quill.getText(selectionIndex - 1, 1);
+
+          return {index: selectionIndex, left: bounds.left, top: top, width: bounds.width, char: char};
       };
 
       function insertText(data) {
@@ -1090,6 +1094,10 @@
       function deleteText(data) {
         quill.deleteText(data.start, data.end - data.start);
         var range = pointFromSelection(data.start);
+        if (data.start > 1 && range.left == 0) {
+          quill.deleteText(data.start - 1, 1);
+          range = pointFromSelection(data.start - 1);
+        }
         return range;
       }
 

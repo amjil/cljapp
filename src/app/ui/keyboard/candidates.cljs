@@ -7,6 +7,8 @@
    [app.ui.nativebase :as nbase]
    [app.ui.components :as ui]
    [app.ui.keyboard.bridge :as bridge]
+   [app.ui.keyboard.state :as state]
+   [app.ui.webview :refer [cursor]]
    [app.persist.sqlite :as sqlite]
    [clojure.string :as str]))
 
@@ -18,7 +20,22 @@
   (reset! candidates-index "")
   (sqlite/next-words m
     #(reset! candidates-list %))
-  (bridge/editor-insert (:char_word m)))
+  (js/console.log "xxxx")
+  (let [text (:char_word m)
+        new-text (str (cond
+                        (= 8239 (int (.codePointAt text 0)))
+                        ""
+
+                        (= " " (:char @cursor))
+                        ""
+
+                        (= "\n" (:char @cursor))
+                        ""
+
+                        :else
+                        " ")
+                      text)]
+    (bridge/editor-insert new-text)))
 
 
 (defn candidates-query [i]
@@ -71,7 +88,7 @@
           {:style {;:opacity 0.6
                    :backgroundColor "ghostwhite"
                    :borderRadius 5
-                   :padding 10
+                   ; :padding 10
                    ; :height "auto"
                    ; :maxheight 100
                    :min-height 60
@@ -88,15 +105,17 @@
                          (not-empty candidates)
                          candidates
 
-                         :elsex
+                         :else
                          [])
             :renderItem (fn [x]
                           (let [{:keys [item index separators]} (j/lookup x)]
                             (reagent/as-element
-                              [nbase/pressable {:on-press #(candidate-select (bean/->clj item))}
-                               [nbase/box {:style {:height "100%" :width 28}}
+                              [nbase/pressable {:on-press #(candidate-select (bean/->clj item))
+                                                :px 1}
+                               [nbase/box {:style {:height "100%"}}; :width 28}}
                                 [nbase/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
                                   (j/get item :char_word)]]])))
+            :p 3
             :initialNumToRender 7
             :showsHorizontalScrollIndicator false
             :horizontal true}]]]))))
