@@ -3,64 +3,100 @@
    [reagent.core :as reagent]
    [re-frame.core :refer [dispatch subscribe]]
    [applied-science.js-interop :as j]
-   ["react-native" :as rnn]
    [cljs-bean.core :as bean]
-   [steroid.rn.core :as rn]
-   [steroid.rn.components.touchable :as touchable]
+   [app.ui.nativebase :as nbase]
    [app.ui.components :as ui]
-   [app.text.index :as text]
-   [app.ui.text.index :as uitext]
-   [steroid.rn.components.list :as rn-list]
-   [steroid.rn.components.ui :as rn-ui]))
+   [app.ui.keyboard.bridge :as bridge]
+   [app.persist.sqlite :as sqlite]
+   [clojure.string :as str]))
 
-(defn views []
-  (let [candidates @(subscribe [:candidates-list])]
+(def candidates-list (reagent/atom []))
+(def candidates-index (reagent/atom ""))
+
+
+(defn candidate-select [m]
+  (reset! candidates-index "")
+  (sqlite/next-words m
+    #(reset! candidates-list %))
+  (bridge/editor-insert (:char_word m)))
+
+
+(defn candidates-query [i]
+  (let [ii (str @candidates-index i)]
+    (reset! candidates-index ii)
+    (sqlite/candidates
+      ii
+      #(reset! candidates-list %))))
+
+(defn candidates-delete []
+  (let [old-index @candidates-index
+        new-index (str/join "" (drop-last old-index))]
     (cond
-      (empty? candidates)
-      nil
+      (or (empty? old-index) (= 1 (count old-index)))
+      (if (empty? @candidates-list)
+        (do
+          (reset! candidates-index "")
+          (reset! candidates-list [])
+          (bridge/editor-delete))
+
+        (do
+          (reset! candidates-index "")
+          (reset! candidates-list [])))
 
       :else
-      [rn/view {:style {:position "absolute"
-                        :left 0
-                        :right 0
-                      ;:top 0
-                        :bottom 10
-                        :elevation 1998
-                        :alignItems "center"
-                        :justifyContent "center"
-                        :z-index 999}}
-       [rn/view
-        {:style {:opacity 0.6
-                 :backgroundColor "ghostwhite"
-                 :borderRadius 5
-                 :padding 10
-                 ; :height "auto"
-                 ; :maxheight 100
-                 :min-height 60
-                 :alignItems "flex-start"
-                 :justifyContent "center"
-                 :maxWidth "50%"
-                 :minWidth 10
-                 :borderWidth 1
-                 :borderColor "lightgray"
-                 :flex-direction "row"}}
-        [rn-list/flat-list
-         {:key-fn    identity
-          ;; :data []
-          :data      (cond
-                       (not-empty candidates)
-                       candidates
+      (do
+        (reset! candidates-index new-index)
+        (sqlite/candidates
+          new-index
+          #(reset! candidates-list %))))))
 
-                       :else
-                       [])
-          :render-fn (fn [x]
-                       [touchable/touchable-opacity {:on-press #(dispatch [:candidate-select x])}
-                        [rn/view {:style {:height "100%"}}
-                         [uitext/text-view {:text (:char_word x) :font-family "MongolianWhite" :font-size 14}]]])
-                         ; [text/text-inline {:width 30
-                         ;                    :fill "black"
-                         ;                    :font :white
-                         ;                    :font-size 14} (:char_word x)]]])
-          :initialNumToRender 7
-          :showsHorizontalScrollIndicator false
-          :horizontal true}]]])))
+(defn views []
+  (fn []
+    (let [candidates @candidates-list]
+      (cond
+        (empty? candidates)
+        nil
+
+        :else
+        [nbase/box {:style {:position "absolute"
+                            :left 0
+                            :right 0
+                            ;:top 0
+                            :bottom 300
+                            :elevation 1998
+                            :alignItems "center"
+                            :justifyContent "center"
+                            :z-index 999}}
+         [nbase/box
+          {:style {;:opacity 0.6
+                   :backgroundColor "ghostwhite"
+                   :borderRadius 5
+                   :padding 10
+                   ; :height "auto"
+                   ; :maxheight 100
+                   :min-height 60
+                   :alignItems "flex-start"
+                   :justifyContent "center"
+                   :maxWidth "50%"
+                   :minWidth 10
+                   :borderWidth 1
+                   :borderColor "lightgray"
+                   :flex-direction "row"}}
+          [nbase/flat-list
+           {:keyExtractor    (fn [_ index] (str "text-" index))
+            :data      (cond
+                         (not-empty candidates)
+                         candidates
+
+                         :elsex
+                         [])
+            :renderItem (fn [x]
+                          (let [{:keys [item index separators]} (j/lookup x)]
+                            (reagent/as-element
+                              [nbase/pressable {:on-press #(candidate-select (bean/->clj item))}
+                               [nbase/box {:style {:height "100%" :width 28}}
+                                [nbase/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
+                                  (j/get item :char_word)]]])))
+            :initialNumToRender 7
+            :showsHorizontalScrollIndicator false
+            :horizontal true}]]]))))

@@ -157,5 +157,7 @@
                   :from   [:a]
                   :where  [:= :a.short_index "ab"]}))
 
+
   (range 2)
   (first "ab"))
+  
