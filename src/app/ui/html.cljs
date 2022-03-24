@@ -979,11 +979,6 @@
 
   <body>
     <div id=\"editor\">
-    <p>Hello World!</p>
-  <p>Some initial <strong>bold</strong> text</p>
-  <p><br></p>
-  <p>ᠪᠢ ᠮᠣᠩᠭᠤᠯ ᠬᠥᠮᠦᠨ ᠠᠷᠭᠠᠯ ᠤᠨ ᠤᠲᠤᠭ᠎ᠠ ᠪᠤᠷᠭᠢᠯᠤᠭᠰᠠᠨ</p>
-
     </div>
     <!-- Include the Quill library -->
     <script>

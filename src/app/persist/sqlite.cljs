@@ -67,7 +67,20 @@
                             :order-by [[:active_order :desc]]
                             :limit    20})]
       (p/let [result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
-        (p/then result #(return-fn (rows-data %)))))))
+        (p/then result
+          #(do
+            (if (zero? (j/get-in (first %) [:rows :length]))
+              (let [sql2 (hsql/format {:select   [:id :full_index :short_index :char_word :active_order]
+                                       :from     [(keyword table)]
+                                       :where    [:or [:= :full_index index-str]
+                                                  [:like :short-index (str index-str "%")]]
+                                       :order-by [[:active_order :desc]]
+                                       :limit    20})]
+                (p/let [result2 (.executeSql @conn (first sql2) (bean/->js (rest sql2)))]
+                  (p/then result2
+                    (fn [x]
+                      (return-fn (rows-data x))))))
+              (return-fn (rows-data %)))))))))
 
 (defn next-words [candidate return-fn]
   (js/console.log "next-words " (:id candidate))
@@ -160,4 +173,3 @@
 
   (range 2)
   (first "ab"))
-  
