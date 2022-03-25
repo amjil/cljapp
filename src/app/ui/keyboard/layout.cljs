@@ -119,8 +119,7 @@
        ^{:key kk}
        [keycommon/key-char-button (if (true? s) (str/upper-case kk) kk)])
      [keycommon/key-button {:flex 1.65} #(bridge/editor-delete)
-      [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an]])
+      [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]])
 
 (defn en-layout-a [s sn a an]
   [nbase/box style/layout-box-style
@@ -172,3 +171,9 @@
       (if (true? @alter-num)
         [en-layout-n @shift @shift-num @alter @alter-num]
         [en-layout-a @shift @shift-num @alter @alter-num]))))
+
+(defn layout []
+  [nbase/box style/layout-box-style
+   (if (true? @state/alter)
+     (if (true? @state/alter-num)
+       []))])

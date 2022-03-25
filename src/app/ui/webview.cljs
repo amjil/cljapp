@@ -173,7 +173,8 @@
 
 
 (defn webview-editor []
-  (let [webview-height (reagent/atom 0)
+  (let [webview-width (reagent/atom 0)
+        screen-width (.-width (.get Dimensions "window"))
         content (reagent/atom nil)
         scroll-position (reagent/atom 0)
         cursor-dot (reagent/atom false)
@@ -182,20 +183,18 @@
         cursor-dot-delay-fn (Debouncer. (fn [] (reset! cursor-dot-delay false)) 500)
         range (reagent/atom nil)
         is-menu (reagent/atom true)
-        init-selection (Debouncer.
-                          (fn []
-                            (j/call @webref :postMessage
-                              (j/call js/JSON :stringify #js {:type "initSelection" :message  0})))
-                          500)
 
         on-message (fn [e]
                      (let [data (js->clj (j/call js/JSON :parse (j/get-in e [:nativeEvent :data]))
                                    :keywordize-keys true)]
                        (condp = (:type data)
                          "initHeight" (do
-                                        (reset! webview-height (:message data))
-                                        (.fire init-selection))
-                         "onChange" (reset! content (:message data))
+                                        (js/console.log (bean/->js data))
+                                        (reset! webview-width (max (:message data) screen-width)))
+                         "onChange" (do
+                                      (js/console.log (bean/->js data))
+                                      (reset! content (:text (:message data)))
+                                      (reset! webview-width (max (:width (:messge data)) screen-width)))
                          "updateSelection" (do (js/console.log (j/get-in e [:nativeEvent :data]))
                                                (if (not= 0 (-> data :message :left))
                                                  (reset! cursor (:message data)))
@@ -222,69 +221,79 @@
                               ; :debug "info"
                               ; :placeholder "ᠠᠭᠤᠯᠭ᠎ᠠ ᠪᠠᠨ ᠨᠠᠢᠷᠠᠭᠤᠯᠤᠶ᠎ᠠ ..."}))]
     (fn []
-      [gesture/long-press-gesture-handler
-       {:onHandlerStateChange (fn [e]
-                                (when (gesture/long-press-active (j/get e :nativeEvent))
-                                  (js/console.log "long press >>>>>")
-                                  (js/console.log (j/get e :nativeEvent))
-                                  (j/call @webref :postMessage
-                                    (j/call js/JSON :stringify (clj->js {:type "initRange" :message {:x (j/get-in e [:nativeEvent :x]), :y (j/get-in e [:nativeEvent :y])}})))))}
+      [gesture/gesture-root-view
+       {:flex 1}
+       [gesture/long-press-gesture-handler
+        {:onHandlerStateChange (fn [e]
+                                 (when (gesture/long-press-active (j/get e :nativeEvent))
+                                   (js/console.log "long press >>>>>")
+                                   (js/console.log (j/get e :nativeEvent))
+                                   (j/call @webref :postMessage
+                                     (j/call js/JSON :stringify (clj->js {:type "initRange" :message {:x (j/get-in e [:nativeEvent :x]), :y (j/get-in e [:nativeEvent :y])}})))))}
 
 
-       [gesture/tap-gesture-handler
-        {
-          :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
-                                   (cond
-                                     (and (= 4 state) (true? @cursor-dot-delay))
-                                     (do
-                                       (js/console.log "cursor-dot delay run")
-                                       (reset! cursor-dot true)
-                                       (.fire cursor-dot-fn))
+        [gesture/tap-gesture-handler
+         {
+           :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
+                                    (cond
+                                      (and (= 4 state) (true? @cursor-dot-delay))
+                                      (do
+                                        (js/console.log "cursor-dot delay run")
+                                        (reset! cursor-dot true)
+                                        (.fire cursor-dot-fn))
 
-                                     (and (= 4 state) (false? @cursor-dot-delay))
-                                     (do
-                                       (js/console.log "cursor-dot delay prepare")
-                                       (reset! cursor-dot-delay true)
-                                       (.fire cursor-dot-delay-fn)))
+                                      (and (= 4 state) (false? @cursor-dot-delay))
+                                      (do
+                                        (js/console.log "cursor-dot delay prepare")
+                                        (reset! cursor-dot-delay true)
+                                        (.fire cursor-dot-delay-fn)))
 
-                                   (js/console.log "tap gesture on scroll view" (j/get-in % [:nativeEvent :state]))
-                                   (if (gesture/tap-state-end (j/get % :nativeEvent))
-                                     (do
-                                       (j/call @webref :postMessage
-                                         (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x (j/get-in % [:nativeEvent :x]) :y (j/get-in % [:nativeEvent :y])}}))
-                                       (js/console.log "tap gesture" (j/get % :nativeEvent)))))}
-        [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-height}
-                            :horizontal true
-                            :on-press (fn [e] (js/console.log "scroll-view on press")
-                                             (js/console.log "on scroll >>>" (j/get-in e [:nativeEvent :contentOffset :x]))
-                                             (reset! scroll-position (j/get-in e [:nativeEvent :contentOffset :x])))}
-         [nbase/zstack {:width "100%" :height "100%"}
-          [:> WebView {:useWebKit true
-                       :ref (fn [r] (reset! webref r))
-                       :cacheEnabled false
-                       :scrollEnabled false
-                       :scrollEventThrottle 10
-                       :hideKeyboardAccessoryView true
-                       :keyboardDisplayRequiresUserAction false
-                       :originWhitelist ["*"]
-                       :startInLoadingState true
-                       :bounces false
-                       :javaScriptEnabled true
-                       :source {:html html/quill-html
-                                :baseUrl ""}
-                       :focusable false
-                       :onMessage on-message
-                       :injectedJavaScriptBeforeContentLoaded (str "window.options=" options)
-                       :injectedJavaScript "
+                                    (js/console.log "tap gesture on scroll view" (j/get-in % [:nativeEvent :state]))
+                                    (if (gesture/tap-state-end (j/get % :nativeEvent))
+                                      (do
+                                        (j/call @webref :postMessage
+                                          (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x (+ (j/get-in % [:nativeEvent :x]) @scroll-position) :y (j/get-in % [:nativeEvent :y])}}))
+                                        (js/console.log "tap gesture" (j/get % :nativeEvent)))))}
+         [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width (+ 100 @webview-width)}
+                             :horizontal true
+                             :on-press (fn [e] (js/console.log "scroll-view on press"))
+                             :scrollEventThrottle 16
+                             :on-scroll (fn [e]
+                                          (js/console.log "scroll-view-on-scroll")
+                                          (js/console.log "on scroll >>>" (j/get-in e [:nativeEvent :contentOffset :x]))
+                                          (reset! scroll-position (j/get-in e [:nativeEvent :contentOffset :x])))}
+          ; [nbase/box {:style {:width @webview-width :height "100%"}}]
+          [nbase/box {:style {:width (+ 100 @webview-width) :height "100%"}
+                      :pointerEvents "none"}
+           [:> WebView {:useWebKit true
+                        :ref (fn [r] (reset! webref r))
+                        :cacheEnabled false
+                        :scrollEnabled false
+                        :scrollEventThrottle 10
+                        :hideKeyboardAccessoryView true
+                        :keyboardDisplayRequiresUserAction false
+                        :originWhitelist ["*"]
+                        :startInLoadingState true
+                        :bounces false
+                        :javaScriptEnabled true
+                        :source {:html html/quill-html
+                                 :baseUrl ""}
+                        :focusable false
+                        :onMessage on-message
+                        :injectedJavaScriptBeforeContentLoaded (str "window.options=" options)
+                        :injectedJavaScript "
                                           _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
+                                          var length = quill.getLength();
+                                          var range = pointFromSelection(length - 1);
+                                          _postMessage({type: 'updateSelection', message: range});
                                           "
-                       :style {:height "100%"
-                               :width "100%"
-                               :margin-bottom 10}
-                       :pointer-events "none"}]
-
+                        :style {:height "100%"
+                                :width "100%"
+                                :margin-bottom 10}
+                        :pointerEvents "none"}]]
           (if (true? @is-caret)
-            [nbase/box {:style {:margin-top (:top @cursor) :margin-left (:left @cursor)}
+            [nbase/box {:style {:top (:top @cursor) :left (:left @cursor)}
+                        :position "absolute"
                         :flex-direction "row"}
              [:> blinkview {"useNativeDriver" false}
               [:> svg/Svg {:width 18 :height 2}
@@ -323,7 +332,8 @@
                                :transform [{:rotate "45deg"}]}}]]]])])
 
           (if (false? @is-caret)
-             [nbase/box {:style {:margin-top (- (:top (:start @range)) 20) :margin-left (+ (:left (:start @range)) 20)}}
+             [nbase/box {:style {:top (- (:top (:start @range)) 20) :left (+ (:left (:start @range)) 20)}
+                         :position "absolute"}
               [gesture/pan-gesture-handler
                {:onGestureEvent
                 (fn [e] (let [x (+ (:left @pan-start-location) (j/get-in e [:nativeEvent :translationX]))
@@ -349,12 +359,10 @@
                            :border-top-radius "full"
                            :border-bottom-right-radius "full"
                            :bg "blue.600"}]]])
-                           ; :style {:zIndex 300 :elevation 300}}]]])
           (if (false? @is-caret)
-             [nbase/box {:style {:margin-top (:top (:end @range))
-                                 :margin-left (+ (:left (:end @range)) 20)
-                                 :zIndex 300}
-                         :elevation 300}
+             [nbase/box {:style {:top (:top (:end @range))
+                                 :left (+ (:left (:end @range)) 20)}
+                         :position "absolute"}
               [gesture/tap-gesture-handler
                {:onHandlerStateChange #(do
                                          (if (gesture/tap-state-end (j/get % :nativeEvent))
@@ -389,8 +397,9 @@
               ^{:key (str "range-area-" (:top x) "-" (:left x))}
               [nbase/box {:style {:width (:width x)
                                   :height (:height x)
-                                  :margin-left (:left x)
-                                  :margin-top (:top x)}
+                                  :left (:left x)
+                                  :top (:top x)}
+                          :position "absolute"
                           :bg "blue.600:alpha.30"}]))
           (if (and (false? @is-caret) (true? @is-menu))
             (let [screen-width (.-width (.get Dimensions "window"))
@@ -406,10 +415,10 @@
                          :else
                          (+ @scroll-position end-left 60))]
 
-             [nbase/box {:style {:margin-left left
-                                 :margin-top 20
-                                 :padding 12
-                                 :zIndex 30001}
+             [nbase/box {:style {:left left
+                                 :top 20
+                                 :padding 12}
+                         :position "absolute"
                          :flex-grow 1
                          :flex-shrink 1
                          :flex-direction "column"

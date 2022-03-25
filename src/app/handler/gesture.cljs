@@ -6,7 +6,9 @@
                                             TapGestureHandler
                                             FlingGestureHandler
                                             LongPressGestureHandler
-                                            State]]
+                                            State
+                                            ScrollView
+                                            GestureHandlerRootView]]
     [applied-science.js-interop :as j]))
 
 (def pan-gesture-handler (r/adapt-react-class PanGestureHandler))
@@ -16,6 +18,10 @@
 (def fling-gesture-handler (r/adapt-react-class FlingGestureHandler))
 
 (def long-press-gesture-handler (r/adapt-react-class LongPressGestureHandler))
+
+(def gesture-root-view (r/adapt-react-class GestureHandlerRootView))
+
+(def scroll-view (r/adapt-react-class ScrollView))
 
 (def state State)
 

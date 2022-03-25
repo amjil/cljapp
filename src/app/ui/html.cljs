@@ -994,10 +994,16 @@
     <script>
       const quill = new Quill('#editor', window.options)
       quill.on('text-change', function(delta, oldDelta, source) {
-        const html = document.querySelector('#editor').children[0].innerHTML
+        /*const html = document.querySelector('#editor').children[0].innerHTML
         const message = {
           type: 'onChange',
           message: html,
+        }
+        */
+        var text = quill.getText(0, quill.getLength() - 1);
+        const message = {
+          type: 'onChange',
+          message: {text: text, width: quill.root.scrollWidth},
         }
         window.ReactNativeWebView.postMessage(JSON.stringify(message))
       });
@@ -1101,12 +1107,14 @@
         return text;
       }
 
+      /*
       quill.root.addEventListener('touchstart', (e) => {
         var point = {x: e.touches[0].clientX, y: e.touches[0].clientY};
         var range = selectionFromPoint(point);
-
+        alert('quill touch start');
         _postMessage({type: 'updateSelection', message: range});
         });
+        */
 
       var message = function (event) {
           const obj = JSON.parse(event.data);
