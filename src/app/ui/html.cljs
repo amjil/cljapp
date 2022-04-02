@@ -1000,10 +1000,12 @@
           message: html,
         }
         */
-        var text = quill.getText(0, quill.getLength() - 1);
+        var length = quill.getLength() - 1;
+        var text = quill.getText(0, length);
+        var content = quill.root.innerHTML;
         const message = {
           type: 'onChange',
-          message: {text: text, width: quill.root.scrollWidth},
+          message: {text: text, width: quill.root.clientWidth, content: content},
         }
         window.ReactNativeWebView.postMessage(JSON.stringify(message))
       });
@@ -1121,6 +1123,10 @@
           switch (obj.type) {
               case 'testMessage':
                   alert(obj.message);
+                  break;
+              case 'setContent':
+                  quill.root.innerHTML = obj.message;
+                  _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
                   break;
               case 'initSelection':
                   var length = quill.getLength();

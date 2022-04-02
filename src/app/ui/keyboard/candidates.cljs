@@ -23,6 +23,9 @@
   (js/console.log "xxxx")
   (let [text (:char_word m)
         new-text (str (cond
+                        (empty? (:char @cursor))
+                        ""
+
                         (= 8239 (int (.codePointAt text 0)))
                         ""
 

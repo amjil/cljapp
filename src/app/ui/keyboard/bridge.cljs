@@ -1,6 +1,6 @@
 (ns app.ui.keyboard.bridge
   (:require
-    [app.ui.webview :refer [webref cursor]]
+    [app.ui.editor :refer [webref cursor]]
     [applied-science.js-interop :as j]
     [cljs-bean.core :as bean]))
 
