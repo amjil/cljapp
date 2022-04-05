@@ -81,7 +81,7 @@
 (def cursor (reagent/atom nil))
 (def is-caret (reagent/atom nil))
 
-(defn editor-view [content-fn change-fn]
+(defn editor-view [opts content-fn change-fn]
   (let [webview-width (reagent/atom 0)
         screen-width (.-width (.get Dimensions "window"))
         scroll-position (reagent/atom 0)
@@ -194,7 +194,7 @@
                                  :baseUrl ""}
                         :focusable false
                         :onMessage on-message
-                        :injectedJavaScriptBeforeContentLoaded (str "window.options=" options)
+                        :injectedJavaScriptBeforeContentLoaded (str "window.options=" (j/call js/JSON :stringify (bean/->js opts)))
                         :injectedJavaScript
                         (str
                           ; " document.querySelector('#editor').innerHTML=\"" content "\";"

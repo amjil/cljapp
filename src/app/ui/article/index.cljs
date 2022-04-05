@@ -27,14 +27,12 @@
 
 (defn measured-text
   [props t]
-  (let [[text-props _] (useStyledSystemPropsResolver (bean/->js props))
-        text-props (bean/->clj text-props)
-        info (rntext/measure (bean/->js (assoc text-props :text (if (empty? t) "A" t))))
+  (let [info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
         height (j/get info :width)
         width (+ 1 (j/get info :height))]
     [nbase/box {:style {:width width
                         :height height}}
-     [rotated-text text-props width height (if (empty? t) "" t)]]))
+     [rotated-text props width height (if (empty? t) "" t)]]))
 
 ; (def model (reagent/atom {:title "Hello" :content "<p>abc</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>xxxx</p>"}))
 (def model (reagent/atom {:title "Hello" :content "<p>abc</p><p>xxxx</p>"}))
@@ -48,7 +46,7 @@
                 :flex-direction "row"
                 :bg "white"}
     [nbase/box {:p 2}
-     [:f> measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠭᠠᠷᠴᠠᠭ"]]
+     [measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠭᠠᠷᠴᠠᠭ"]]
     [nbase/pressable {:border-width "1" :border-color "cyan.500"
                       :px 2
                       :py 5
@@ -56,9 +54,9 @@
                       :on-press (fn [] (reset! active-key :title)
                                   (reset! content-type :text)
                                   (re-frame/dispatch [:navigate-to :article-edit]))}
-     [:f> measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:title @model)]]
+     [measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:title @model)]]
     [nbase/box {:p 2 :ml 2}
-     [:f> measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠭᠤᠯᠭ᠎ᠠ"]]
+     [measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠭᠤᠯᠭ᠎ᠠ"]]
     [nbase/box {:border-width "1" :border-color "cyan.500"
                 :w "200"
                 :p 2
@@ -83,6 +81,7 @@
    [nbase/flex {:flex 1
                 :justifyContent "space-between"}
     [editor/editor-view
+      {}
       ;content-fn
       (fn []
         (js/console.log "content -fn >......." (:content @model))
@@ -110,7 +109,7 @@
                                          :on-press (fn [e] (re-frame/dispatch [:navigate-to :article-detail])
                                                      (reset! articles-cursor index)
                                                      (reset! model (bean/->clj item)))}
-                        [:f> measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
+                        [measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
                           (j/get item :title)]])))
      :ItemSeparatorComponent
      (fn [] (reagent/as-element [nbase/divider {:bg "emerald.500" :thickness "2" :orientation "vertical" :mx "2"}]))
@@ -167,4 +166,3 @@
    :component  list-view
    :options
    {:title ""}})
-    
