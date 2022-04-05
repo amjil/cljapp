@@ -98,7 +98,8 @@
 
 
 (defn list-view []
-  [ui/safe-area-consumer
+  [nbase/zstack {:flex 1
+                 :bg "white"}
    [nbase/flat-list
     {:keyExtractor    (fn [_ index] (str "item-view-" index))
      :data      @articles-atom
@@ -116,7 +117,21 @@
      :p 3
      :initialNumToRender 7
      :showsHorizontalScrollIndicator false
-     :horizontal true}]])
+     :horizontal true
+     :flex 1
+     :h "100%"}]
+   [nbase/box {:right 4
+               :bottom 2}
+               ; :justifyContent "center" :alignSelf "center" :alignItems "center"}
+               ; :z-index 3005}
+    [nbase/icon-button {:w 16 :h 16 :borderRadius "full" :variant "solid" :colorScheme "indigo"
+                        :justifyContent "center" :alignSelf "center" :alignItems "center"
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-add"}])
+                        :onPress (fn [e]
+                                   (js/console.log "icon-button on press")
+                                   (reset! articles-cursor (count @articles-atom))
+                                   (reset! model {:title "" :content ""})
+                                   (re-frame/dispatch [:navigate-to :article-detail]))}]]])
 
 (defn main []
   [ui/safe-area-consumer
@@ -151,13 +166,5 @@
   {:name       :article-list
    :component  list-view
    :options
-   {:title ""
-    :headerRight
-    (fn [tag id classname]
-      (reagent/as-element
-        [nbase/icon-button {:variant "ghost" :colorScheme "indigo"
-                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-add"}])
-                            :on-press (fn [e] (js/console.log "on press icon button")
-                                        (reset! articles-cursor (count @articles-atom))
-                                        (reset! model {:title "" :content ""})
-                                        (re-frame/dispatch [:navigate-to :article-detail]))}]))}})
+   {:title ""}})
+    

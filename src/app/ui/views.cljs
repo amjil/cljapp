@@ -17,7 +17,7 @@
    [reagent.core :as reagent]
    [app.text.index :as text]
    [app.font.base :as font]
-   [app.components.gesture :as gesture]
+   [app.handler.gesture :as gesture]
 
    ["react-native-smooth-blink-view" :default blinkview]
    ["react-native-svg" :as svg]
@@ -27,12 +27,13 @@
    [app.ui.profile.views :as profile]
    [app.ui.picker.views :as picker]
    [app.ui.modal.views :as modal]
-   [app.ui.keyboard.views :as keyboard]
    [app.ui.toast.views :as toast]
    [app.ui.drawer.index :as drawer]
    [app.ui.nativebase :as nativebase]
    [app.ui.user.login :as login]
-   [app.ui.webview :as webview]))
+   [app.ui.webview :as webview]
+   [app.ui.editor :as editor]
+   [app.ui.article.index :as article]))
 
 
 (when platform/android?
@@ -74,8 +75,6 @@
     [rn-ui/button {:title "toast" :onPress #(do (re-frame/dispatch [:navigate-to :toast]))}]]])
 
 
-
-
 (defn home []
   (let [h (reagent/atom nil)]
     (fn []
@@ -104,8 +103,12 @@
 
    [{:name      :home
      :component home/home}
-    {:name      :book
-     :component webview/webview-editor}
+    ; {:name      :book
+    ;  ; :component webview/webview-editor
+    ;  :component article/main}
+    (merge
+      article/article-list
+      {:name :book})
     {:name      :edit
      :component picker/picker}
     {:name      :profile
@@ -119,7 +122,10 @@
       [stack/stack {}
        [{:name      :main
          :component tabs
-         :options {:title ""}}]]])]])
+         :options {:title ""}}
+        article/article-detail
+        article/article-edit
+        article/article-list]]])]])
      ;   {:name       :keyboard
      ;    :component  keyboard/keyboard-view
      ;    :options    {:title ""}}
@@ -130,3 +136,12 @@
       ; [drawer/view]])]])
       ; [login/view]])]])
       ; [webview/view]])]])
+; (defn root-stack []
+;   [safe-area/safe-area-provider
+;    [nativebase/nativebase-provider
+;     ; [nativebase/view]
+;     ; [nativebase/box {:flex 1 :px 3 :safeArea true}
+;     ;  [webview/webview-editor]]]])
+;     ; [editor/view]]])
+;     ; [editor/test-view]]])
+;     [article/view]]])
