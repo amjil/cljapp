@@ -8,8 +8,6 @@
    [steroid.rn.components.status-bar :as status-bar]
    [steroid.rn.navigation.safe-area :as safe-area]
    [steroid.rn.components.platform :as platform]
-   [steroid.rn.components.list :as rn-list]
-   [steroid.rn.components.touchable :as touchable]
    [steroid.rn.components.ui :as rn-ui]
    [app.ui.components :as ui]
    [steroid.rn.navigation.stack :as stack]
@@ -25,7 +23,6 @@
 
    [app.ui.home.views :as home]
    [app.ui.profile.views :as profile]
-   [app.ui.picker.views :as picker]
    [app.ui.modal.views :as modal]
    [app.ui.toast.views :as toast]
    [app.ui.drawer.index :as drawer]
@@ -56,31 +53,16 @@
          (reagent/as-element
           [ui/ion-icons {:name icon :color color :size 30}])))}))
 
-(defn component []
-  [rn/view {:style {:flexDirection "column"
-                    :height "100%"
-                    :width "100%"}}
-    [rn/text {:style {:backgroundColor "green"}} "Hello CLojure! from CLJS "]
-    [rn-ui/button {:title "edit" :onPress #(do (reset! modal/is-visible true)
-                                               (js/console.log "is-visible ----- " @modal/is-visible))}]
-    [modal/modal [{:label "ᠨᠢᠭᠡ"} {:label "ᠬᠤᠶᠠᠷ"} {:label "ᠭᠤᠷᠪᠠ"}]]])
-
-(defn component-modal []
-  [rn/view {:style {:flex 1}}
-   [rn/view
-    [rn-ui/button {:title "edit" :onPress #(do (reset! modal/is-visible true)
-                                               (js/console.log "is-visible ----- " @modal/is-visible))}]
-    [modal/modal [{:label "ᠨᠢᠭᠡ"} {:label "ᠬᠤᠶᠠᠷ"} {:label "ᠭᠤᠷᠪᠠ"}]]]
-   [rn/view
-    [rn-ui/button {:title "toast" :onPress #(do (re-frame/dispatch [:navigate-to :toast]))}]]])
-
-
 (defn home []
   (let [h (reagent/atom nil)]
     (fn []
       [rn/view {:style {:height "100%" :width "100%"}
                 :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                               (reset! h height))}])))
+
+(defn edit-view []
+  [nativebase/center {:flex 1 :px 3 :safeArea true}
+   [nativebase/text "edit-view"]])
 
 (defn tabs []
   [bottom-tabs/bottom-tab
@@ -110,7 +92,7 @@
       article/article-list
       {:name :book})
     {:name      :edit
-     :component picker/picker}
+     :component edit-view}
     {:name      :profile
      :component profile/profile}]])
 

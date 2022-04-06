@@ -1507,6 +1507,11 @@
     "@react-aria/ssr" "^3.0.1"
     "@react-aria/utils" "^3.3.0"
 
+"@react-native-clipboard/clipboard@^1.8.5":
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/@react-native-clipboard/clipboard/-/clipboard-1.8.5.tgz#b11276e38ef288b0fd70c0a38506e2deecc5fa5a"
+  integrity sha512-o2RPDwP9JMnLece1Qq6a3Fsz/VxfA9auLckkGOor7WcI82DWaWiJ6Uiyu7H1xpaUyqWc+ypVKRX680GYS36HjA==
+
 "@react-native-community/cli-debugger-ui@^6.0.0-rc.0":
   version "6.0.0-rc.0"
   resolved "https://registry.nlark.com/@react-native-community/cli-debugger-ui/download/@react-native-community/cli-debugger-ui-6.0.0-rc.0.tgz#774378626e4b70f5e1e2e54910472dcbaffa1536"
@@ -2970,9 +2975,9 @@ camelcase@^6.0.0, camelcase@^6.2.0:
   integrity sha1-kkr4gcnVJaydh/QNlk5c6pgqGAk=
 
 caniuse-lite@^1.0.30001254:
-  version "1.0.30001257"
-  resolved "https://registry.nlark.com/caniuse-lite/download/caniuse-lite-1.0.30001257.tgz#150aaf649a48bee531104cfeda57f92ce587f6e5"
-  integrity sha1-FQqvZJpIvuUxEEz+2lf5LOWH9uU=
+  version "1.0.30001314"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001314.tgz"
+  integrity sha512-0zaSO+TnCHtHJIbpLroX7nsD+vYuOVjl3uzFbJO1wMVbuveJA0RK2WcQA9ZUIOiO0/ArMiMgHJLxfEZhQiC0kw==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -7102,10 +7107,10 @@ react-native-linear-gradient@^2.5.6:
   resolved "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
   integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
 
-react-native-measure-text-chars@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/react-native-measure-text-chars/-/react-native-measure-text-chars-0.3.0.tgz#b10db727489c40922f013a6f397c29d1bd01b576"
-  integrity sha512-9vQok/LH6rDHKL1m7gS3MnKapHifvGCpD3JiQN/6ZqpTBKshdb5zZ0onZYfffrJu37E/PT5zx3Q87qhJdXKlww==
+react-native-measure-text-chars@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/react-native-measure-text-chars/-/react-native-measure-text-chars-0.3.9.tgz#9ed99afa5cfa1563ff7c6114a8e13274df018781"
+  integrity sha512-cnL09pMXFJwSO+2iZ24kNNB3FN1RN7nMHWEmvPGCiUjKhh0wjeRlVB1Tk/VKY1DFmRFssS9F5ldc88uGUH/A8w==
 
 react-native-modal@^13.0.0:
   version "13.0.0"
@@ -7150,11 +7155,6 @@ react-native-smooth-blink-view@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npmmirror.com/react-native-smooth-blink-view/download/react-native-smooth-blink-view-1.0.3.tgz#02e19426501a7e1116724262dcacf807a34728c0"
   integrity sha1-AuGUJlAafhEWckJi3Kz4B6NHKMA=
-
-react-native-smooth-picker@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.npmmirror.com/react-native-smooth-picker/download/react-native-smooth-picker-1.1.5.tgz#5e70b2ba5467045e022b77069904482854b8f657"
-  integrity sha1-XnCyulRnBF4CK3cGmQRIKFS49lc=
 
 react-native-sqlite-storage@^6.0.1:
   version "6.0.1"
