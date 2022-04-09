@@ -20,7 +20,7 @@
    [goog.async Debouncer]))
 
 (defn simple-view [content-fn tap-fn]
-  (let [webview-width (reagent/atom 0)
+  (let [webview-width (reagent/atom 2)
         webref (reagent/atom nil)
         on-message (fn [e]
                      (let [data (js->clj (j/call js/JSON :parse (j/get-in e [:nativeEvent :data]))
@@ -83,7 +83,7 @@
 (def is-caret (reagent/atom nil))
 
 (defn editor-view [opts content-fn change-fn]
-  (let [webview-width (reagent/atom 0)
+  (let [webview-width (reagent/atom 2)
         screen-width (.-width (.get Dimensions "window"))
         scroll-position (reagent/atom 0)
         cursor-dot (reagent/atom false)
