@@ -56,7 +56,7 @@
 (defn candidates [index-str return-fn]
   (cond
     (empty? index-str)
-    []
+    (return-fn [])
 
     :else
     (let [table (first index-str)
@@ -102,7 +102,7 @@
          #(let [next-data  (rows-data %)]
             (cond
               (empty? next-data)
-              []
+              (return-fn [])
 
               :else
               (let [next-grouped (group-by (fn [x] (:t2 x)) next-data)

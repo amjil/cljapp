@@ -16,3 +16,9 @@
       (bean/->js {:type "deleteText"
                   :message {:start (dec (:index @cursor))
                             :end (:index @cursor)}}))))
+
+(defn editor-content []
+  (j/call @webref :postMessage
+    (j/call js/JSON :stringify
+      (clj->js {:type "getContent"
+                :message ""}))))

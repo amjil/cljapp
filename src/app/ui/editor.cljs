@@ -4,6 +4,7 @@
     [app.ui.webview :as editor]
     [app.ui.components :as ui]
     [app.ui.html :as html]
+    [app.ui.text :as text]
     [app.handler.gesture :as gesture]
 
     [applied-science.js-interop :as j]
@@ -105,11 +106,11 @@
                                         (reset! webview-width (max (:message data) screen-width))
                                         (.fire init-selection-fn))
                          "onChange" (do
-                                      (js/console.log (bean/->js data))
+                                      ; (js/console.log (bean/->js data))
                                       (change-fn (:message data)))
                                       ; (reset! content (:text (:message data))))
                                       ; (reset! webview-width (max (:width (:messge data)) screen-width)))
-                         "updateSelection" (do (js/console.log (j/get-in e [:nativeEvent :data]))
+                         "updateSelection" (do ;(js/console.log (j/get-in e [:nativeEvent :data]))
                                                (if (not= 0 (-> data :message :left))
                                                  (reset! cursor (:message data)))
                                                (reset! is-caret true))
@@ -357,7 +358,7 @@
                             (bean/->js {:type "insertText" :message {:index (:index (:start @range))
                                                                      :text x}})))))))}
                [nbase/pressable
-                [nbase/measured-text {} "ᠨᠠᠭᠠᠬᠤ"]]]
+                [nbase/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠨᠠᠭᠠᠬᠤ"]]]
               [nbase/divider {:my 2}]
               [gesture/tap-gesture-handler
                {:onHandlerStateChange
@@ -370,7 +371,7 @@
                                     :message {:start (:index (:start @range))
                                               :end (:index (:end @range))}})))))}
                [nbase/pressable
-                [nbase/measured-text {} "ᠬᠠᠭᠤᠯᠬᠤ"]]]
+                [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠬᠠᠭᠤᠯᠬᠤ"]]]
               [nbase/divider {:my 2}]
               [gesture/tap-gesture-handler
                {:onHandlerStateChange
@@ -383,7 +384,7 @@
                                     :message {:start (:index (:start @range))
                                               :end (:index (:end @range))}})))))}
                [nbase/pressable
-                [nbase/measured-text {} "ᠬᠠᠰᠤᠬᠤ"]]]
+                [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠬᠠᠰᠤᠬᠤ"]]]
               [nbase/divider {:my 2}]
               [gesture/tap-gesture-handler
                {:onHandlerStateChange
@@ -394,4 +395,4 @@
                         (bean/->js {:type "selectAll"
                                     :message ""})))))}
                [nbase/pressable
-                [nbase/measured-text {} "ᠪᠦᠭᠦᠳᠡ"]]]]))]]]])))
+                [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠪᠦᠭᠦᠳᠡ"]]]]))]]]])))

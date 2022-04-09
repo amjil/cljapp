@@ -1,7 +1,19 @@
-(ns app.ui.html)
+(ns app.ui.html
+  (:require
+    ["react-native" :as rn]
+    [applied-science.js-interop :as j]))
 
+(def platform (j/get-in rn [:Platform :OS]))
+
+(def font-url
+  (condp = platform
+    "android" "file:///android_asset/fonts/MongolianBaiZheng.ttf"
+    "ios" "MongolianBaiZheng.ttf"))
+
+         ; src: local('MongolianBaiZheng'), url('MongolianBaiZheng.ttf')));
 (def quill-html
-  "
+  (str
+    "
   <!DOCTYPE html>
   <html lang=\"en\">
   <head>
@@ -10,7 +22,7 @@
     <style>
       @font-face {
          font-family: 'MongolianBaiZheng';
-         src: local('MongolianBaiZheng'), url('MongolianBaiZheng.ttf');
+         src: local('MongolianBaiZheng'), url('" font-url "');
       }
       html,body {
         height: 100%;
@@ -993,13 +1005,14 @@
     <!-- Initialize Quill editor -->
     <script>
       const quill = new Quill('#editor', window.options)
+      /*
       quill.on('text-change', function(delta, oldDelta, source) {
-        /*const html = document.querySelector('#editor').children[0].innerHTML
+        const html = document.querySelector('#editor').children[0].innerHTML
         const message = {
           type: 'onChange',
           message: html,
         }
-        */
+
         var length = quill.getLength() - 1;
         var text = quill.getText(0, length);
         var content = quill.root.innerHTML;
@@ -1009,7 +1022,7 @@
         }
         window.ReactNativeWebView.postMessage(JSON.stringify(message))
       });
-
+      */
       function _postMessage(data){
           window.ReactNativeWebView.postMessage(JSON.stringify(data));
       };
@@ -1128,6 +1141,15 @@
                   quill.root.innerHTML = obj.message;
                   _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
                   break;
+              case 'getContent':
+                  var length = quill.getLength() - 1;
+                  var text = quill.getText(0, length);
+                  var content = quill.root.innerHTML;
+                  const message = {
+                    type: 'onChange',
+                    message: {text: text, width: quill.root.clientWidth, content: content},
+                  }
+                  _postMessage(message);
               case 'initSelection':
                   var length = quill.getLength();
                   var range = pointFromSelection(length - 1);
@@ -1135,7 +1157,7 @@
                   break;
               case 'setSelection':
                   var range = selectionFromPoint(obj.message);
-                  quill.setSelection(range.index);
+                  //quill.setSelection(range.index);
                   _postMessage({type: 'updateSelection', message: range});
                   break;
               case 'insertText':
@@ -1238,4 +1260,4 @@
 
 
 
-  ")
+  "))

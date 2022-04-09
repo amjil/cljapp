@@ -8,7 +8,7 @@
    [app.ui.components :as ui]
    [app.ui.keyboard.bridge :as bridge]
    [app.ui.keyboard.state :as state]
-   [app.ui.webview :refer [cursor]]
+   [app.ui.editor :refer [cursor]]
    [app.persist.sqlite :as sqlite]
    [clojure.string :as str]))
 
@@ -20,7 +20,7 @@
   (reset! candidates-index "")
   (sqlite/next-words m
     #(reset! candidates-list %))
-  (js/console.log "xxxx")
+  (js/console.log "xxxx" (bean/->js @cursor))
   (let [text (:char_word m)
         new-text (str (cond
                         (empty? (:char @cursor))
@@ -74,7 +74,8 @@
   (fn []
     (let [candidates @candidates-list]
       (cond
-        (empty? candidates)
+        ; (empty? candidates)
+        (empty? @candidates-index)
         nil
 
         :else
@@ -87,6 +88,7 @@
                             :alignItems "center"
                             :justifyContent "center"
                             :z-index 999}}
+         [nbase/text @candidates-index]
          [nbase/box
           {:style {;:opacity 0.6
                    :backgroundColor "ghostwhite"

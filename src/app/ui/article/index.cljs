@@ -3,8 +3,10 @@
     [app.ui.nativebase :as nbase]
     [app.ui.editor :as editor]
     [app.ui.components :as ui]
+    [app.ui.text :as text]
     [app.ui.keyboard.index :as keyboard]
     [app.ui.keyboard.candidates :as candidates]
+    [app.ui.keyboard.bridge :as bridge]
 
     [applied-science.js-interop :as j]
     [cljs-bean.core :as bean]
@@ -16,23 +18,6 @@
 
     ["react-native-measure-text-chars" :as rntext]
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
-
-(defn rotated-text [props width height t]
-  (let [offset (- (/ height 2) (/ width 2))]
-    [nbase/text (merge props {:style {:width height :height width
-                                      :transform [{:rotate "90deg"}
-                                                  {:translateX offset}
-                                                  {:translateY offset}]}})
-      t]))
-
-(defn measured-text
-  [props t]
-  (let [info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
-        height (j/get info :width)
-        width (+ 1 (j/get info :height))]
-    [nbase/box {:style {:width width
-                        :height height}}
-     [rotated-text props width height (if (empty? t) "" t)]]))
 
 ; (def model (reagent/atom {:title "Hello" :content "<p>abc</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>xxxx</p>"}))
 (def model (reagent/atom {:title "Hello" :content "<p>abc</p><p>xxxx</p>"}))
@@ -46,7 +31,7 @@
                 :flex-direction "row"
                 :bg "white"}
     [nbase/box {:p 2}
-     [measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠭᠠᠷᠴᠠᠭ"]]
+     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠭᠠᠷᠴᠠᠭ"]]
     [nbase/pressable {:border-width "1" :border-color "cyan.500"
                       :px 2
                       :py 5
@@ -54,9 +39,9 @@
                       :on-press (fn [] (reset! active-key :title)
                                   (reset! content-type :text)
                                   (re-frame/dispatch [:navigate-to :article-edit]))}
-     [measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:title @model)]]
+     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:title @model)]]
     [nbase/box {:p 2 :ml 2}
-     [measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠭᠤᠯᠭ᠎ᠠ"]]
+     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠭᠤᠯᠭ᠎ᠠ"]]
     [nbase/box {:border-width "1" :border-color "cyan.500"
                 :w "200"
                 :p 2
@@ -84,13 +69,13 @@
       {}
       ;content-fn
       (fn []
-        (js/console.log "content -fn >......." (:content @model))
+        ; (js/console.log "content -fn >......." (:content @model))
         (get @model @active-key))
       ;update-fn
       (fn [x]
         (swap! model assoc @active-key (get x @content-type))
-        (swap! articles-atom assoc @articles-cursor @model)
-        (js/console.log "change-fn>>> " (:content x)))]
+        (swap! articles-atom assoc @articles-cursor @model))]
+        ; (js/console.log "change-fn>>> " (:content x)))]
     [candidates/views]
     [nbase/box {:height 220}
      [keyboard/keyboard]]]])
@@ -109,7 +94,7 @@
                                          :on-press (fn [e] (re-frame/dispatch [:navigate-to :article-detail])
                                                      (reset! articles-cursor index)
                                                      (reset! model (bean/->clj item)))}
-                        [measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
+                        [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
                           (j/get item :title)]])))
      :ItemSeparatorComponent
      (fn [] (reagent/as-element [nbase/divider {:bg "emerald.500" :thickness "2" :orientation "vertical" :mx "2"}]))
@@ -141,13 +126,13 @@
   {:name       :article-detail
    :component  view
    :options
-   {:title ""
-    :headerRight
-    (fn [tag id classname]
-      (reagent/as-element
-        [nbase/icon-button {:variant "ghost" :colorScheme "indigo"
-                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-checkmark"}])
-                            :on-press (fn [e] (js/console.log "on press icon button"))}]))}})
+   {:title ""}})
+    ; :headerRight
+    ; (fn [tag id classname]
+    ;   (reagent/as-element
+    ;     [nbase/icon-button {:variant "ghost" :colorScheme "indigo"
+    ;                         :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-checkmark"}])
+    ;                         :on-press (fn [e] (js/console.log "on press icon button"))}]))}})
 
 (def article-edit
   {:name       :article-edit
@@ -159,7 +144,9 @@
       (reagent/as-element
         [nbase/icon-button {:variant "ghost" :colorScheme "indigo"
                             :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-checkmark"}])
-                            :on-press #(js/console.log "on press icon button")}]))}})
+                            :on-press (fn [e] (js/console.log "on press icon button")
+                                        (bridge/editor-content)
+                                        (re-frame/dispatch [:navigate-back]))}]))}})
 
 (def article-list
   {:name       :article-list
