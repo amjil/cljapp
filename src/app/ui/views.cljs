@@ -30,7 +30,8 @@
    [app.ui.user.login :as login]
    [app.ui.webview :as webview]
    [app.ui.editor :as editor]
-   [app.ui.article.index :as article]))
+   [app.ui.article.index :as article]
+   [app.ui.question.index :as question]))
 
 
 (when platform/android?
@@ -88,11 +89,14 @@
     ; {:name      :book
     ;  ; :component webview/webview-editor
     ;  :component article/main}
+    ; {:name      :book
+    ;  :component edit-view}
+    (merge
+      question/question-list
+      {:name :book})
     (merge
       article/article-list
-      {:name :book})
-    {:name      :edit
-     :component edit-view}
+      {:name :edit})
     {:name      :profile
      :component profile/profile}]])
 
@@ -107,7 +111,8 @@
          :options {:title ""}}
         article/article-detail
         article/article-edit
-        article/article-list]]])]])
+        article/article-list
+        question/question-list]]])]])
      ;   {:name       :keyboard
      ;    :component  keyboard/keyboard-view
      ;    :options    {:title ""}}
