@@ -12,14 +12,9 @@
     [cljs-bean.core :as bean]
     [reagent.core :as reagent]
     [re-frame.core :as re-frame]
-    [app.ui.html :as html]
-    ["react-native-webview" :refer [WebView]]
-    ["native-base" :refer [useStyledSystemPropsResolver]]
 
-    ["react-native-measure-text-chars" :as rntext]
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
-; (def model (reagent/atom {:title "Hello" :content "<p>abc</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>xxxx</p>"}))
 (def model (reagent/atom {:title "Hello" :content "<p>abc</p><p>xxxx</p>"}))
 (def active-key (reagent/atom nil))
 (def content-type (reagent/atom nil))
