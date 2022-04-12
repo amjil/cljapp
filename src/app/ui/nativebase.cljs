@@ -8,15 +8,19 @@
    [app.ui.text.index :as text]
    [promesa.core :as p]
    [promesa.exec :as exec]
+   [app.handler.gesture :as gesture]
    ["react-native-measure-text-chars" :as rntext]
    ["native-base" :refer [NativeBaseProvider
                           Center
                           Container
                           Box
+                          Menu Menu.Item Menu.Group Menu.OptionGroup Menu.ItemOption
+                          Popover Popover.Content Popover.Arrow Popover.CloseButton Popover.Header Popover.Body Popover.Footer
                           Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer
                           Heading
 
                           Alert Alert.Icon
+                          Skeleton Skeleton.Text
 
                           Text
                           Button Button.Group
@@ -40,10 +44,14 @@
                           Flex
 
                           FlatList
+                          SectionList
                           ScrollView
 
                           Collapse
                           Spinner
+
+                          ;;
+                          HamburgerIcon
 
                           useStyledSystemPropsResolver
                           usePropsResolution
@@ -80,6 +88,9 @@
 (def alert-icon (reagent/adapt-react-class Alert.Icon))
 (def collapse (reagent/adapt-react-class Collapse))
 (def spinner (reagent/adapt-react-class Spinner))
+
+(def skeleton (reagent/adapt-react-class Skeleton))
+(def skeleton-text (reagent/adapt-react-class Skeleton.Text))
 ; Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer))
 (def modal (reagent/adapt-react-class Modal))
 (def modal-content (reagent/adapt-react-class Modal.Content))
@@ -87,6 +98,14 @@
 (def modal-header (reagent/adapt-react-class Modal.Header))
 (def modal-body (reagent/adapt-react-class Modal.Body))
 (def modal-footer (reagent/adapt-react-class Modal.Footer))
+
+;Menu
+; Menu Menu.Item Menu.Group Menu.OptionGroup Menu.ItemOption))
+(def menu (reagent/adapt-react-class Menu))
+(def menu-item (reagent/adapt-react-class Menu.Item))
+(def menu-group (reagent/adapt-react-class Menu.Group))
+(def menu-option-group (reagent/adapt-react-class Menu.OptionGroup))
+(def menu-item-option (reagent/adapt-react-class Menu.ItemOption))
 
 ; Actionsheet Actionsheet.Content Actionsheet.Item
 (def actionsheet (reagent/adapt-react-class Actionsheet))
@@ -106,6 +125,7 @@
 (def divider (reagent/adapt-react-class Divider))
 (def scroll-view (reagent/adapt-react-class ScrollView))
 (def flat-list (reagent/adapt-react-class FlatList))
+(def section-list (reagent/adapt-react-class SectionList))
 
 (def center (reagent/adapt-react-class Center))
 
@@ -532,6 +552,46 @@
 (defn input-view [])
 
 
+(defn view1 []
+  [center {:flex 1 :px 3 :safeArea true}
+   [:> Menu {;:w "190"
+             :onOpen #(js/console.log "on open >>>")
+             :onClose #(js/console.log "on close >>>")
+             :trigger (fn [props]
+                        (reagent/as-element
+                          [:> Button (merge (bean/->clj props)
+                                       {:accessibilityLabel "More options menu"})
+                            "More option"]))}
+    [:> Menu.Item "Arial"]]])
+
+(defn view2 []
+  [center {:flex 1 :px 3 :safeArea true}
+   [:> Popover {:trigger (fn [props] (reagent/as-element
+                                       [:> Button (merge (bean/->clj props)
+                                                    {:colorScheme "danger"})
+                                        "A"]))}
+                ; :placement "left"}
+    [:> Popover.Content {:accessibilityLabel "Delete Customerd"}
+     [:> Popover.Arrow]
+     ; [:> Popover.CloseButton]
+     ; [:> Popover.Header "Delete Customer"]
+     [:> Popover.Body {
+                         :h "60"
+                         :w "20"}
+      [rotated-text {:fontSize "sm"} 20 60
+       "rotated"]]]]])
+
+; (defn modal-view []
 (defn view []
-  [center {:flex 1 :py 3 :safeArea true}
-   [multi-spinner-view]])
+  [center {:flex 1 :px 3 :safeArea true}
+   ; [pressable {:style {:z-index 1}
+   ;             :elevation 1
+   ;             :on-press #(js/console.log "bbbb")}
+   ;  [text "aaa"]]
+   [gesture/gesture-root-view
+    [gesture/tap-gesture-handler
+     {:onHandlerStateChange #(js/console.log "tap gesture on view" (j/get-in % [:nativeEvent :state]))}
+     [text "bbb"]]]])
+
+         ; :style {:z-index 301 :opacity 0}
+         ; :elevation 301}]]]])
