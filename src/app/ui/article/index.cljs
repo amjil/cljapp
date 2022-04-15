@@ -8,6 +8,7 @@
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
 
+    [steroid.rn.core :as rn]
     [applied-science.js-interop :as j]
     [cljs-bean.core :as bean]
     [reagent.core :as reagent]
@@ -27,13 +28,14 @@
                 :bg "white"}
     [nbase/box {:p 2}
      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠭᠠᠷᠴᠠᠭ"]]
-    [nbase/pressable {:border-width "1" :border-color "cyan.500"
-                      :px 2
-                      :py 5
-                      :border-radius "md"
-                      :on-press (fn [] (reset! active-key :title)
-                                  (reset! content-type :text)
-                                  (re-frame/dispatch [:navigate-to :article-edit]))}
+    [rn/touchable-highlight {:style {:borderWidth 1 :borderColor "#06b6d4"
+                                     :paddingHorizontal 8
+                                     :paddingVertical 20
+                                     :borderRadius 8}
+                              :underlayColor "#cccccc"
+                              :on-press (fn [] (reset! active-key :title)
+                                          (reset! content-type :text)
+                                          (re-frame/dispatch [:navigate-to :article-edit]))}
      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:title @model)]]
     [nbase/box {:p 2 :ml 2}
      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠭᠤᠯᠭ᠎ᠠ"]]

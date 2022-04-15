@@ -88,7 +88,7 @@
                                   (j/get item :user_name)]]]
                               [nbase/box {:mt 9
                                           :ml 2}
-                               [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 22 :color "darkBlue.800"}
+                               [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 22 :color "#002851"}
                                  (j/get item :question_content)]]
                               [nbase/box {:mt 9
                                           :ml 1}
