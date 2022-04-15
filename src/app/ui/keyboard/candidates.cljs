@@ -6,11 +6,16 @@
    [cljs-bean.core :as bean]
    [app.ui.nativebase :as nbase]
    [app.ui.components :as ui]
+   [app.ui.text :as text]
    [app.ui.keyboard.bridge :as bridge]
    [app.ui.keyboard.state :as state]
    [app.ui.editor :refer [cursor]]
    [app.persist.sqlite :as sqlite]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+
+   [steroid.rn.core :as rn]
+   [steroid.rn.components.list :as rn-list]))
+
 
 (def candidates-list (reagent/atom []))
 (def candidates-index (reagent/atom ""))
@@ -79,17 +84,17 @@
         nil
 
         :else
-        [nbase/box {:style {:position "absolute"
-                            :left 0
-                            :right 0
-                            ;:top 0
-                            :bottom 300
-                            :elevation 1998
-                            :alignItems "center"
-                            :justifyContent "center"
-                            :z-index 999}}
-         [nbase/text @candidates-index]
-         [nbase/box
+        [rn/view {:style {:position "absolute"
+                          :left 0
+                          :right 0
+                          ;:top 0
+                          :bottom 300
+                          :elevation 1998
+                          :alignItems "center"
+                          :justifyContent "center"
+                          :z-index 999}}
+         [rn/text @candidates-index]
+         [rn/view
           {:style {;:opacity 0.6
                    :backgroundColor "ghostwhite"
                    :borderRadius 5
@@ -104,7 +109,7 @@
                    :borderWidth 1
                    :borderColor "lightgray"
                    :flex-direction "row"}}
-          [nbase/flat-list
+          [rn-list/flat-list
            {:keyExtractor    (fn [_ index] (str "text-" index))
             :data      (cond
                          (not-empty candidates)
@@ -115,11 +120,11 @@
             :renderItem (fn [x]
                           (let [{:keys [item index separators]} (j/lookup x)]
                             (reagent/as-element
-                              [nbase/pressable {:on-press #(candidate-select (bean/->clj item))
-                                                :px 1}
-                               [nbase/box {:style {:height "100%"}}; :width 28}}
-                                [nbase/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
-                                  (j/get item :char_word)]]])))
+                              [rn/touchable-opacity {:on-press #(candidate-select item)
+                                                     :px 1}
+                               [rn/view {:style {:height "100%"}}; :width 28}}
+                                [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
+                                  (:char_word item)]]])))
             :p 3
             :initialNumToRender 7
             :showsHorizontalScrollIndicator false

@@ -84,7 +84,7 @@
                                [nbase/box {:alignSelf "center"
                                            :mt 2
                                            :pl 2}
-                                [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "gray.500"}
+                                [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "#71717a"}
                                   (j/get item :user_name)]]]
                               [nbase/box {:mt 9
                                           :ml 2}
@@ -92,7 +92,7 @@
                                  (j/get item :question_content)]]
                               [nbase/box {:mt 9
                                           :ml 1}
-                               [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "gray.500"}
+                               [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "#71717a"}
                                  (j/get item :question_detail)]]
                               [nbase/box {:ml 2
                                           :mt 9
