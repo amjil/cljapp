@@ -11,7 +11,9 @@
    [app.ui.keyboard.style :as style :refer [key-style key-con-style key-text-style]]
    [app.ui.keyboard.common :as keycommon]
    [app.ui.keyboard.state :as state]
-   [app.ui.keyboard.bridge :as bridge]))
+   [app.ui.keyboard.bridge :as bridge]
+
+   [steroid.rn.core :as rn]))
 
 (def mn-key-list [[{:label "ᠣ" :code "q"} {:label "ᠸ᠊" :code "w"} {:label "ᠡ" :code "e"}
                    {:label "ᠷ᠊" :code "r"} {:label "ᠲ᠊" :code "t"} {:label "ᠶ᠊" :code "y"}
@@ -45,7 +47,7 @@
 (defn toolkit-row [alter alter-num]
   [keycommon/key-row
    [[keycommon/key-button {:flex 1.5} #(reset! state/alter-num (not @state/alter-num))
-     [nbase/text {} (if (true? alter-num) "ABC" "123")]]
+     [rn/text {} (if (true? alter-num) "ABC" "123")]]
     [keycommon/key-button {:flex 1.5} #(reset! state/alter (not @state/alter))
      [ui/ion-icons {:name "globe" :color "gray" :size 30}]]
     (if (false? alter)
@@ -119,7 +121,8 @@
        ^{:key kk}
        [keycommon/key-char-button (if (true? s) (str/upper-case kk) kk)])
      [keycommon/key-button {:flex 1.65} #(bridge/editor-delete)
-      [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]])
+      [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
+   [toolkit-row a an]])
 
 (defn en-layout-a [s sn a an]
   [nbase/box style/layout-box-style
@@ -171,9 +174,3 @@
       (if (true? @alter-num)
         [en-layout-n @shift @shift-num @alter @alter-num]
         [en-layout-a @shift @shift-num @alter @alter-num]))))
-
-(defn layout []
-  [nbase/box style/layout-box-style
-   (if (true? @state/alter)
-     (if (true? @state/alter-num)
-       []))])
