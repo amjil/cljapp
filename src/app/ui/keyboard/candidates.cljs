@@ -120,8 +120,10 @@
             :renderItem (fn [x]
                           (let [{:keys [item index separators]} (j/lookup x)]
                             (reagent/as-element
-                              [rn/touchable-opacity {:on-press #(candidate-select item)
-                                                     :px 1}
+                              [rn/touchable-highlight {:on-press #(candidate-select item)
+                                                       :style {:paddingHorizontal 4
+                                                               :paddingVertical 4}
+                                                       :underlayColor "#cccccc"}
                                [rn/view {:style {:height "100%"}}; :width 28}}
                                 [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
                                   (:char_word item)]]])))
