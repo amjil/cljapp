@@ -1137,6 +1137,10 @@
               case 'testMessage':
                   alert(obj.message);
                   break;
+              case 'setText':
+                  quill.setText = obj.message;
+                  _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
+                  break;
               case 'setContent':
                   quill.root.innerHTML = obj.message;
                   _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});

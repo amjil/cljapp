@@ -112,7 +112,10 @@
         article/article-detail
         article/article-edit
         article/article-list
-        question/question-list]]])]])
+        question/question-list
+        question/question-detail
+        question/question-edit
+        profile/profile-edit]]])]])
      ;   {:name       :keyboard
      ;    :component  keyboard/keyboard-view
      ;    :options    {:title ""}}
@@ -127,8 +130,8 @@
 ;   [safe-area/safe-area-provider
 ;    [nativebase/nativebase-provider
 ;     ; [nativebase/view]
-;     ; [nativebase/box {:flex 1 :px 3 :safeArea true}
+;     [nativebase/box {:flex 1 :px 3 :safeArea true}
 ;     ;  [webview/webview-editor]]]])
 ;     ; [editor/view]]])
 ;     ; [editor/test-view]]])
-;     [article/view]]])
+;      [home/home]]]])

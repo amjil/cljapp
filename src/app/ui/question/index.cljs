@@ -8,6 +8,7 @@
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
 
+    [steroid.rn.core :as rn]
     [applied-science.js-interop :as j]
     [cljs-bean.core :as bean]
     [reagent.core :as reagent]
@@ -46,6 +47,11 @@
                                     :agree_count 0
                                     :comment_count 0}]))
 
+(def cursor (reagent/atom 0))
+
+(def model (reagent/atom {}))
+(def active-key (reagent/atom nil))
+
 (defn list-view []
   (let [height (reagent/atom nil)]
     (fn []
@@ -74,7 +80,10 @@
                                               :borderRightWidth "0.5"
                                               :borderColor "gray.300"
                                               :bg "white"
-                                              :on-press (fn [e] (re-frame/dispatch [:navigate-to :question-detail]))}
+                                              :on-press (fn [e] (re-frame/dispatch [:navigate-to :question-detail])
+                                                          (js/console.log ">>>> 0000 " (:question_detail (bean/->clj item)))
+                                                          (reset! cursor index)
+                                                          (reset! model (bean/->clj item)))}
                              [nbase/hstack
                               [nbase/vstack
                                [nbase/box {:bg "gray.300"
@@ -126,6 +135,74 @@
                            :onPress (fn [e]
                                       (js/console.log "icon-button on press")
                                       (re-frame/dispatch [:navigate-to :question-detail]))}]]])))
+
+
+(defn detail-view []
+  [ui/safe-area-consumer
+   [nbase/flex {:flex 1
+                :p 5
+                :flex-direction "row"
+                :bg "white"}
+    [nbase/box {:p 2}
+     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠰᠠᠭᠤᠯᠲᠠ"]]
+    [rn/touchable-highlight {:style {:borderWidth 1 :borderColor "#06b6d4"
+                                     :paddingHorizontal 8
+                                     :paddingVertical 20
+                                     :borderRadius 8}
+                              :underlayColor "#cccccc"
+                              :on-press (fn [] (reset! active-key :question_content)
+                                          (re-frame/dispatch [:navigate-to :question-edit]))}
+     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_content @model)]]
+    [nbase/box {:p 2 :ml 2}
+     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠨᠠᠷᠢᠨ ᠲᠠᠢᠯᠪᠤᠷᠢ"]]
+    [rn/touchable-highlight {:style {:borderWidth 1 :borderColor "#06b6d4"
+                                     :paddingHorizontal 8
+                                     :paddingVertical 20
+                                     :borderRadius 8
+                                     :maxWidth 400}
+                              :underlayColor "#cccccc"
+                              :on-press (fn [] (reset! active-key :question_detail)
+                                          (re-frame/dispatch [:navigate-to :question-edit]))}
+     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_detail @model)]]]])
+
+
+
+(defn edit-view []
+  [ui/safe-area-consumer
+   [nbase/flex {:flex 1
+                :justifyContent "space-between"}
+    [editor/editor-view
+      {:type :text}
+      ;content-fn
+      (fn []
+        ; (js/console.log "content -fn >......." (:content @model))
+        (get @model @active-key))
+      ;update-fn
+      (fn [x]
+        (swap! model assoc @active-key (get x :text)))]
+    [candidates/views]
+    [nbase/box {:height 220}
+     [keyboard/keyboard]]]])
+
+(def question-detail
+  {:name       :question-detail
+   :component  detail-view
+   :options
+   {:title ""}})
+
+(def question-edit
+  {:name       :question-edit
+   :component  edit-view
+   :options
+   {:title ""
+    :headerRight
+    (fn [tag id classname]
+      (reagent/as-element
+        [nbase/icon-button {:variant "ghost" :colorScheme "indigo"
+                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-checkmark"}])
+                            :on-press (fn [e] (js/console.log "on press icon button")
+                                        (bridge/editor-content)
+                                        (re-frame/dispatch [:navigate-back]))}]))}})
 
 (def question-list
   {:name       :question-list

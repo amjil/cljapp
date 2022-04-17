@@ -199,7 +199,10 @@
                         :injectedJavaScript
                         (str
                           ; " document.querySelector('#editor').innerHTML=\"" content "\";"
-                          " quill.root.innerHTML = \"" (content-fn) "\";"
+                          (if (= (:type opts) :text)
+                            (let [content-value (j/call js/JSON :stringify (content-fn))]
+                              (str " quill.setText('" (subs content-value 1 (dec (count content-value))) "');"))
+                            (str " quill.root.innerHTML = \"" (content-fn) "\";"))
                           "_postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
                            //var length = quill.getLength();
                            //var range = pointFromSelection(length - 1);
