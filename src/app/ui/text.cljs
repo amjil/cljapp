@@ -10,6 +10,8 @@
     [steroid.rn.core :as rn]
     [steroid.rn.components.list :as rn-list]))
 
+(def base-prop {:fontFamily "MongolianBaiZheng"})
+
 (defn rotated-text [props width height t]
   (let [offset (- (/ height 2) (/ width 2))]
     [rn/text {:style (merge {:width height :height width

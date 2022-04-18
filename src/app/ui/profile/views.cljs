@@ -14,17 +14,25 @@
     [app.ui.keyboard.bridge :as bridge]
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
-(def profiles (reagent/atom [{:name "ᠨᠡᠷ᠎ᠡ" :value "ᠰᠡᠴᠡᠨᠪᠦᠬᠡ"}
-                             {:name "ᠬᠦᠢᠰᠦ" :value "ᠡᠷᠡᠭᠲᠡᠢ"}
-                             {:name "ᠲᠦᠷᠦᠭᠰᠡᠨ ᠡᠳᠦᠷ" :value "2020-01-01"}
-                             {:name "ᠢᠨᠠᠭ" :value "ᠤᠷᠤᠭᠯᠠᠪᠠ"}
-                             {:name "ᠳᠤᠷ᠎ᠠ ᠪᠠᠬ᠎ᠠ" :value "ᠬᠦᠯ ᠪᠦᠮᠪᠦᠭᠡ"}
-                             {:name "ᠨᠤᠲᠤᠭ" :value "ᠵᠠᠷᠤᠳ"}
-                             {:name "ᠠᠵᠢᠯ" :value "IT"}
-                             {:name "ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠭ᠎ᠠ" :value ""}
-                             {:name "ᠦᠪᠡᠷᠮᠢᠴᠡ ᠦᠬᠡ" :value ""}]))
+(def profiles (reagent/atom [{:name "ᠨᠡᠷ᠎ᠡ" :value "ᠰᠡᠴᠡᠨᠪᠦᠬᠡ" :type :text}
+                             {:name "ᠬᠦᠢᠰᠦ" :value "ᠡᠷᠡᠭᠲᠡᠢ" :type :select :title "gender"}
+                             {:name "ᠲᠦᠷᠦᠭᠰᠡᠨ ᠡᠳᠦᠷ" :value "2020-01-01" :type :text}
+                             {:name "ᠢᠨᠠᠭ" :value "ᠤᠷᠤᠭᠯᠠᠪᠠ" :type :select :title "marital"}
+                             {:name "ᠳᠤᠷ᠎ᠠ ᠪᠠᠬ᠎ᠠ" :value "ᠬᠦᠯ ᠪᠦᠮᠪᠦᠭᠡ" :type :text}
+                             {:name "ᠨᠤᠲᠤᠭ" :value "ᠵᠠᠷᠤᠳ" :type :text}
+                             {:name "ᠠᠵᠢᠯ" :value "IT" :type :text}
+                             {:name "ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠭ᠎ᠠ" :value "" :type :text}
+                             {:name "ᠦᠪᠡᠷᠮᠢᠴᠡ ᠦᠬᠡ" :value "" :type :text}]))
 
 (def cursor (reagent/atom 0))
+
+(def gender ["ᠡᠷᠡᠭᠲᠡᠢ" "ᠡᠮᠡᠭᠲᠡᠢ" "ᠨᠢᠭᠤᠴᠠ"])
+
+(def marital ["ᠨᠢᠭᠤᠴᠠ" "ᠭᠠᠭᠴᠠ ᠪᠡᠶ᠎ᠡ" "ᠦᠶᠡᠷᠬᠡᠪᠡ" "ᠤᠷᠤᠭᠯᠠᠪᠠ"])
+
+(def actionsheet-data (reagent/atom {}))
+
+(def isopen (reagent/atom false))
 
 (defn profile []
   [nbase/hstack {:bg "white" :h "100%"}
@@ -45,6 +53,18 @@
                  :mb 2}]
      [nbase/icon {:as Ionicons :name "chevron-down"
                   :justifyContent "center" :alignSelf "center"}]]]
+   [nbase/actionsheet {:isOpen @isopen :onClose #(reset! isopen false) :safeArea true}
+    [nbase/actionsheet-content {:maxH 300}
+     [nbase/container {:flexDirection "row"}
+      [nbase/box {:h "100%" :w 12 :py 4 :justifyContent "center"}
+       [text/measured-text (merge {:fontSize 16 :color "#71717a"} text/base-prop) (:name @actionsheet-data)]]
+      (for [x (:data @actionsheet-data)]
+        ^{:key x}
+        [nbase/actionsheet-item {:height 250 :w 12 :py 4
+                                 :onPress (fn [e]
+                                            (reset! isopen false)
+                                            (swap! profiles assoc-in [@cursor :value] x))}
+         [text/measured-text (merge {:fontSize 16 :color "#1f2937"} text/base-prop) x]])]]]
    [nbase/flat-list
     {:keyExtractor    (fn [_ index] (str "profile-item-" index))
      :data      @profiles
@@ -56,7 +76,16 @@
                                          :borderColor "gray.200"
                                          :on-press (fn [e]
                                                      (reset! cursor index)
-                                                     (re-frame/dispatch [:navigate-to :profile-edit]))}
+                                                     (if (= :text (j/get item :type))
+                                                       (re-frame/dispatch [:navigate-to :profile-edit])
+                                                       (do
+                                                        (reset! isopen true)
+                                                        (cond
+                                                          (= "gender" (j/get item :title))
+                                                          (reset! actionsheet-data {:name (j/get item :name) :data gender})
+
+                                                          (= "marital" (j/get item :title))
+                                                          (reset! actionsheet-data {:name (j/get item :name) :data marital})))))}
                         [nbase/box {:h "20%"
                                     :mx 2
                                     :pl 2
