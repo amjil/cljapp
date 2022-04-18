@@ -50,12 +50,14 @@
      [rn/text {} (if (true? alter-num) "ABC" "123")]]
     [keycommon/key-button {:flex 1.5} #(reset! state/alter (not @state/alter))
      [ui/ion-icons {:name "globe" :color "gray" :size 30}]]
-    (if (false? alter)
-      [keycommon/key-char-button ","])
+    (if-not (true? alter)
+      [keycommon/key-button {} #(bridge/editor-insert "᠂")
+       [nbase/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠂"]])
     [keycommon/key-button (if (false? alter) {:flex 3.5} {:flex 5.5}) #(bridge/editor-insert " ")
      [ui/ion-icons {:name "ios-scan" :color "gray" :size 30}]]
-    (if (false? alter)
-      [keycommon/key-char-button "."])
+    (if-not (true? alter)
+      [keycommon/key-button {} #(bridge/editor-insert "᠃")
+       [nbase/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠃"]])
     [keycommon/key-button {:flex 1.5} #(bridge/editor-insert "\n")
      [ui/ion-icons {:name "ios-return-down-back-sharp" :color "gray" :size 30}]]]])
 
