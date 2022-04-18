@@ -37,24 +37,20 @@
 
       :else
       (let [line-height (/ (j/get info :height) (j/get info :lineCount))]
-        ; (js/console.log "lines " (last (map (fn [x] (subs t (:start x) (:end x))) (j/get info :lineInfo))))
-        ; [rn/view {:style {:width line-height
-        ;                   :height height}}
-        ;  [rotated-text props line-height height (last (map (fn [x] (subs t (:start x) (:end x))) (:lineInfo info)))]]))))
-        [rn/view {:style {:maxWidth 200}}
-         [rn-list/flat-list
-          {:horizontal true
-           :keyExtractor    (fn [_ index] (str "text-" index))
-           :style {;:width (* (inc line-height) (j/get info :lineCount))
-                   :height "100%"}
-           :data (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo))
-           :renderItem
-           (fn [x]
-             (let [{:keys [item index separators]} (j/lookup x)]
-               (reagent/as-element
-                 [rn/view {:style {:height height
-                                   :width (inc line-height)}}
-                  [rotated-text props (inc line-height) height item]])))}]]))))
+        [rn-list/flat-list
+         {:horizontal true
+          :keyExtractor    (fn [_ index] (str "text-" index))
+          :style {;:width (* (inc line-height) (j/get info :lineCount))
+                  :width "100%"
+                  :height "100%"}
+          :data (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo))
+          :renderItem
+          (fn [x]
+            (let [{:keys [item index separators]} (j/lookup x)]
+              (reagent/as-element
+                [rn/view {:style {:height height
+                                  :width (inc line-height)}}
+                 [rotated-text props (inc line-height) height item]])))}]))))
 
 
     ; [rn/view {:style {:width width

@@ -7,6 +7,7 @@
     [app.ui.keyboard.index :as keyboard]
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
+    [app.handler.gesture :as gesture]
 
     [steroid.rn.core :as rn]
     [applied-science.js-interop :as j]
@@ -81,7 +82,6 @@
                                               :borderColor "gray.300"
                                               :bg "white"
                                               :on-press (fn [e] (re-frame/dispatch [:navigate-to :question-detail])
-                                                          (js/console.log ">>>> 0000 " (:question_detail (bean/->clj item)))
                                                           (reset! cursor index)
                                                           (reset! model (bean/->clj item)))}
                              [nbase/hstack
@@ -155,15 +155,18 @@
      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_content @model)]]
     [nbase/box {:p 2 :ml 2}
      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠨᠠᠷᠢᠨ ᠲᠠᠢᠯᠪᠤᠷᠢ"]]
-    [rn/touchable-highlight {:style {:borderWidth 1 :borderColor "#06b6d4"
-                                     :paddingHorizontal 8
-                                     :paddingVertical 20
-                                     :borderRadius 8
-                                     :maxWidth 400}
-                              :underlayColor "#cccccc"
-                              :on-press (fn [] (reset! active-key :question_detail)
-                                          (re-frame/dispatch [:navigate-to :question-edit]))}
-     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_detail @model)]]]])
+    [gesture/tap-gesture-handler
+     { :style {:flex 1}
+       :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
+                                (when (gesture/tap-state-end (j/get % :nativeEvent))
+                                  (reset! active-key :question_detail)
+                                  (re-frame/dispatch [:navigate-to :question-edit])))}
+     [nbase/box {:style {:flex 1}
+                     :borderWidth 1 :borderColor "#06b6d4"
+                        :paddingHorizontal 8
+                        :paddingVertical 20
+                        :borderRadius 8}
+      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_detail @model)]]]]])
 
 
 
