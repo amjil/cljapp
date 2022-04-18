@@ -14,15 +14,15 @@
     [app.ui.keyboard.bridge :as bridge]
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
-(def profiles (reagent/atom [{:name "ᠨᠡᠷ᠎ᠡ" :value "ᠰᠡᠴᠡᠨᠪᠦᠬᠡ" :type :text}
-                             {:name "ᠬᠦᠢᠰᠦ" :value "ᠡᠷᠡᠭᠲᠡᠢ" :type :select :title "gender"}
-                             {:name "ᠲᠦᠷᠦᠭᠰᠡᠨ ᠡᠳᠦᠷ" :value "2020-01-01" :type :text}
-                             {:name "ᠢᠨᠠᠭ" :value "ᠤᠷᠤᠭᠯᠠᠪᠠ" :type :select :title "marital"}
-                             {:name "ᠳᠤᠷ᠎ᠠ ᠪᠠᠬ᠎ᠠ" :value "ᠬᠦᠯ ᠪᠦᠮᠪᠦᠭᠡ" :type :text}
-                             {:name "ᠨᠤᠲᠤᠭ" :value "ᠵᠠᠷᠤᠳ" :type :text}
-                             {:name "ᠠᠵᠢᠯ" :value "IT" :type :text}
-                             {:name "ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠭ᠎ᠠ" :value "" :type :text}
-                             {:name "ᠦᠪᠡᠷᠮᠢᠴᠡ ᠦᠬᠡ" :value "" :type :text}]))
+(def profiles (reagent/atom [{:name "ᠨᠡᠷ᠎ᠡ" :value "ᠰᠡᠴᠡᠨᠪᠦᠬᠡ" :type "text"}
+                             {:name "ᠬᠦᠢᠰᠦ" :value "ᠡᠷᠡᠭᠲᠡᠢ" :type "select" :title "gender"}
+                             {:name "ᠲᠦᠷᠦᠭᠰᠡᠨ ᠡᠳᠦᠷ" :value "2020-01-01" :type "text"}
+                             {:name "ᠢᠨᠠᠭ" :value "ᠤᠷᠤᠭᠯᠠᠪᠠ" :type "select" :title "marital"}
+                             {:name "ᠳᠤᠷ᠎ᠠ ᠪᠠᠬ᠎ᠠ" :value "ᠬᠦᠯ ᠪᠦᠮᠪᠦᠭᠡ" :type "text"}
+                             {:name "ᠨᠤᠲᠤᠭ" :value "ᠵᠠᠷᠤᠳ" :type "text"}
+                             {:name "ᠠᠵᠢᠯ" :value "IT" :type "text"}
+                             {:name "ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠭ᠎ᠠ" :value "" :type "text"}
+                             {:name "ᠦᠪᠡᠷᠮᠢᠴᠡ ᠦᠬᠡ" :value "" :type "text"}]))
 
 (def cursor (reagent/atom 0))
 
@@ -76,7 +76,7 @@
                                          :borderColor "gray.200"
                                          :on-press (fn [e]
                                                      (reset! cursor index)
-                                                     (if (= :text (j/get item :type))
+                                                     (if (= "text" (j/get item :type))
                                                        (re-frame/dispatch [:navigate-to :profile-edit])
                                                        (do
                                                         (reset! isopen true)
