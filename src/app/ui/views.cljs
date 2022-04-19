@@ -27,7 +27,6 @@
    [app.ui.toast.views :as toast]
    [app.ui.drawer.index :as drawer]
    [app.ui.nativebase :as nativebase]
-   [app.ui.user.login :as login]
    [app.ui.webview :as webview]
    [app.ui.editor :as editor]
    [app.ui.article.index :as article]
@@ -124,7 +123,6 @@
      ;    :options    {:title ""}}]])]])
       ; [:f> nativebase/view]])]])
       ; [drawer/view]])]])
-      ; [login/view]])]])
       ; [webview/view]])]])
 ; (defn root-stack []
 ;   [safe-area/safe-area-provider

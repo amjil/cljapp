@@ -4,6 +4,7 @@
    [app.ui.nativebase :as nbase]
    [app.ui.components :as ui]
    [app.ui.html :as html]
+   [app.ui.text :as text]
    [app.handler.gesture :as gesture]
    [reagent.core :as reagent]
    [applied-science.js-interop :as j]
@@ -80,7 +81,7 @@
                      (reset! webview-height (j/get-in e [:nativeEvent :data])))]
     (fn []
      [nbase/box {:h "100%"}; :safeArea true}
-      [nbase/measured-text {:fontFamily "MongolianBaiZheng"} "ᠴ᠂ ᠴᠢᠮᠡᠳ"]
+      [text/measured-text {:fontFamily "MongolianBaiZheng"} "ᠴ᠂ ᠴᠢᠮᠡᠳ"]
       [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-height}
                           :horizontal true}
        ; [:> WebView {:source {:uri "https://reactnative.dev/"}}]]])
@@ -440,7 +441,7 @@
                             (bean/->js {:type "insertText" :message {:index (:index (:start @range))
                                                                      :text x}})))))))}
                [nbase/pressable
-                [nbase/measured-text {} "ᠨᠠᠭᠠᠬᠤ"]]]
+                [text/measured-text {} "ᠨᠠᠭᠠᠬᠤ"]]]
               [nbase/divider {:my 2}]
               [gesture/tap-gesture-handler
                {:onHandlerStateChange
@@ -453,7 +454,7 @@
                                     :message {:start (:index (:start @range))
                                               :end (:index (:end @range))}})))))}
                [nbase/pressable
-                [nbase/measured-text {} "ᠬᠠᠭᠤᠯᠬᠤ"]]]
+                [text/measured-text {} "ᠬᠠᠭᠤᠯᠬᠤ"]]]
               [nbase/divider {:my 2}]
               [gesture/tap-gesture-handler
                {:onHandlerStateChange
@@ -466,7 +467,7 @@
                                     :message {:start (:index (:start @range))
                                               :end (:index (:end @range))}})))))}
                [nbase/pressable
-                [nbase/measured-text {} "ᠬᠠᠰᠤᠬᠤ"]]]
+                [text/measured-text {} "ᠬᠠᠰᠤᠬᠤ"]]]
               [nbase/divider {:my 2}]
               [gesture/tap-gesture-handler
                {:onHandlerStateChange
@@ -477,4 +478,4 @@
                         (bean/->js {:type "selectAll"
                                     :message ""})))))}
                [nbase/pressable
-                [nbase/measured-text {} "ᠪᠦᠭᠦᠳᠡ"]]]]))]]]])))
+                [text/measured-text {} "ᠪᠦᠭᠦᠳᠡ"]]]]))]]]])))

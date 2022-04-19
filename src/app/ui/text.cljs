@@ -57,6 +57,41 @@
     ;                   :height height}}
     ;  [rotated-text props width height (if (empty? t) "" t)]]))
 
+(defn simple-text
+  [props t]
+  (let [info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
+        height (j/get info :width)
+        width (+ 1 (j/get info :height))]
+    (cond
+      (nil? info)
+      [rn/text "empty ...."]
+
+      (= 1 (j/get info :lineCount))
+      [rn/view {:style {:width width
+                        :height height}}
+       [rotated-text props width height (if (empty? t) "" t)]]
+
+      :else
+      (let [line-height (/ (j/get info :height) (j/get info :lineCount))
+            data (as-> (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo)) m
+                   (take 2 m)
+                   (concat m ["᠁ ᠁ ᠁"]))]
+        [rn-list/flat-list
+         {:horizontal true
+          :keyExtractor    (fn [_ index] (str "text-" index))
+          :style {:width (* (inc line-height) 5)
+          ;         :width "100%"
+                  ; :flex 1}
+                  :height height}
+          :data data
+          :renderItem
+          (fn [x]
+            (let [{:keys [item index separators]} (j/lookup x)]
+              (reagent/as-element
+                [rn/view {:style {:height height
+                                  :width (inc line-height)}}
+                 [rotated-text props (inc line-height) height item]])))}]))))
+
 (defn theme-text-props [name props]
   (let [theme-props (bean/->js (useThemeProps name (bean/->js props)))
         [text-props _] (useStyledSystemPropsResolver (bean/->js (j/get theme-props :_text)))]

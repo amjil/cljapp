@@ -361,7 +361,7 @@
                             (bean/->js {:type "insertText" :message {:index (:index (:start @range))
                                                                      :text x}})))))))}
                [nbase/pressable
-                [nbase/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠨᠠᠭᠠᠬᠤ"]]]
+                [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠨᠠᠭᠠᠬᠤ"]]]
               [nbase/divider {:my 2}]
               [gesture/tap-gesture-handler
                {:onHandlerStateChange

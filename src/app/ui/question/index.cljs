@@ -18,7 +18,7 @@
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
 (def questions-atom (reagent/atom [{:question_content "ᠲᠡᠷᠭᠡᠯ ᠰᠠᠷᠠ ᠭᠡᠵᠦ ᠶᠠᠮᠠᠷ ᠰᠠᠷᠠ ᠪᠤᠢ?"
-                                    :question_detail "ᠲᠡᠷᠭᠡᠯ ᠰᠠᠷᠠ᠂ ᠬᠠᠪᠢᠷᠭᠠᠨ ᠰᠠᠷᠠ᠂ ᠲᠠᠯ᠎ᠠ ᠰᠠᠷᠠ"
+                                    :question_detail "ᠲᠡᠷᠭᠡᠯ ᠰᠠᠷᠠ᠂ ᠬᠠᠪᠢᠷᠭᠠᠨ ᠰᠠᠷᠠ᠂ ᠲᠠᠯ᠎ᠠ ᠰᠠᠷᠠ\nabc\naaa\n111\n2222\n2222"
                                     :user_name "ᠪᠠᠲᠦ"
                                     :agree_count 0
                                     :comment_count 0}
@@ -100,8 +100,10 @@
                                [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 22 :color "#002851"}
                                  (j/get item :question_content)]]
                               [nbase/box {:mt 9
-                                          :ml 1}
-                               [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "#71717a"}
+                                          :ml 1
+                                          ; :w 100
+                                          :flex 1}
+                               [text/simple-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "#71717a"}
                                  (j/get item :question_detail)]]
                               [nbase/box {:ml 2
                                           :mt 9
@@ -121,7 +123,7 @@
                                              :size "6" :color "gray.300"
                                              :mb 1}]
                                 [nbase/box {:alignSelf "center"}
-                                 [nbase/measured-text {:color "gray.300"} "2022-04-10 13:52:54"]]]]]])))
+                                 [text/measured-text {:color "gray.300"} "2022-04-10 13:52:54"]]]]]])))
           :showsHorizontalScrollIndicator false
           :horizontal true
           :flex 1
@@ -154,18 +156,18 @@
                                           (re-frame/dispatch [:navigate-to :question-edit]))}
      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_content @model)]]
     [nbase/box {:p 2 :ml 2}
-     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠨᠠᠷᠢᠨ ᠲᠠᠢᠯᠪᠤᠷᠢ"]]
+     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠲᠠᠢᠯᠪᠤᠷᠢ"]]
     [gesture/tap-gesture-handler
      { :style {:flex 1}
        :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
                                 (when (gesture/tap-state-end (j/get % :nativeEvent))
                                   (reset! active-key :question_detail)
                                   (re-frame/dispatch [:navigate-to :question-edit])))}
-     [nbase/box {:style {:flex 1}
-                     :borderWidth 1 :borderColor "#06b6d4"
-                        :paddingHorizontal 8
-                        :paddingVertical 20
-                        :borderRadius 8}
+     [nbase/box {:style {:flex 1
+                         :borderWidth 1 :borderColor "#06b6d4"
+                         :paddingHorizontal 8
+                         :paddingVertical 20
+                         :borderRadius 8}}
       [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_detail @model)]]]]])
 
 
@@ -182,7 +184,8 @@
         (get @model @active-key))
       ;update-fn
       (fn [x]
-        (swap! model assoc @active-key (get x :text)))]
+        (swap! model assoc @active-key (get x :text))
+        (swap! questions-atom assoc-in [@cursor @active-key] (get x :text)))]
     [candidates/views]
     [nbase/box {:height 220}
      [keyboard/keyboard]]]])

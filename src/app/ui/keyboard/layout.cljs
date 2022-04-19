@@ -12,6 +12,7 @@
    [app.ui.keyboard.common :as keycommon]
    [app.ui.keyboard.state :as state]
    [app.ui.keyboard.bridge :as bridge]
+   [app.ui.text :as text]
 
    [steroid.rn.core :as rn]))
 
@@ -52,12 +53,12 @@
      [ui/ion-icons {:name "globe" :color "gray" :size 30}]]
     (if-not (true? alter)
       [keycommon/key-button {} #(bridge/editor-insert "᠂")
-       [nbase/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠂"]])
+       [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠂"]])
     [keycommon/key-button (if (false? alter) {:flex 3.5} {:flex 5.5}) #(bridge/editor-insert " ")
      [ui/ion-icons {:name "ios-scan" :color "gray" :size 30}]]
     (if-not (true? alter)
       [keycommon/key-button {} #(bridge/editor-insert "᠃")
-       [nbase/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠃"]])
+       [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠃"]])
     [keycommon/key-button {:flex 1.5} #(bridge/editor-insert "\n")
      [ui/ion-icons {:name "ios-return-down-back-sharp" :color "gray" :size 30}]]]])
 
@@ -69,7 +70,7 @@
       (for [kk k]
         ^{:key kk}
         [keycommon/key-button {} #(candidates/candidates-query (:code kk))
-         [nbase/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 (:label kk)]])])
+         [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 (:label kk)]])])
    [keycommon/key-row
     [
      [keycommon/key-button {:flex 1.5} identity;#(dispatch [:keyboard-alter])
@@ -77,7 +78,7 @@
      (for [kk (nth mn-key-list 2)]
        ^{:key kk}
        [keycommon/key-button {} #(candidates/candidates-query (:code kk))
-        [nbase/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 (:label kk)]])
+        [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 (:label kk)]])
      [keycommon/key-button {:flex 1.5} #(candidates/candidates-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
    [toolkit-row a an]])
