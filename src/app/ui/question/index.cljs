@@ -123,7 +123,7 @@
                                              :size "6" :color "gray.300"
                                              :mb 1}]
                                 [nbase/box {:alignSelf "center"}
-                                 [text/measured-text {:color "gray.300"} "2022-04-10 13:52:54"]]]]]])))
+                                 [text/measured-text {:color "#d4d4d8"} "2022-04-10 13:52:54"]]]]]])))
           :showsHorizontalScrollIndicator false
           :horizontal true
           :flex 1
