@@ -54,14 +54,14 @@
 (def active-key (reagent/atom nil))
 
 (defn list-view []
-  (let [height (reagent/atom nil)]
+  (let [h (reagent/atom nil)]
     (fn []
      [nbase/zstack {:flex 1
                     ; :bg "gray.100"
                     :bg "white"
                     :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
-                                  (js/console.log "height = " height))}
-      (if @height
+                                  (reset! h height))}
+      (if (nil? @h)
         [nbase/hstack {:style {:height 674}}
          [nbase/box {:m 1 :p 4
                      :borderRightWidth "0.5"
@@ -103,7 +103,8 @@
                                           :ml 1
                                           ; :w 100
                                           :flex 1}
-                               [text/simple-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "#71717a"}
+                               [text/simple-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "#71717a"
+                                                  :width (- @h 20)}
                                  (j/get item :question_detail)]]
                               [nbase/box {:ml 2
                                           :mt 9
@@ -140,35 +141,41 @@
 
 
 (defn detail-view []
-  [ui/safe-area-consumer
-   [nbase/flex {:flex 1
-                :p 5
-                :flex-direction "row"
-                :bg "white"}
-    [nbase/box {:p 2}
-     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠰᠠᠭᠤᠯᠲᠠ"]]
-    [rn/touchable-highlight {:style {:borderWidth 1 :borderColor "#06b6d4"
-                                     :paddingHorizontal 8
-                                     :paddingVertical 20
-                                     :borderRadius 8}
-                              :underlayColor "#cccccc"
-                              :on-press (fn [] (reset! active-key :question_content)
-                                          (re-frame/dispatch [:navigate-to :question-edit]))}
-     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_content @model)]]
-    [nbase/box {:p 2 :ml 2}
-     [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠲᠠᠢᠯᠪᠤᠷᠢ"]]
-    [gesture/tap-gesture-handler
-     { :style {:flex 1}
-       :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
-                                (when (gesture/tap-state-end (j/get % :nativeEvent))
-                                  (reset! active-key :question_detail)
-                                  (re-frame/dispatch [:navigate-to :question-edit])))}
-     [nbase/box {:style {:flex 1
-                         :borderWidth 1 :borderColor "#06b6d4"
-                         :paddingHorizontal 8
-                         :paddingVertical 20
-                         :borderRadius 8}}
-      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_detail @model)]]]]])
+  (let [h (reagent/atom 0)]
+    (fn []
+      [ui/safe-area-consumer
+       [nbase/flex {:flex 1
+                    :p 5
+                    :flex-direction "row"
+                    :bg "white"
+                    :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
+                                  (reset! h height))}
+
+        [nbase/box {:p 2}
+         [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠰᠠᠭᠤᠯᠲᠠ"]]
+        [rn/touchable-highlight {:style {:borderWidth 1 :borderColor "#06b6d4"
+                                         :paddingHorizontal 8
+                                         :paddingVertical 20
+                                         :borderRadius 8}
+                                  :underlayColor "#cccccc"
+                                  :on-press (fn [] (reset! active-key :question_content)
+                                              (re-frame/dispatch [:navigate-to :question-edit]))}
+         [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_content @model)]]
+        [nbase/box {:p 2 :ml 2}
+         [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠲᠠᠢᠯᠪᠤᠷᠢ"]]
+        (if-not (zero? @h)
+          [gesture/tap-gesture-handler
+           { :style {:flex 1}
+             :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
+                                      (when (gesture/tap-state-end (j/get % :nativeEvent))
+                                        (reset! active-key :question_detail)
+                                        (re-frame/dispatch [:navigate-to :question-edit])))}
+           [nbase/box {:style {:flex 1
+                               :borderWidth 1 :borderColor "#06b6d4"
+                               :paddingHorizontal 8
+                               :paddingVertical 20
+                               :borderRadius 8}}
+            [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng" :width (- @h 40)} (:question_detail @model)]]])]])))
 
 
 

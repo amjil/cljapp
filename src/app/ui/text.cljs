@@ -33,7 +33,7 @@
       (= 1 (j/get info :lineCount))
       [rn/view {:style {:width width
                         :height height}}
-       [rotated-text props width height (if (empty? t) "" t)]]
+       [rotated-text (dissoc props :width) width height (if (empty? t) "" t)]]
 
       :else
       (let [line-height (/ (j/get info :height) (j/get info :lineCount))]
@@ -50,7 +50,7 @@
               (reagent/as-element
                 [rn/view {:style {:height height
                                   :width (inc line-height)}}
-                 [rotated-text props (inc line-height) height item]])))}]))))
+                 [rotated-text (dissoc props :width) (inc line-height) height item]])))}]))))
 
 
     ; [rn/view {:style {:width width
@@ -69,28 +69,21 @@
       (= 1 (j/get info :lineCount))
       [rn/view {:style {:width width
                         :height height}}
-       [rotated-text props width height (if (empty? t) "" t)]]
+       [rotated-text (dissoc props :width) width height (if (empty? t) "" t)]]
 
       :else
       (let [line-height (/ (j/get info :height) (j/get info :lineCount))
             data (as-> (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo)) m
                    (take 2 m)
-                   (concat m ["᠁ ᠁ ᠁"]))]
-        [rn-list/flat-list
-         {:horizontal true
-          :keyExtractor    (fn [_ index] (str "text-" index))
-          :style {:width (* (inc line-height) 5)
-          ;         :width "100%"
-                  ; :flex 1}
-                  :height height}
-          :data data
-          :renderItem
-          (fn [x]
-            (let [{:keys [item index separators]} (j/lookup x)]
-              (reagent/as-element
-                [rn/view {:style {:height height
-                                  :width (inc line-height)}}
-                 [rotated-text props (inc line-height) height item]])))}]))))
+                   (concat m ["᠁ ᠁ ᠁   ᠁ ᠁ ᠁    ᠁ ᠁ ᠁"]))
+            item-height (if (:width props) (:width props) height)]
+        [rn/view {:style {:height item-height :width (* (inc line-height) 3)
+                          :flexDirection "row"}}
+         (for [x data]
+           ^{:key x}
+           [rn/view {:style {:height height
+                             :width (inc line-height)}}
+            [rotated-text (dissoc props :width) (inc line-height) item-height x]])]))))
 
 (defn theme-text-props [name props]
   (let [theme-props (bean/->js (useThemeProps name (bean/->js props)))
