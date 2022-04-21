@@ -126,12 +126,14 @@
                                  [nbase/icon {:as Ionicons :name "ios-ellipsis-vertical-sharp"
                                               :size "6" :color "indigo.500"}]]
                                 [nbase/box {:justifyContent "flex-start"}
-                                 [nbase/icon {:as Ionicons :name "eye"
-                                              :size "6" :color "indigo.500"
-                                              :mb 6}]
-                                 [nbase/icon {:as Ionicons :name "ios-chatbubble-ellipses-outline"
-                                              :size "6" :color "indigo.500"
-                                              :mb 6}]
+                                 [nbase/box {:mb 6 :alignItems "center"}
+                                  [nbase/icon {:as Ionicons :name "eye"
+                                               :size "6" :color "indigo.500"}]
+                                  [text/measured-text {:color "#d4d4d8"} "1024"]]
+                                 [nbase/box {:mb 6 :alignItems "center"}
+                                  [nbase/icon {:as Ionicons :name "ios-chatbubble-ellipses-outline"
+                                               :size "6" :color "indigo.500"}]
+                                  [text/measured-text {:color "#d4d4d8"} "128"]]
                                  [nbase/icon {:as Ionicons :name "time-outline"
                                               :size "6" :color "gray.300"
                                               :mb 1}]
