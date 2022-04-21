@@ -41,7 +41,7 @@
      [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠭᠤᠯᠭ᠎ᠠ"]]
     [nbase/box {:border-width "1" :border-color "cyan.500"
                 :w "200"
-                :p 2
+                :p 0.5
                 :max-w "50%"
                 :border-radius "md"
                 :on-press (fn [] (reset! active-key :content))}
