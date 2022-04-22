@@ -57,7 +57,6 @@
            :renderItem
            (fn [x]
              (let [{:keys [item index separators]} (j/lookup x)]
-               (js/console.log "item index = " index " item = " item)
                (reagent/as-element
                  [rn/view {:style {:height height
                                    :width (inc line-height)}}

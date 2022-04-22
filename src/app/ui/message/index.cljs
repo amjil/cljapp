@@ -22,13 +22,14 @@
                                   {:name "Anna" :message "Classes are applied to the element itself or sometimes the parent element."}
                                   {:name "Silly" :message "These classes can be customized as needed with our utility API."}]))
 
-(def messages (reagent/atom {"Mike" [{:me false :message "Hello, My name is Mike."}
-                                     {:me true :message "Hi Mike, Nice to meet you."}
-                                     {:me true :message "My name is HHH."}
-                                     {:me false :message "Where are you from ?"}
-                                     {:me true :message "I'm from Hohhot."}
+(def messages (reagent/atom {"Mike" [
+                                     {:me false :message "I don't understand anything"}
                                      {:me true :message "utilities. Classes are applied to the element itself or sometimes the parent element. These classes "}
-                                     {:me false :message "I don't understand anything"}]}))
+                                     {:me true :message "I'm from Hohhot."}
+                                     {:me false :message "Where are you from ?"}
+                                     {:me true :message "My name is HHH."}
+                                     {:me true :message "Hi Mike, Nice to meet you."}
+                                     {:me false :message "Hello, My name is Mike."}]}))
 (def conversation-name (reagent/atom "Mike"))
 
 (defn edit-view []
@@ -108,7 +109,7 @@
           [nbase/skeleton {:h "100%" :w 24}]]]
         [nbase/flat-list
          {:keyExtractor    (fn [_ index] (str "message-view-" index))
-          :data     (reverse (get @messages @conversation-name))
+          :data     (get @messages @conversation-name)
           :renderItem (fn [x]
                         (let [{:keys [item index separators]} (j/lookup x)]
                           (reagent/as-element
@@ -147,6 +148,9 @@
           ; :initialScrollIndex 0
           :inverted true
           ; :style {:flexDirection "row"}
+
+          :onEndReached (fn [e] (js/console.log "onEndReached >>>>> "))
+          :onEndReachedThreshold 2
 
           :horizontal true
           :flex 1

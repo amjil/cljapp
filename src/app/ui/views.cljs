@@ -30,7 +30,8 @@
    [app.ui.webview :as webview]
    [app.ui.editor :as editor]
    [app.ui.article.index :as article]
-   [app.ui.question.index :as question]))
+   [app.ui.question.index :as question]
+   [app.ui.message.index :as message]))
 
 
 (when platform/android?
@@ -94,7 +95,8 @@
       question/question-list
       {:name :book})
     (merge
-      article/article-list
+      ; article/article-list
+      message/model-base
       {:name :edit})
     {:name      :profile
      :component profile/profile}]])
@@ -114,7 +116,10 @@
         question/question-list
         question/question-detail
         question/question-edit
-        profile/profile-edit]]])]])
+        profile/profile-edit
+        message/model-base
+        message/model-list
+        message/model-edit]]])]])
      ;   {:name       :keyboard
      ;    :component  keyboard/keyboard-view
      ;    :options    {:title ""}}
