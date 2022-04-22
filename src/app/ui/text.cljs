@@ -23,7 +23,10 @@
 
 (defn measured-text
   [props t]
-  (let [info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
+  (let [props (if (and (nil? (:fontFamily props)) (nil? (:font-family props)))
+                (merge props base-prop)
+                props)
+        info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
         height (j/get info :width)
         width (+ 1 (j/get info :height))]
     (cond
@@ -37,20 +40,28 @@
 
       :else
       (let [line-height (/ (j/get info :height) (j/get info :lineCount))]
-        [rn-list/flat-list
-         {:horizontal true
-          :keyExtractor    (fn [_ index] (str "text-" index))
-          :style {;:width (* (inc line-height) (j/get info :lineCount))
-                  :width "100%"
-                  :height "100%"}
-          :data (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo))
-          :renderItem
-          (fn [x]
-            (let [{:keys [item index separators]} (j/lookup x)]
-              (reagent/as-element
-                [rn/view {:style {:height height
-                                  :width (inc line-height)}}
-                 [rotated-text (dissoc props :width) (inc line-height) height item]])))}]))))
+        [rn/view {:style {:height height :width (* (j/get info :height) (j/get info :lineCount))
+                          :alignItems :center}}
+        ; [rn/view {:style {:height height :width 300}}
+         [rn-list/flat-list
+          {:horizontal true
+           :keyExtractor    (fn [_ index] (str "m-text-" index))
+           ; :style {;:width (* (inc line-height) (j/get info :lineCount))
+                   ; :flex 1
+                   ; :width (* (j/get info :height) (j/get info :lineCount))
+                   ; :height height}
+           :contentContainerStyle {:flex 1
+                                   :alignItems "center"}
+           :data (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo))
+           :scrollEnabled false
+           :renderItem
+           (fn [x]
+             (let [{:keys [item index separators]} (j/lookup x)]
+               (js/console.log "item index = " index " item = " item)
+               (reagent/as-element
+                 [rn/view {:style {:height height
+                                   :width (inc line-height)}}
+                  [rotated-text (dissoc props :width) (inc line-height) height item]])))}]]))))
 
 
     ; [rn/view {:style {:width width
@@ -84,6 +95,53 @@
            [rn/view {:style {:height height
                              :width (inc line-height)}}
             [rotated-text (dissoc props :width) (inc line-height) item-height x]])]))))
+
+(defn single-line-text
+  [props t]
+  (let [info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
+        height (j/get info :width)
+        width (+ 1 (j/get info :height))]
+    (cond
+      (nil? info)
+      [rn/text "empty ...."]
+
+      (= 1 (j/get info :lineCount))
+      [rn/view {:style {:width width
+                        :height height}}
+       [rotated-text (dissoc props :width) width height (if (empty? t) "" t)]]
+
+      :else
+      (let [line-height (/ (j/get info :height) (j/get info :lineCount))
+            data (as-> (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo)) m
+                   (first m))]
+        [rn/view {:style {:height height
+                          :width (inc line-height)}}
+         [rotated-text (dissoc props :width) (inc line-height) height data]]))))
+
+(defn multi-line-text
+  [props t]
+  (let [info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
+        height (j/get info :width)
+        width (+ 1 (j/get info :height))]
+    (cond
+      (nil? info)
+      [rn/text "empty ...."]
+
+      (= 1 (j/get info :lineCount))
+      [rn/view {:style {:width width
+                        :height height}}
+       [rotated-text (dissoc props :width) width height (if (empty? t) "" t)]]
+
+      :else
+      (let [line-height (/ (j/get info :height) (j/get info :lineCount))
+            data (as-> (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo)) m)]
+        [rn/view {:style {:height height :width (* (inc line-height) (j/get info :lineCount))
+                          :flexDirection "row"}}
+         (for [x data]
+           ^{:key x}
+           [rn/view {:style {:height height
+                             :width (inc line-height)}}
+            [rotated-text (dissoc props :width) (inc line-height) height x]])]))))
 
 (defn theme-text-props [name props]
   (let [theme-props (bean/->js (useThemeProps name (bean/->js props)))
