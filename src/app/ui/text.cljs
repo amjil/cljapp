@@ -28,7 +28,7 @@
                 props)
         info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
         height (j/get info :width)
-        width (+ 1 (j/get info :height))]
+        width (j/get info :height)]
     (cond
       (nil? info)
       [rn/text "empty ...."]
@@ -40,7 +40,7 @@
 
       :else
       (let [line-height (/ (j/get info :height) (j/get info :lineCount))]
-        [rn/view {:style {:height height :width (* (j/get info :height) (j/get info :lineCount))
+        [rn/view {:style {:height height :width (* (inc line-height) (j/get info :lineCount))
                           :alignItems :center}}
         ; [rn/view {:style {:height height :width 300}}
          [rn-list/flat-list
@@ -52,6 +52,7 @@
                    ; :height height}
            :contentContainerStyle {:flex 1
                                    :alignItems "center"}
+           :style {:flexDirection "row"}
            :data (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo))
            :scrollEnabled false
            :renderItem

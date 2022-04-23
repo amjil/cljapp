@@ -96,10 +96,11 @@
   (let [h (reagent/atom nil)
         list-ref (reagent/atom nil)]
     (fn []
-     [nbase/zstack {:flex 1
+     [nbase/vstack {:flex 1
+                    :safeArea true
                     :bg "white"
                     :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
-                                  (reset! h height))}
+                                  (- (reset! h height) 20))}
       (if (nil? @h)
         [nbase/hstack {:style {:height 674}}
          [nbase/box {:m 1 :p 4
@@ -120,7 +121,7 @@
                                [nbase/box {:p 2 :bg "darkBlue.100"
                                            :borderRightRadius "20"
                                            :borderTopLeftRadius "20"}
-                                [text/multi-line-text {:fontSize 18 :width (- @h 30 64 60)} (j/get item :message)]]
+                                [text/measured-text {:fontSize 18 :width (- @h 30 64 60)} (j/get item :message)]]
                                [nbase/box {:bg "coolGray.300"
                                            :borderRadius 10
                                            :p 8
@@ -136,7 +137,7 @@
                                [nbase/box {:p 2 :bg "darkBlue.100"
                                            :borderRightRadius "20"
                                            :borderBottomLeftRadius "20"}
-                                [text/multi-line-text {:fontSize 18 :width (- @h 30 64 60)} (j/get item :message)]]]))))
+                                [text/measured-text {:fontSize 18 :width (- @h 30 64 60)} (j/get item :message)]]]))))
 
           :showsHorizontalScrollIndicator false
 
@@ -153,8 +154,11 @@
           :onEndReachedThreshold 2
 
           :horizontal true
-          :flex 1
-          :h "100%"}])])))
+          :flex 1}])
+          ; :h "100%"}])
+      [nbase/box {:bg "coolGray.300"
+                  :p 5}]])))
+                  ; :w "100%"}]])))
 
 (def model-edit
   {:name       :message-edit
