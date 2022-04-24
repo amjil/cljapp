@@ -96,69 +96,89 @@
   (let [h (reagent/atom nil)
         list-ref (reagent/atom nil)]
     (fn []
-     [nbase/vstack {:flex 1
-                    :safeArea true
+      [ui/safe-area-consumer
+       [nbase/box {:flex 1}
+        [nbase/box {:flex 1
                     :bg "white"
                     :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
-                                  (- (reset! h height) 20))}
-      (if (nil? @h)
-        [nbase/hstack {:style {:height 674}}
-         [nbase/box {:m 1 :p 4
-                     :borderRightWidth "0.5"
-                     :borderColor "gray.300"
-                     :bg "white"}
-          [nbase/skeleton {:h "100%" :w 24}]]]
-        [nbase/flat-list
-         {:keyExtractor    (fn [_ index] (str "message-view-" index))
-          :data     (get @messages @conversation-name)
-          :renderItem (fn [x]
-                        (let [{:keys [item index separators]} (j/lookup x)]
-                          (reagent/as-element
-                            (if (true? (j/get item :me))
-                              [nbase/vstack {:justifyContent "flex-end"
-                                             :style {:height (- @h 30)
-                                                     :paddingHorizontal 8}}
-                               [nbase/box {:p 2 :bg "darkBlue.100"
-                                           :borderRightRadius "20"
-                                           :borderTopLeftRadius "20"}
-                                [text/measured-text {:fontSize 18 :width (- @h 30 64 60)} (j/get item :message)]]
-                               [nbase/box {:bg "coolGray.300"
-                                           :borderRadius 10
-                                           :p 8
-                                           :mt 4
-                                           :alignSelf "flex-start"}]]
-                              [nbase/vstack {:justifyContent "flex-start"
-                                             :style {:height (- @h 30)}}
-                               [nbase/box {:bg "coolGray.300"
-                                           :borderRadius 10
-                                           :p 8
-                                           :alignSelf "flex-start"
-                                           :mb 4}]
-                               [nbase/box {:p 2 :bg "darkBlue.100"
-                                           :borderRightRadius "20"
-                                           :borderBottomLeftRadius "20"}
-                                [text/measured-text {:fontSize 18 :width (- @h 30 64 60)} (j/get item :message)]]]))))
+                                  (reset! h height))}
+         (if (nil? @h)
+           [nbase/hstack; {:style {:height 674}}
+            [nbase/box {:m 1 :p 4
+                        :borderRightWidth "0.5"
+                        :borderColor "gray.300"
+                        :bg "white"}
+             [nbase/skeleton {:h "100%" :w 24}]]]
+           [nbase/flat-list
+            {:keyExtractor    (fn [_ index] (str "message-view-" index))
+             :data     (get @messages @conversation-name)
+             :renderItem (fn [x]
+                           (let [{:keys [item index separators]} (j/lookup x)]
+                             (reagent/as-element
+                               (if (true? (j/get item :me))
+                                 [nbase/vstack {:justifyContent "flex-end"
+                                                :style {:height (- @h 0)
+                                                        :paddingHorizontal 8}}
+                                  [nbase/box {:p 2 :bg "darkBlue.100"
+                                              :borderRightRadius "20"
+                                              :borderTopLeftRadius "20"}
+                                   [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]
+                                  [nbase/box {:bg "coolGray.300"
+                                              :borderRadius 10
+                                              :p 8
+                                              :mt 4
+                                              :alignSelf "flex-start"}]]
+                                 [nbase/vstack {:justifyContent "flex-start"
+                                                :style {:height (- @h 0)}}
+                                  [nbase/box {:bg "coolGray.300"
+                                              :borderRadius 10
+                                              :p 8
+                                              :alignSelf "flex-start"
+                                              :mb 4}]
+                                  [nbase/box {:p 2 :bg "darkBlue.100"
+                                              :borderRightRadius "20"
+                                              :borderBottomLeftRadius "20"}
+                                   [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]]))))
 
-          :showsHorizontalScrollIndicator false
+             :showsHorizontalScrollIndicator false
 
-          ; :inverted true
-          ; :legacyImplementation true
-          ; :pagingEnabled true
-          :nestedScrollEnabled true
-          ; :snapToEnd true
-          ; :initialScrollIndex 0
-          :inverted true
-          ; :style {:flexDirection "row"}
+             ; :inverted true
+             ; :legacyImplementation true
+             ; :pagingEnabled true
+             :nestedScrollEnabled true
+             ; :snapToEnd true
+             ; :initialScrollIndex 0
+             :inverted true
+             ;:style {:flexDirection "row" :height @h}
 
-          :onEndReached (fn [e] (js/console.log "onEndReached >>>>> "))
-          :onEndReachedThreshold 2
+             :onEndReached (fn [e] (js/console.log "onEndReached >>>>> "))
+             :onEndReachedThreshold 2
 
-          :horizontal true
-          :flex 1}])
-          ; :h "100%"}])
-      [nbase/box {:bg "coolGray.300"
-                  :p 5}]])))
-                  ; :w "100%"}]])))
+             :horizontal true
+             :flex 1}])]
+             ; :h "100%"}])
+        [nbase/box {:bg "warmGray.100"
+                    :h 12
+                    :mt 1
+                    :p 2
+                    :flexDirection "row"
+                    :justifyContent "space-around"}
+         [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+                                          :alignItems "center" :justifyContent "center"
+                                          :flex 1}
+                                  :on-press #(js/console.log "on keypad >>>>")}
+          [ui/ion-icons {:name "ios-keypad-sharp" :color "#78716c" :size 18}]]
+         [rn/touchable-highlight {:style {:height 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+                                          :marginHorizontal 8
+                                          :alignItems "center" :justifyContent "center"
+                                          :flex 5}
+                                  :on-press #(js/console.log "on mic >>>>")}
+          [ui/ion-icons {:name "ios-mic" :color "#78716c" :size 18}]]
+         [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+                                          :alignItems "center" :justifyContent "center"
+                                          :flex 1}
+                                  :on-press #(js/console.log "on add >>>>")}
+          [ui/ion-icons {:name "ios-add" :color "#78716c" :size 18}]]]]])))
 
 (def model-edit
   {:name       :message-edit
