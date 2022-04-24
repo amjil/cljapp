@@ -12,17 +12,16 @@
 
    [steroid.rn.core :as rn]))
 
-(defn keyboard [kt]
+(defn keyboard [opts]
   (let [params {:alter state/alter
                 :alter-num state/alter-num
                 :shift state/shift
-                :shift-num state/shift-num
-                :type kt}]
+                :shift-num state/shift-num}]
     (fn []
       [rn/view {:style {:flex-direction "column"
                         :flex 1
                         :height "100%"}}
        ;; keyboard
        (if (true? @state/alter)
-         [layout/en-layout params]
-         [layout/mn-layout params])])))
+         [layout/en-layout params opts]
+         [layout/mn-layout params opts])])))

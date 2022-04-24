@@ -45,7 +45,7 @@
    ["_" "\\" "|" "~" "<" ">" "€" "£" "¥" "•"]
    ["." "," "?" "!" "'"]])
 
-(defn toolkit-row [alter alter-num kt]
+(defn toolkit-row [alter alter-num opts]
   [keycommon/key-row
    [[keycommon/key-button {:flex 1.5} #(reset! state/alter-num (not @state/alter-num))
      [rn/text {} (if (true? alter-num) "ABC" "123")]]
@@ -59,17 +59,22 @@
     (if-not (true? alter)
       [keycommon/key-button {} #(bridge/editor-insert "᠃")
        [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠃"]])
-    [keycommon/key-button {:flex 1.5} #(bridge/editor-insert "\n")
-     [ui/ion-icons {:name (condp = kt
+    [keycommon/key-button {:flex 1.5} #(condp = (:type opts)
+                                         "chat"
+                                         ((:on-press opts))
+
+                                         :else
+                                         (bridge/editor-insert "\n"))
+     [ui/ion-icons {:name (condp = (:type opts)
                             "chat" "ios-send"
                             :else
                             "ios-return-down-back-sharp")
-                    :color (condp = kt
+                    :color (condp = (:type opts)
                              "chat" "#34d399"
-                             :else "gray") 
+                             :else "gray")
                     :size 30}]]]])
 
-(defn mn-layout-a [s sn a an kt]
+(defn mn-layout-a [s sn a an opts]
   [nbase/box  style/layout-box-style;{:style key-box-style}
    (for [k (take 2 mn-key-list)]
      ^{:key k}
@@ -88,9 +93,9 @@
         [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 (:label kk)]])
      [keycommon/key-button {:flex 1.5} #(candidates/candidates-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an kt]])
+   [toolkit-row a an opts]])
 
-(defn mn-layout-n [s sn a an kt]
+(defn mn-layout-n [s sn a an opts]
   [nbase/box style/layout-box-style
    [keycommon/key-row
     (for [kk (nth en-key-list-n (if (true? sn) 1 0))]
@@ -109,11 +114,11 @@
        [keycommon/key-char-button (if (true? s) (str/upper-case kk) kk)])
      [keycommon/key-button {:flex 1.65} #(bridge/editor-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an kt]])
+   [toolkit-row a an opts]])
 
 
 ;; ----------------------------------------------------------------------
-(defn en-layout-n [s sn a an kt]
+(defn en-layout-n [s sn a an opts]
   [nbase/box style/layout-box-style
    [keycommon/key-row
     (for [kk (nth en-key-list-n (if (true? sn) 1 0))]
@@ -132,9 +137,9 @@
        [keycommon/key-char-button (if (true? s) (str/upper-case kk) kk)])
      [keycommon/key-button {:flex 1.65} #(bridge/editor-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an kt]])
+   [toolkit-row a an opts]])
 
-(defn en-layout-a [s sn a an kt]
+(defn en-layout-a [s sn a an opts]
   [nbase/box style/layout-box-style
    [keycommon/key-row
     (for [kk (nth en-key-list 0)]
@@ -160,11 +165,11 @@
        [keycommon/key-char-button (if (true? s) (str/upper-case kk) kk)])
      [keycommon/key-button {:flex 1.65} #(bridge/editor-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an kt]])
+   [toolkit-row a an opts]])
 
 ;; ----------------------------------------------------------------------
 ;; kt = keyboardType chat or other
-(defn mn-layout [params]
+(defn mn-layout [params opts]
   (fn []
     (let [{shift :shift
            shift-num :shift-num
@@ -173,10 +178,10 @@
           params
           kt (:type params)]
       (if (true? @alter-num)
-        [mn-layout-n @shift @shift-num @alter @alter-num kt]
-        [mn-layout-a @shift @shift-num @alter @alter-num kt]))))
+        [mn-layout-n @shift @shift-num @alter @alter-num opts]
+        [mn-layout-a @shift @shift-num @alter @alter-num opts]))))
 
-(defn en-layout [params]
+(defn en-layout [params opts]
   (fn []
     (let [{shift :shift
            shift-num :shift-num
@@ -185,5 +190,5 @@
           params
           kt (:type params)]
       (if (true? @alter-num)
-        [en-layout-n @shift @shift-num @alter @alter-num kt]
-        [en-layout-a @shift @shift-num @alter @alter-num kt]))))
+        [en-layout-n @shift @shift-num @alter @alter-num opts]
+        [en-layout-a @shift @shift-num @alter @alter-num opts]))))

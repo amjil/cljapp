@@ -119,7 +119,7 @@
                                                  ; (js/console.log "webview text width = " webview-text-width)
                                                  (reset! webview-width (+ 10 webview-text-width))))
                                              (let [offset-x (-> data :message :offsetX)]
-                                               ; (js/console.log "webview offset-x = " offset-x) 
+                                               ; (js/console.log "webview offset-x = " offset-x)
                                                (.scrollTo @scroll-ref (bean/->js {:x offset-x :animated true})))
                                              (if (not= 0 (-> data :message :left))
                                                (reset! cursor (:message data)))
@@ -183,7 +183,7 @@
                              :horizontal true
                              :on-press (fn [e] (js/console.log "scroll-view on press"))
                              :scrollEventThrottle 16
-                             :ref (fn [r] (js/console.log "on ref >>>>" r)
+                             :ref (fn [r]
                                     (reset! scroll-ref r))
                              :on-scroll (fn [e]
                                           ; (js/console.log "scroll-view-on-scroll")

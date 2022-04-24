@@ -2,6 +2,7 @@
   (:require
     [app.ui.nativebase :as nbase]
     [app.ui.editor :as editor]
+    [app.handler.gesture :as gesture]
     [app.ui.components :as ui]
     [app.ui.text :as text]
     [app.ui.keyboard.index :as keyboard]
@@ -95,7 +96,8 @@
 (defn list-view []
   (let [h (reagent/atom nil)
         list-ref (reagent/atom nil)
-        keyboard (reagent/atom false)]
+        keyboard-type (reagent/atom false)
+        editor-input (reagent/atom false)]
     (fn []
       [ui/safe-area-consumer
        [nbase/box {:flex 1}
@@ -110,98 +112,107 @@
                         :borderColor "gray.300"
                         :bg "white"}
              [nbase/skeleton {:h "100%" :w 24}]]]
-           [nbase/flat-list
-            {:keyExtractor    (fn [_ index] (str "message-view-" index))
-             :data     (get @messages @conversation-name)
-             :renderItem (fn [x]
-                           (let [{:keys [item index separators]} (j/lookup x)]
-                             (reagent/as-element
-                               (if (true? (j/get item :me))
-                                 [nbase/vstack {:justifyContent "flex-end"
-                                                :style {:height (- @h 0)
-                                                        :paddingHorizontal 8}}
-                                  [nbase/box {:p 2 :bg "darkBlue.100"
-                                              :borderRightRadius "20"
-                                              :borderTopLeftRadius "20"}
-                                   [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]
-                                  [nbase/box {:bg "coolGray.300"
-                                              :borderRadius 10
-                                              :p 6
-                                              :mt 4
-                                              :alignSelf "flex-start"}]]
-                                 [nbase/vstack {:justifyContent "flex-start"
-                                                :style {:height (- @h 0)}}
-                                  [nbase/box {:bg "coolGray.300"
-                                              :borderRadius 10
-                                              :p 6
-                                              :alignSelf "flex-start"
-                                              :mb 4}]
-                                  [nbase/box {:p 2 :bg "darkBlue.100"
-                                              :borderRightRadius "20"
-                                              :borderBottomLeftRadius "20"}
-                                   [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]]))))
+           [gesture/tap-gesture-handler
+            {
+              :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
+                                       (if (gesture/tap-state-end (j/get % :nativeEvent))
+                                         (reset! editor-input false)))}
+            [nbase/flat-list
+             {:keyExtractor    (fn [_ index] (str "message-view-" index))
+              :data     (get @messages @conversation-name)
+              :renderItem (fn [x]
+                            (let [{:keys [item index separators]} (j/lookup x)]
+                              (reagent/as-element
+                                (if (true? (j/get item :me))
+                                  [nbase/vstack {:justifyContent "flex-end"
+                                                 :style {:height (- @h 0)
+                                                         :paddingHorizontal 8}}
+                                   [nbase/box {:p 2 :bg "darkBlue.100"
+                                               :borderRightRadius "20"
+                                               :borderTopLeftRadius "20"}
+                                    [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]
+                                   [nbase/box {:bg "coolGray.300"
+                                               :borderRadius 10
+                                               :p 6
+                                               :mt 4
+                                               :alignSelf "flex-start"}]]
+                                  [nbase/vstack {:justifyContent "flex-start"
+                                                 :style {:height (- @h 0)}}
+                                   [nbase/box {:bg "coolGray.300"
+                                               :borderRadius 10
+                                               :p 6
+                                               :alignSelf "flex-start"
+                                               :mb 4}]
+                                   [nbase/box {:p 2 :bg "darkBlue.100"
+                                               :borderRightRadius "20"
+                                               :borderBottomLeftRadius "20"}
+                                    [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]]))))
 
-             :showsHorizontalScrollIndicator false
+              :showsHorizontalScrollIndicator false
 
-             ; :pagingEnabled true
-             :nestedScrollEnabled true
-             ; :snapToEnd true
-             ; :initialScrollIndex 0
-             :inverted true
-             ;:style {:flexDirection "row"}
+              ; :pagingEnabled true
+              :nestedScrollEnabled true
+              ; :snapToEnd true
+              ; :initialScrollIndex 0
+              :inverted true
+              ;:style {:flexDirection "row"}
 
-             :onEndReached (fn [e] (js/console.log "onEndReached >>>>> "))
-             :onEndReachedThreshold 2
+              :onEndReached (fn [e] (js/console.log "onEndReached >>>>> "))
+              :onEndReachedThreshold 2
 
-             :horizontal true
-             :flex 1}])
-         [nbase/box {:flex 1 :bg "warmGray.300"
-                     :p 1}
-          [nbase/box {:style {:height (- @h 4)} :bg "white"
-                      :borderRadius 4
-                      :minWidth 10
-                      :maxWidth 24}
-           [editor/editor-view
-             {:type :text}
-             ;content-fn
-             (fn []
-               ; (js/console.log "content -fn >......." (:content @model))
-               ; (get @model @active-key))
-               "")
-             ;update-fn
-             (fn [x]
-               ; (swap! model assoc @active-key (get x :text))
-               ; (swap! questions-atom assoc-in [@cursor @active-key] (get x :text)))]]
-               nil)]]]]
+              :horizontal true
+              :flex 1}]])
+         (when (true? @editor-input)
+           [nbase/box {:flex 1 :bg "warmGray.300"
+                       :p 1}
+            [nbase/box {:style {:height (- @h 4)} :bg "white"
+                        :borderRadius 4
+                        :minWidth 10
+                        :maxWidth 24}
+             [editor/editor-view
+               {:type :text}
+               ;content-fn
+               (fn []
+                 ; (js/console.log "content -fn >......." (:content @model))
+                 ; (get @model @active-key))
+                 "")
+               ;update-fn
+               (fn [x]
+                 ; (swap! messages
+                 ;    update-in [@conversation-name] (concat [x] (get @messages @conversation-name))))]]])]
+                 nil)]]])]
 
 
-        [nbase/box {:height 220 :mt 1}
-         [keyboard/keyboard "chat"]]]])))
-        ; [nbase/box {:bg "warmGray.100"
-        ;             :h 12
-        ;             :mt 1
-        ;             :p 2
-        ;             :flexDirection "row"
-        ;             :justifyContent "space-around"}
-        ;  [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
-        ;                                   :alignItems "center" :justifyContent "center"
-        ;                                   :flex 1}
-        ;                           :underlayColor "#cccccc"
-        ;                           :on-press #(js/console.log "on keypad >>>>")}
-        ;   [ui/ion-icons {:name "ios-keypad-sharp" :color "#78716c" :size 18}]]
-        ;  [rn/touchable-highlight {:style {:height 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
-        ;                                   :marginHorizontal 8
-        ;                                   :alignItems "center" :justifyContent "center"
-        ;                                   :flex 5}
-        ;                           :underlayColor "#cccccc"
-        ;                           :on-press #(js/console.log "on mic >>>>")}
-        ;   [ui/ion-icons {:name "ios-mic" :color "#78716c" :size 18}]]
-        ;  [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
-        ;                                   :alignItems "center" :justifyContent "center"
-        ;                                   :flex 1}
-        ;                           :underlayColor "#cccccc"
-        ;                           :on-press #(js/console.log "on add >>>>")}
-        ;   [ui/ion-icons {:name "ios-add" :color "#78716c" :size 18}]]]]])))
+
+        (if (true? @editor-input)
+          [nbase/box {:height 220 :mt 1}
+           [keyboard/keyboard {:type "chat"}]]
+          [nbase/box {:bg "warmGray.100"
+                      :h 12
+                      :mt 1
+                      :p 2
+                      :flexDirection "row"
+                      :justifyContent "space-around"}
+           [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+                                            :alignItems "center" :justifyContent "center"
+                                            :flex 1}
+                                    :underlayColor "#cccccc"
+                                    :on-press (fn [e]
+                                                (reset! editor-input true))}
+            [ui/ion-icons {:name "ios-keypad-sharp" :color "#78716c" :size 18}]]
+           [rn/touchable-highlight {:style {:height 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+                                            :marginHorizontal 8
+                                            :alignItems "center" :justifyContent "center"
+                                            :flex 5}
+                                    :underlayColor "#cccccc"
+                                    :on-press #(js/console.log "on mic >>>>")}
+            [ui/ion-icons {:name "ios-mic" :color "#78716c" :size 18}]]
+           [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+                                            :alignItems "center" :justifyContent "center"
+                                            :flex 1}
+                                    :underlayColor "#cccccc"
+                                    :on-press #(js/console.log "on add >>>>")}
+            [ui/ion-icons {:name "ios-add" :color "#78716c" :size 18}]]])]])))
 
 (def model-edit
   {:name       :message-edit
