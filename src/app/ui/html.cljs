@@ -38,7 +38,7 @@
 
       }
       #editor {
-        height: calc(100% - 42px);
+        //height: calc(100% - 42px);
         background-color:rgba(0, 0, 0, 0);
       }
       /*!
@@ -78,7 +78,8 @@
         height: 100%;
         outline: none;
         overflow-y: auto;
-        padding: 22px 25px;
+        //padding: 22px 25px;
+        padding: 20px 20px;
         tab-size: 4;
         -moz-tab-size: 4;
         text-align: left;
@@ -1041,7 +1042,14 @@
 
         var char = quill.getText(index - 1, 1);
 
-        return {index: index, left: bounds.left, top: top, width: bounds.width, char: char};
+        var node = leaf.domNode;
+        var offsetX = -1;
+        if (node){
+            var siblingOffset = (node.nextSibling && node.nextSibling.offsetLeft) || (node.previousSibling && node.previousSibling.offsetLeft)
+            offsetX = node.offsetLeft || siblingOffset || node.parentNode.offsetLeft;
+        }
+
+        return {index: index, left: bounds.left, top: top, width: bounds.width, char: char, offsetX: offsetX};
       };
 
       function selectionLines(index, length) {
@@ -1166,11 +1174,13 @@
                   break;
               case 'insertText':
                   var range = insertText(obj.message);
-                  _postMessage({type: 'updateSelection', message: range});
+                  // _postMessage({type: 'updateSelection', message: range, height: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
+                  _postMessage({type: 'updateSelection', message: range, height: quill.root.scrollWidth});
                   break;
               case 'deleteText':
                   var range = deleteText(obj.message);
-                  _postMessage({type: 'updateSelection', message: range});
+                  // _postMessage({type: 'updateSelection', message: range, height: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
+                  _postMessage({type: 'updateSelection', message: range, height: quill.root.scrollWidth});
                   break;
               case 'copyText':
                   var total = quill.getLength();

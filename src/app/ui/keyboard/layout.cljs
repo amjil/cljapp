@@ -45,7 +45,7 @@
    ["_" "\\" "|" "~" "<" ">" "€" "£" "¥" "•"]
    ["." "," "?" "!" "'"]])
 
-(defn toolkit-row [alter alter-num]
+(defn toolkit-row [alter alter-num kt]
   [keycommon/key-row
    [[keycommon/key-button {:flex 1.5} #(reset! state/alter-num (not @state/alter-num))
      [rn/text {} (if (true? alter-num) "ABC" "123")]]
@@ -60,9 +60,16 @@
       [keycommon/key-button {} #(bridge/editor-insert "᠃")
        [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠃"]])
     [keycommon/key-button {:flex 1.5} #(bridge/editor-insert "\n")
-     [ui/ion-icons {:name "ios-return-down-back-sharp" :color "gray" :size 30}]]]])
+     [ui/ion-icons {:name (condp = kt
+                            "chat" "ios-send"
+                            :else
+                            "ios-return-down-back-sharp")
+                    :color (condp = kt
+                             "chat" "#34d399"
+                             :else "gray") 
+                    :size 30}]]]])
 
-(defn mn-layout-a [s sn a an]
+(defn mn-layout-a [s sn a an kt]
   [nbase/box  style/layout-box-style;{:style key-box-style}
    (for [k (take 2 mn-key-list)]
      ^{:key k}
@@ -81,9 +88,9 @@
         [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 (:label kk)]])
      [keycommon/key-button {:flex 1.5} #(candidates/candidates-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an]])
+   [toolkit-row a an kt]])
 
-(defn mn-layout-n [s sn a an]
+(defn mn-layout-n [s sn a an kt]
   [nbase/box style/layout-box-style
    [keycommon/key-row
     (for [kk (nth en-key-list-n (if (true? sn) 1 0))]
@@ -102,11 +109,11 @@
        [keycommon/key-char-button (if (true? s) (str/upper-case kk) kk)])
      [keycommon/key-button {:flex 1.65} #(bridge/editor-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an]])
+   [toolkit-row a an kt]])
 
 
 ;; ----------------------------------------------------------------------
-(defn en-layout-n [s sn a an]
+(defn en-layout-n [s sn a an kt]
   [nbase/box style/layout-box-style
    [keycommon/key-row
     (for [kk (nth en-key-list-n (if (true? sn) 1 0))]
@@ -125,9 +132,9 @@
        [keycommon/key-char-button (if (true? s) (str/upper-case kk) kk)])
      [keycommon/key-button {:flex 1.65} #(bridge/editor-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an]])
+   [toolkit-row a an kt]])
 
-(defn en-layout-a [s sn a an]
+(defn en-layout-a [s sn a an kt]
   [nbase/box style/layout-box-style
    [keycommon/key-row
     (for [kk (nth en-key-list 0)]
@@ -153,19 +160,21 @@
        [keycommon/key-char-button (if (true? s) (str/upper-case kk) kk)])
      [keycommon/key-button {:flex 1.65} #(bridge/editor-delete)
       [ui/ion-icons {:name "backspace" :color "gray" :size 30}]]]]
-   [toolkit-row a an]])
+   [toolkit-row a an kt]])
 
 ;; ----------------------------------------------------------------------
+;; kt = keyboardType chat or other
 (defn mn-layout [params]
   (fn []
     (let [{shift :shift
            shift-num :shift-num
            alter :alter
            alter-num :alter-num}
-          params]
+          params
+          kt (:type params)]
       (if (true? @alter-num)
-        [mn-layout-n @shift @shift-num @alter @alter-num]
-        [mn-layout-a @shift @shift-num @alter @alter-num]))))
+        [mn-layout-n @shift @shift-num @alter @alter-num kt]
+        [mn-layout-a @shift @shift-num @alter @alter-num kt]))))
 
 (defn en-layout [params]
   (fn []
@@ -173,7 +182,8 @@
            shift-num :shift-num
            alter :alter
            alter-num :alter-num}
-          params]
+          params
+          kt (:type params)]
       (if (true? @alter-num)
-        [en-layout-n @shift @shift-num @alter @alter-num]
-        [en-layout-a @shift @shift-num @alter @alter-num]))))
+        [en-layout-n @shift @shift-num @alter @alter-num kt]
+        [en-layout-a @shift @shift-num @alter @alter-num kt]))))

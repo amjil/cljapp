@@ -94,14 +94,15 @@
 
 (defn list-view []
   (let [h (reagent/atom nil)
-        list-ref (reagent/atom nil)]
+        list-ref (reagent/atom nil)
+        keyboard (reagent/atom false)]
     (fn []
       [ui/safe-area-consumer
        [nbase/box {:flex 1}
-        [nbase/box {:flex 1
-                    :bg "white"
-                    :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
-                                  (reset! h height))}
+        [nbase/zstack {:flex 1
+                       :bg "white"
+                       :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
+                                     (reset! h height))}
          (if (nil? @h)
            [nbase/hstack; {:style {:height 674}}
             [nbase/box {:m 1 :p 4
@@ -125,14 +126,14 @@
                                    [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]
                                   [nbase/box {:bg "coolGray.300"
                                               :borderRadius 10
-                                              :p 8
+                                              :p 6
                                               :mt 4
                                               :alignSelf "flex-start"}]]
                                  [nbase/vstack {:justifyContent "flex-start"
                                                 :style {:height (- @h 0)}}
                                   [nbase/box {:bg "coolGray.300"
                                               :borderRadius 10
-                                              :p 8
+                                              :p 6
                                               :alignSelf "flex-start"
                                               :mb 4}]
                                   [nbase/box {:p 2 :bg "darkBlue.100"
@@ -142,43 +143,65 @@
 
              :showsHorizontalScrollIndicator false
 
-             ; :inverted true
-             ; :legacyImplementation true
              ; :pagingEnabled true
              :nestedScrollEnabled true
              ; :snapToEnd true
              ; :initialScrollIndex 0
              :inverted true
-             ;:style {:flexDirection "row" :height @h}
+             ;:style {:flexDirection "row"}
 
              :onEndReached (fn [e] (js/console.log "onEndReached >>>>> "))
              :onEndReachedThreshold 2
 
              :horizontal true
-             :flex 1}])]
-             ; :h "100%"}])
-        [nbase/box {:bg "warmGray.100"
-                    :h 12
-                    :mt 1
-                    :p 2
-                    :flexDirection "row"
-                    :justifyContent "space-around"}
-         [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
-                                          :alignItems "center" :justifyContent "center"
-                                          :flex 1}
-                                  :on-press #(js/console.log "on keypad >>>>")}
-          [ui/ion-icons {:name "ios-keypad-sharp" :color "#78716c" :size 18}]]
-         [rn/touchable-highlight {:style {:height 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
-                                          :marginHorizontal 8
-                                          :alignItems "center" :justifyContent "center"
-                                          :flex 5}
-                                  :on-press #(js/console.log "on mic >>>>")}
-          [ui/ion-icons {:name "ios-mic" :color "#78716c" :size 18}]]
-         [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
-                                          :alignItems "center" :justifyContent "center"
-                                          :flex 1}
-                                  :on-press #(js/console.log "on add >>>>")}
-          [ui/ion-icons {:name "ios-add" :color "#78716c" :size 18}]]]]])))
+             :flex 1}])
+         [nbase/box {:flex 1 :bg "warmGray.300"
+                     :p 1}
+          [nbase/box {:style {:height (- @h 4)} :bg "white"
+                      :borderRadius 4
+                      :minWidth 10
+                      :maxWidth 24}
+           [editor/editor-view
+             {:type :text}
+             ;content-fn
+             (fn []
+               ; (js/console.log "content -fn >......." (:content @model))
+               ; (get @model @active-key))
+               "")
+             ;update-fn
+             (fn [x]
+               ; (swap! model assoc @active-key (get x :text))
+               ; (swap! questions-atom assoc-in [@cursor @active-key] (get x :text)))]]
+               nil)]]]]
+
+
+        [nbase/box {:height 220 :mt 1}
+         [keyboard/keyboard "chat"]]]])))
+        ; [nbase/box {:bg "warmGray.100"
+        ;             :h 12
+        ;             :mt 1
+        ;             :p 2
+        ;             :flexDirection "row"
+        ;             :justifyContent "space-around"}
+        ;  [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+        ;                                   :alignItems "center" :justifyContent "center"
+        ;                                   :flex 1}
+        ;                           :underlayColor "#cccccc"
+        ;                           :on-press #(js/console.log "on keypad >>>>")}
+        ;   [ui/ion-icons {:name "ios-keypad-sharp" :color "#78716c" :size 18}]]
+        ;  [rn/touchable-highlight {:style {:height 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+        ;                                   :marginHorizontal 8
+        ;                                   :alignItems "center" :justifyContent "center"
+        ;                                   :flex 5}
+        ;                           :underlayColor "#cccccc"
+        ;                           :on-press #(js/console.log "on mic >>>>")}
+        ;   [ui/ion-icons {:name "ios-mic" :color "#78716c" :size 18}]]
+        ;  [rn/touchable-highlight {:style {:height 32 :width 32 :borderWidth 0.2 :borderRadius 32 :borderColor "#57534e"
+        ;                                   :alignItems "center" :justifyContent "center"
+        ;                                   :flex 1}
+        ;                           :underlayColor "#cccccc"
+        ;                           :on-press #(js/console.log "on add >>>>")}
+        ;   [ui/ion-icons {:name "ios-add" :color "#78716c" :size 18}]]]]])))
 
 (def model-edit
   {:name       :message-edit

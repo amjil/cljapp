@@ -34,7 +34,7 @@
         dv (reagent/atom (content-fn))]
     (fn []
       (when (and @webref (not= @dv (content-fn)))
-        (js/console.log "update then content")
+        ; (js/console.log "update then content")
         (j/call @webref :postMessage
           (j/call js/JSON :stringify (clj->js {:type "setContent" :message (content-fn)})))
         (reset! dv (content-fn)))
@@ -43,11 +43,11 @@
        [gesture/tap-gesture-handler
         {
           :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
-                                   (js/console.log "tap gesture on scroll view" (j/get-in % [:nativeEvent :state]))
+                                   ; (js/console.log "tap gesture on scroll view" (j/get-in % [:nativeEvent :state]))
                                    (if (gesture/tap-state-end (j/get % :nativeEvent))
                                      (do
-                                       (tap-fn)
-                                       (js/console.log "tap gesture" (j/get % :nativeEvent)))))}
+                                       (tap-fn))))}
+                                       ; (js/console.log "tap gesture" (j/get % :nativeEvent)))))}
         [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-width}
                             :horizontal true
                             :on-press (fn [e] (js/console.log "scroll-view on press"))
@@ -86,6 +86,7 @@
   (let [webview-width (reagent/atom 2)
         screen-width (.-width (.get Dimensions "window"))
         scroll-position (reagent/atom 0)
+        scroll-ref (reagent/atom nil)
         cursor-dot (reagent/atom false)
         cursor-dot-fn (Debouncer. (fn [] (reset! cursor-dot false)) 2000)
         cursor-dot-delay (reagent/atom false)
@@ -102,18 +103,27 @@
                                    :keywordize-keys true)]
                        (condp = (:type data)
                          "initHeight" (do
-                                        (js/console.log (bean/->js data))
-                                        (reset! webview-width (max (:message data) screen-width))
+                                        ; (js/console.log (bean/->js data))
+                                        (reset! webview-width (+ 10 (:message data)))
                                         (.fire init-selection-fn))
                          "onChange" (do
                                       ; (js/console.log (bean/->js data))
                                       (change-fn (:message data)))
                                       ; (reset! content (:text (:message data))))
                                       ; (reset! webview-width (max (:width (:messge data)) screen-width)))
-                         "updateSelection" (do ;(js/console.log (j/get-in e [:nativeEvent :data]))
-                                               (if (not= 0 (-> data :message :left))
-                                                 (reset! cursor (:message data)))
-                                               (reset! is-caret true))
+                         "updateSelection" (do
+                                             (js/console.log (j/get-in e [:nativeEvent :data]))
+                                             ;; if there is has :height change the view's width
+                                             (let [webview-text-width (:height data)]
+                                               (when-not (nil? webview-text-width)
+                                                 ; (js/console.log "webview text width = " webview-text-width)
+                                                 (reset! webview-width (+ 10 webview-text-width))))
+                                             (let [offset-x (-> data :message :offsetX)]
+                                               ; (js/console.log "webview offset-x = " offset-x) 
+                                               (.scrollTo @scroll-ref (bean/->js {:x offset-x :animated true})))
+                                             (if (not= 0 (-> data :message :left))
+                                               (reset! cursor (:message data)))
+                                             (reset! is-caret true))
                          "copyText" (do (.setString Clipboard (:message data))
                                       (js/console.log (j/get-in e [:nativeEvent :data])))
 
@@ -141,8 +151,8 @@
        [gesture/long-press-gesture-handler
         {:onHandlerStateChange (fn [e]
                                  (when (gesture/long-press-active (j/get e :nativeEvent))
-                                   (js/console.log "long press >>>>>")
-                                   (js/console.log (j/get e :nativeEvent))
+                                   ; (js/console.log "long press >>>>>")
+                                   ; (js/console.log (j/get e :nativeEvent))
                                    (j/call @webref :postMessage
                                      (j/call js/JSON :stringify (clj->js {:type "initRange" :message {:x (j/get-in e [:nativeEvent :x]), :y (j/get-in e [:nativeEvent :y])}})))))}
 
@@ -153,32 +163,34 @@
                                     (cond
                                       (and (= 4 state) (true? @cursor-dot-delay))
                                       (do
-                                        (js/console.log "cursor-dot delay run")
+                                        ; (js/console.log "cursor-dot delay run")
                                         (reset! cursor-dot true)
                                         (.fire cursor-dot-fn))
 
                                       (and (= 4 state) (false? @cursor-dot-delay))
                                       (do
-                                        (js/console.log "cursor-dot delay prepare")
+                                        ; (js/console.log "cursor-dot delay prepare")
                                         (reset! cursor-dot-delay true)
                                         (.fire cursor-dot-delay-fn)))
 
-                                    (js/console.log "tap gesture on scroll view" (j/get-in % [:nativeEvent :state]))
+                                    ; (js/console.log "tap gesture on scroll view" (j/get-in % [:nativeEvent :state]))
                                     (if (gesture/tap-state-end (j/get % :nativeEvent))
                                       (do
+                                        ; (js/console.log "tap gesture" (j/get % :nativeEvent))
                                         (j/call @webref :postMessage
-                                          (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x (+ (j/get-in % [:nativeEvent :x]) @scroll-position) :y (j/get-in % [:nativeEvent :y])}}))
-                                        (js/console.log "tap gesture" (j/get % :nativeEvent)))))}
-         [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width (+ 100 @webview-width)}
+                                          (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x (+ (j/get-in % [:nativeEvent :x]) @scroll-position) :y (j/get-in % [:nativeEvent :y])}})))))}
+         [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-width}
                              :horizontal true
                              :on-press (fn [e] (js/console.log "scroll-view on press"))
                              :scrollEventThrottle 16
+                             :ref (fn [r] (js/console.log "on ref >>>>" r)
+                                    (reset! scroll-ref r))
                              :on-scroll (fn [e]
-                                          (js/console.log "scroll-view-on-scroll")
-                                          (js/console.log "on scroll >>>" (j/get-in e [:nativeEvent :contentOffset :x]))
+                                          ; (js/console.log "scroll-view-on-scroll")
+                                          ; (js/console.log "on scroll >>>" (j/get-in e [:nativeEvent :contentOffset :x]))
                                           (reset! scroll-position (j/get-in e [:nativeEvent :contentOffset :x])))}
           ; [nbase/box {:style {:width @webview-width :height "100%"}}]
-          [nbase/box {:style {:width (+ 100 @webview-width) :height "100%"}
+          [nbase/box {:style {:width @webview-width :height "100%"}
                       :pointerEvents "none"}
            [:> WebView {:useWebKit true
                         :ref (fn [r] (reset! webref r))
@@ -209,7 +221,7 @@
                            //_postMessage({type: 'updateSelection', message: range});
                           ")
                         :style {:height "100%"
-                                :width "100%"
+                                ; :width "100%"
                                 :margin-bottom 10}
                         :pointerEvents "none"}]]
           (if (true? @is-caret)
@@ -224,20 +236,21 @@
                 {:onHandlerStateChange #(do
                                           (if (gesture/tap-state-end (j/get % :nativeEvent))
                                             (do
-                                              (js/console.log "caret dot tap gesture" (j/get % :nativeEvent)))))}
+                                              ; (js/console.log "caret dot tap gesture" (j/get % :nativeEvent))
+                                              nil)))}
                 [gesture/pan-gesture-handler
                  {:onGestureEvent
                   (fn [e] (let [x (+ (:left @pan-start-location) (j/get-in e [:nativeEvent :translationX]))
                                 ; y (j/get-in e [:nativeEvent :translationY])
                                 y (+ (:top @pan-start-location) (j/get-in e [:nativeEvent :translationY]))]
                             ; (js/console.log (j/get e :nativeEvent))
-                            (js/console.log "x11 = " x " y = " y)
+                            ; (js/console.log "x11 = " x " y = " y)
                             (.fire cursor-dot-fn)
                             (j/call @webref :postMessage
                               (j/call js/JSON :stringify #js {:type "setSelection" :message #js {:x x :y y}}))))
                   :onHandlerStateChange
                   (fn [e] (when (= 2 (j/get-in e [:nativeEvent :state]))
-                            (js/console.log "caret dot set pan start location!!!!" (bean/->js @cursor))
+                            ; (js/console.log "caret dot set pan start location!!!!" (bean/->js @cursor))
                             (reset! pan-start-location @cursor)))}
 
                  [nbase/box {:style {:margin-top -9
@@ -259,7 +272,7 @@
                {:onGestureEvent
                 (fn [e] (let [x (+ (:left @pan-start-location) (j/get-in e [:nativeEvent :translationX]))
                               y (+ (:top @pan-start-location) (j/get-in e [:nativeEvent :translationY]))]
-                          (js/console.log "x = " x " y = " y)
+                          ; (js/console.log "x = " x " y = " y)
                           (j/call @webref :postMessage
                             (j/call js/JSON :stringify (clj->js {:type "updateRange"
                                                                  :message
@@ -288,12 +301,13 @@
                {:onHandlerStateChange #(do
                                          (if (gesture/tap-state-end (j/get % :nativeEvent))
                                            (do
-                                             (js/console.log "range end tap gesture" (j/get % :nativeEvent)))))}
+                                             ; (js/console.log "range end tap gesture" (j/get % :nativeEvent))
+                                             nil)))}
                [gesture/pan-gesture-handler
                 {:onGestureEvent
                  (fn [e] (let [x (+ (:left @pan-start-location) (j/get-in e [:nativeEvent :translationX]))
                                y (+ (:top @pan-start-location) (j/get-in e [:nativeEvent :translationY]))]
-                           (js/console.log "range end x = " x " y = " y)
+                           ; (js/console.log "range end x = " x " y = " y)
                            (j/call @webref :postMessage
                              (j/call js/JSON :stringify (clj->js {:type "updateRange"
                                                                   :message
@@ -353,7 +367,7 @@
                {:onHandlerStateChange
                 (fn [e]
                   (when (gesture/tap-state-end (j/get e :nativeEvent))
-                    (js/console.log "paste")
+                    ; (js/console.log "paste")
                     (.then (.getString Clipboard)
                       (fn [x]
                         (j/call @webref :postMessage
@@ -367,7 +381,7 @@
                {:onHandlerStateChange
                 (fn [e]
                   (when (gesture/tap-state-end (j/get e :nativeEvent))
-                    (js/console.log "copy")
+                    ; (js/console.log "copy")
                     (j/call @webref :postMessage
                       (j/call js/JSON :stringify
                         (bean/->js {:type "copyText"
@@ -380,7 +394,7 @@
                {:onHandlerStateChange
                 (fn [e]
                   (when (gesture/tap-state-end (j/get e :nativeEvent))
-                    (js/console.log "delete")
+                    ; (js/console.log "delete")
                     (j/call @webref :postMessage
                       (j/call js/JSON :stringify
                         (bean/->js {:type "deleteText"
