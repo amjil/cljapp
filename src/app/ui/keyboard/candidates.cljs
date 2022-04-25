@@ -20,6 +20,9 @@
 (def candidates-list (reagent/atom []))
 (def candidates-index (reagent/atom ""))
 
+(defn candidates-clear []
+  (reset! candidates-index "")
+  (reset! candidates-list []))
 
 (defn candidate-select [m]
   (reset! candidates-index "")
@@ -91,7 +94,6 @@
                              :justifyContent "center"
                              :z-index 999}
                           style)}
-     [rn/text @candidates-index]
      [rn/view
       {:style {;:opacity 0.6
                :backgroundColor "ghostwhite"
@@ -106,7 +108,8 @@
                :minWidth 10
                :borderWidth 1
                :borderColor "lightgray"
-               :flex-direction "row"}}
+               :flex-direction "column"}}
+      [rn/text @candidates-index]
       [rn-list/flat-list
        {:keyExtractor    (fn [_ index] (str "text-" index))
         :data      (cond
@@ -118,14 +121,14 @@
         :renderItem (fn [x]
                       (let [{:keys [item index separators]} (j/lookup x)]
                         (reagent/as-element
-                          [rn/touchable-highlight {:on-press #(do (candidate-select (bean/->clj item))
-                                                                (js/console.log item))
+                          [rn/touchable-highlight {:on-press #(do (candidate-select (bean/->clj item)))
                                                    :style {:paddingHorizontal 4
                                                            :paddingVertical 4}
                                                    :underlayColor "#cccccc"}
                            [rn/view {:style {:height "100%"}}; :width 28}}
                             [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
                               (:char_word item)]]])))
+        :style {:borderTopWidth 0.5}
         :p 3
         :initialNumToRender 7
         :showsHorizontalScrollIndicator false

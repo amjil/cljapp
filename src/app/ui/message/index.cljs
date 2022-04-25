@@ -118,8 +118,9 @@
            [gesture/tap-gesture-handler
             {
               :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
-                                       (if (gesture/tap-state-end (j/get % :nativeEvent))
-                                         (reset! editor-input false)))}
+                                       (when (gesture/tap-state-end (j/get % :nativeEvent))
+                                         (reset! editor-input false)
+                                         (candidates/candidates-clear)))}
             [nbase/flat-list
              {:keyExtractor    (fn [_ index] (str "message-view-" index))
               :data     (get @messages @conversation-name)
@@ -182,7 +183,11 @@
                ;update-fn
                (fn [x]
                  (swap! messages
-                    assoc @conversation-name (concat [{:me true :message (:text x)}] (get @messages @conversation-name))))]]])
+                    assoc @conversation-name (concat [{:me true :message (:text x)}] (get @messages @conversation-name)))
+                 (reset! conversations (map #(if (= (:name %) @conversation-name)
+                                               (assoc % :message (:text x))
+                                               %)
+                                            @conversations)))]]])
          (when (true? @editor-input)
            [candidates/views {:bottom 20}])]
 
@@ -192,11 +197,9 @@
           [nbase/box {:height 220 :mt 1}
            [keyboard/keyboard {:type "chat"
                                :on-press (fn []
-                                           (js/console.log "message on-press 111")
                                            (bridge/editor-content)
-                                           (js/console.log "message on-press 222")
                                            (reset! editor-input false)
-                                           (js/console.log "message on-press 333"))}]]
+                                           (candidates/candidates-clear))}]]
           [nbase/box {:bg "warmGray.100"
                       :h 12
                       :mt 1

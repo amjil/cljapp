@@ -40,10 +40,11 @@
 
 
 (def tab-icons
-  {"home"    "md-home"
-   "book"    "md-bookmark"
-   "edit"    "md-create"
-   "profile" "md-person"})
+  {"home"         "md-home"
+   "question"     "md-reader"
+   "article"      "md-document"
+   "chat"         "md-notifications"
+   "profile"      "md-person"})
 
 (defn screen-options [options]
   (let [{:keys [route]} (bean/->clj options)]
@@ -93,11 +94,14 @@
     ;  :component edit-view}
     (merge
       question/question-list
-      {:name :book})
+      {:name :question})
+    (merge
+      article/article-list
+      {:name :article})
     (merge
       ; article/article-list
       message/model-base
-      {:name :edit})
+      {:name :chat})
     {:name      :profile
      :component profile/profile}]])
 

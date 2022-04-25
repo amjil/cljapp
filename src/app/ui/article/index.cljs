@@ -79,6 +79,19 @@
     [nbase/box {:height 220}
      [keyboard/keyboard]]]])
 
+(defn detail-view []
+  [ui/safe-area-consumer
+   [nbase/flex {:flex 1 ;:safeArea true
+                :p 5
+                :flex-direction "row"
+                :bg "white"}
+    [editor/simple-view
+     ;content-fn
+     (fn []
+       (str "<h1>" (:title @model) "</h1><p></p>" (:content @model)))
+     ;tap-fn
+     (fn [] identity)]]])
+
 
 (defn list-view []
   (let [h (reagent/atom nil)]
@@ -167,7 +180,7 @@
 
 (def article-detail
   {:name       :article-detail
-   :component  view
+   :component  detail-view
    :options
    {:title ""}})
     ; :headerRight
