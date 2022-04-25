@@ -75,7 +75,7 @@
         (swap! model assoc @active-key (get x @content-type))
         (swap! articles-atom assoc @articles-cursor @model))]
         ; (js/console.log "change-fn>>> " (:content x)))]
-    [candidates/views]
+    [candidates/views {}]
     [nbase/box {:height 220}
      [keyboard/keyboard]]]])
 

@@ -118,8 +118,7 @@
         question/question-edit
         profile/profile-edit
         message/model-base
-        message/model-list
-        message/model-edit]]])]])
+        message/model-list]]])]])
      ;   {:name       :keyboard
      ;    :component  keyboard/keyboard-view
      ;    :options    {:title ""}}

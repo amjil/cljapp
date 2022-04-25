@@ -75,7 +75,7 @@
                                        :where    [:or [:= :full_index index-str]
                                                   [:like :short-index (str index-str "%")]]
                                        :order-by [[:active_order :desc]]
-                                       :limit    20})]
+                                       :limit    100})]
                 (p/let [result2 (.executeSql @conn (first sql2) (bean/->js (rest sql2)))]
                   (p/then result2
                     (fn [x]
@@ -116,11 +116,12 @@
                                       :from [{:union sqls}]
                                       :order-by [[:active_order :desc]]
                                       :limit 20})]
-                ;; (js/console.log "sql = " (bean/->js sql))
+                ; (js/console.log "sql = " (bean/->js sql))
                 (p/let [sql-result (.executeSql @conn (first sql) (bean/->js (rest sql)))]
                   (p/then sql-result
                           (fn [res]
-                            (return-fn (rows-data res)))))))))))))
+                            (let [data (rows-data res)]
+                              (return-fn data)))))))))))))
 (open)
 (comment
   (next-words {:id 665 :short_index "ab"} js/console.log)

@@ -107,7 +107,6 @@
                                         (reset! webview-width (+ 10 (:message data)))
                                         (.fire init-selection-fn))
                          "onChange" (do
-                                      ; (js/console.log (bean/->js data))
                                       (change-fn (:message data)))
                                       ; (reset! content (:text (:message data))))
                                       ; (reset! webview-width (max (:width (:messge data)) screen-width)))
@@ -119,8 +118,10 @@
                                                  ; (js/console.log "webview text width = " webview-text-width)
                                                  (reset! webview-width (+ 10 webview-text-width))))
                                              (let [offset-x (-> data :message :offsetX)]
-                                               ; (js/console.log "webview offset-x = " offset-x)
-                                               (.scrollTo @scroll-ref (bean/->js {:x offset-x :animated true})))
+                                               (when-not (nil? offset-x)
+                                                 (js/console.log "webview offset-x = " offset-x)
+                                                 (if @scroll-ref
+                                                   (.scrollTo @scroll-ref (bean/->js {:x offset-x :animated true})))))
                                              (if (not= 0 (-> data :message :left))
                                                (reset! cursor (:message data)))
                                              (reset! is-caret true))

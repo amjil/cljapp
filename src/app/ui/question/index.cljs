@@ -196,9 +196,9 @@
       (fn [x]
         (swap! model assoc @active-key (get x :text))
         (swap! questions-atom assoc-in [@cursor @active-key] (get x :text)))]
-    [candidates/views]
+    [candidates/views {}]
     [nbase/box {:height 220}
-     [keyboard/keyboard]]]])
+     [keyboard/keyboard {}]]]])
 
 (def question-detail
   {:name       :question-detail

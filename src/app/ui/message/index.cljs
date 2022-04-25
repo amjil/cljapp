@@ -14,6 +14,7 @@
     [cljs-bean.core :as bean]
     [reagent.core :as reagent]
     [re-frame.core :as re-frame]
+    [app.persist.sqlite :as sqlite]
 
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
@@ -26,12 +27,14 @@
 (def messages (reagent/atom {"Mike" [
                                      {:me false :message "I don't understand anything"}
                                      {:me true :message "utilities. Classes are applied to the element itself or sometimes the parent element. These classes "}
+                                     {:me true :message "No, it isn't ."}
+                                     {:me false :message "Is this your's phone?"}
                                      {:me true :message "I'm from Hohhot."}
                                      {:me false :message "Where are you from ?"}
                                      {:me true :message "My name is HHH."}
                                      {:me true :message "Hi Mike, Nice to meet you."}
                                      {:me false :message "Hello, My name is Mike."}]}))
-(def conversation-name (reagent/atom "Mike"))
+(def conversation-name (atom "Mike"))
 
 (defn edit-view []
   [ui/safe-area-consumer
@@ -41,7 +44,7 @@
      {:type :text}
      ;content-fn
      (fn []
-       identity)
+       "")
      ;update-fn
      (fn [x]
        identity)]
@@ -158,7 +161,7 @@
               ;:style {:flexDirection "row"}
 
               :onEndReached (fn [e] (js/console.log "onEndReached >>>>> "))
-              :onEndReachedThreshold 2
+              ; :onEndReachedThreshold 2
 
               :horizontal true
               :flex 1}]])
@@ -178,15 +181,22 @@
                  "")
                ;update-fn
                (fn [x]
-                 ; (swap! messages
-                 ;    update-in [@conversation-name] (concat [x] (get @messages @conversation-name))))]]])]
-                 nil)]]])]
+                 (swap! messages
+                    assoc @conversation-name (concat [{:me true :message (:text x)}] (get @messages @conversation-name))))]]])
+         (when (true? @editor-input)
+           [candidates/views {:bottom 20}])]
 
 
 
         (if (true? @editor-input)
           [nbase/box {:height 220 :mt 1}
-           [keyboard/keyboard {:type "chat"}]]
+           [keyboard/keyboard {:type "chat"
+                               :on-press (fn []
+                                           (js/console.log "message on-press 111")
+                                           (bridge/editor-content)
+                                           (js/console.log "message on-press 222")
+                                           (reset! editor-input false)
+                                           (js/console.log "message on-press 333"))}]]
           [nbase/box {:bg "warmGray.100"
                       :h 12
                       :mt 1
@@ -213,20 +223,6 @@
                                     :underlayColor "#cccccc"
                                     :on-press #(js/console.log "on add >>>>")}
             [ui/ion-icons {:name "ios-add" :color "#78716c" :size 18}]]])]])))
-
-(def model-edit
-  {:name       :message-edit
-   :component  edit-view
-   :options
-   {:title ""
-    :headerRight
-    (fn [tag id classname]
-      (reagent/as-element
-        [nbase/icon-button {:variant "ghost" :colorScheme "indigo"
-                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-checkmark"}])
-                            :on-press (fn [e] (js/console.log "on press icon button")
-                                        (bridge/editor-content)
-                                        (re-frame/dispatch [:navigate-back]))}]))}})
 
 (def model-list
   {:name       :message-list

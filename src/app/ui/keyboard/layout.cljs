@@ -63,15 +63,15 @@
                                          "chat"
                                          ((:on-press opts))
 
-                                         :else
                                          (bridge/editor-insert "\n"))
      [ui/ion-icons {:name (condp = (:type opts)
                             "chat" "ios-send"
-                            :else
+
                             "ios-return-down-back-sharp")
                     :color (condp = (:type opts)
                              "chat" "#34d399"
-                             :else "gray")
+                             
+                             "gray")
                     :size 30}]]]])
 
 (defn mn-layout-a [s sn a an opts]

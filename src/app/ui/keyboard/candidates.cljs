@@ -23,9 +23,8 @@
 
 (defn candidate-select [m]
   (reset! candidates-index "")
-  (sqlite/next-words m
+  (sqlite/next-words (bean/->clj m)
     #(reset! candidates-list %))
-  (js/console.log "xxxx" (bean/->js @cursor))
   (let [text (:char_word m)
         new-text (str (cond
                         (empty? (:char @cursor))
@@ -75,59 +74,59 @@
           new-index
           #(reset! candidates-list %))))))
 
-(defn views []
-  (fn []
-    (let [candidates @candidates-list]
-      (cond
-        ; (empty? candidates)
-        (empty? @candidates-index)
-        nil
+(defn views [style]
+  (cond
+    ; (empty? candidates)
+    (and (empty? @candidates-index) (empty? @candidates-list))
+    nil
 
-        :else
-        [rn/view {:style {:position "absolute"
-                          :left 0
-                          :right 0
-                          ;:top 0
-                          :bottom 300
-                          :elevation 1998
-                          :alignItems "center"
-                          :justifyContent "center"
-                          :z-index 999}}
-         [rn/text @candidates-index]
-         [rn/view
-          {:style {;:opacity 0.6
-                   :backgroundColor "ghostwhite"
-                   :borderRadius 5
-                   ; :padding 10
-                   ; :height "auto"
-                   ; :maxheight 100
-                   :min-height 60
-                   :alignItems "flex-start"
-                   :justifyContent "center"
-                   :maxWidth "50%"
-                   :minWidth 10
-                   :borderWidth 1
-                   :borderColor "lightgray"
-                   :flex-direction "row"}}
-          [rn-list/flat-list
-           {:keyExtractor    (fn [_ index] (str "text-" index))
-            :data      (cond
-                         (not-empty candidates)
-                         candidates
+    :else
+    [rn/view {:style (merge {:position "absolute"
+                             :left 0
+                             :right 0
+                             ;:top 0
+                             :bottom 300
+                             :elevation 1998
+                             :alignItems "center"
+                             :justifyContent "center"
+                             :z-index 999}
+                          style)}
+     [rn/text @candidates-index]
+     [rn/view
+      {:style {;:opacity 0.6
+               :backgroundColor "ghostwhite"
+               :borderRadius 5
+               ; :padding 10
+               ; :height "auto"
+               ; :maxheight 100
+               :min-height 60
+               :alignItems "flex-start"
+               :justifyContent "center"
+               :maxWidth "50%"
+               :minWidth 10
+               :borderWidth 1
+               :borderColor "lightgray"
+               :flex-direction "row"}}
+      [rn-list/flat-list
+       {:keyExtractor    (fn [_ index] (str "text-" index))
+        :data      (cond
+                     (not-empty @candidates-list)
+                     @candidates-list
 
-                         :else
-                         [])
-            :renderItem (fn [x]
-                          (let [{:keys [item index separators]} (j/lookup x)]
-                            (reagent/as-element
-                              [rn/touchable-highlight {:on-press #(candidate-select item)
-                                                       :style {:paddingHorizontal 4
-                                                               :paddingVertical 4}
-                                                       :underlayColor "#cccccc"}
-                               [rn/view {:style {:height "100%"}}; :width 28}}
-                                [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
-                                  (:char_word item)]]])))
-            :p 3
-            :initialNumToRender 7
-            :showsHorizontalScrollIndicator false
-            :horizontal true}]]]))))
+                     :else
+                     [])
+        :renderItem (fn [x]
+                      (let [{:keys [item index separators]} (j/lookup x)]
+                        (reagent/as-element
+                          [rn/touchable-highlight {:on-press #(do (candidate-select (bean/->clj item))
+                                                                (js/console.log item))
+                                                   :style {:paddingHorizontal 4
+                                                           :paddingVertical 4}
+                                                   :underlayColor "#cccccc"}
+                           [rn/view {:style {:height "100%"}}; :width 28}}
+                            [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18}
+                              (:char_word item)]]])))
+        :p 3
+        :initialNumToRender 7
+        :showsHorizontalScrollIndicator false
+        :horizontal true}]]]))
