@@ -7,7 +7,9 @@
     [app.ui.keyboard.index :as keyboard]
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
+    [app.ui.refresh :as refresh]
     [app.handler.gesture :as gesture]
+    [app.handler.animated :as animated]
 
     [steroid.rn.core :as rn]
     [applied-science.js-interop :as j]
@@ -15,6 +17,7 @@
     [reagent.core :as reagent]
     [re-frame.core :as re-frame]
 
+    ["react-native" :refer [Dimensions]]
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
 (def questions-atom (reagent/atom [{:question_content "ᠲᠡᠷᠭᠡᠯ ᠰᠠᠷᠠ ᠭᠡᠵᠦ ᠶᠠᠮᠠᠷ ᠰᠠᠷᠠ ᠪᠤᠢ?"
@@ -54,7 +57,8 @@
 (def active-key (reagent/atom nil))
 
 (defn list-view []
-  (let [h (reagent/atom nil)]
+  (let [h (reagent/atom nil)
+        is-loading (reagent/atom true)]
     (fn []
      [nbase/zstack {:flex 1
                     ; :bg "gray.100"
@@ -130,8 +134,9 @@
                                  [text/measured-text {:color "#d4d4d8"} "2022-04-10 13:52:54"]]]]]])))
           :showsHorizontalScrollIndicator false
           :horizontal true
-          :flex 1
-          :h "100%"}])
+          :bounces true
+          :style {:flex 1 :height "100%"
+                  :width (.-width (.get Dimensions "window"))}}])
       [nbase/box {:right 4
                   :bottom 2}
                   ; :position "absolute"}

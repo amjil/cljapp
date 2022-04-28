@@ -241,13 +241,13 @@
   (let [screen-width (.-width (.get Dimensions "window"))
         screen-height (.-height (.get Dimensions "window"))]
     [nbase/center {:style {:width screen-width :height screen-height}}
-     [nbase/box {:mt 4 :p 6}
-      [gesture/tap-gesture-handler
-       {
-         :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
-                                  (when (gesture/tap-state-end (j/get % :nativeEvent))
-                                    (js/console.log "focus view on tap ...")
-                                    (re-frame/dispatch [:navigate-back])))}
+     [gesture/tap-gesture-handler
+      {
+        :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
+                                 (when (gesture/tap-state-end (j/get % :nativeEvent))
+                                   (js/console.log "focus view on tap ...")
+                                   (re-frame/dispatch [:navigate-back])))}
+      [nbase/box {:mt 4 :p 6}
        [text/measured-text {:fontSize 24 :width (- screen-height 120)} @focus-message]]]]))
 
 (def model-list
