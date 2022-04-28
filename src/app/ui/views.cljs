@@ -122,16 +122,8 @@
         question/question-edit
         profile/profile-edit
         message/model-base
-        message/model-list]]])]])
-     ;   {:name       :keyboard
-     ;    :component  keyboard/keyboard-view
-     ;    :options    {:title ""}}
-     ;   {:name       :toast
-     ;    :component  toast/view
-     ;    :options    {:title ""}}]])]])
-      ; [:f> nativebase/view]])]])
-      ; [drawer/view]])]])
-      ; [webview/view]])]])
+        message/model-list
+        message/model-focus]]])]])
 ; (defn root-stack []
 ;   [safe-area/safe-area-provider
 ;    [nativebase/nativebase-provider

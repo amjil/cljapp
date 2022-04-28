@@ -16,6 +16,7 @@
     [re-frame.core :as re-frame]
     [app.persist.sqlite :as sqlite]
 
+    ["react-native" :refer [Dimensions]]
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
 (def conversations (reagent/atom [{:name "Mike" :message "can be customized as needed with our utility API."}
@@ -35,6 +36,7 @@
                                      {:me true :message "Hi Mike, Nice to meet you."}
                                      {:me false :message "Hello, My name is Mike."}]}))
 (def conversation-name (atom "Mike"))
+(def focus-message (atom ""))
 
 (defn edit-view []
   [ui/safe-area-consumer
@@ -127,30 +129,38 @@
               :renderItem (fn [x]
                             (let [{:keys [item index separators]} (j/lookup x)]
                               (reagent/as-element
-                                (if (true? (j/get item :me))
-                                  [nbase/vstack {:justifyContent "flex-end"
-                                                 :style {:height (- @h 0)
-                                                         :paddingHorizontal 8}}
-                                   [nbase/box {:p 2 :bg "darkBlue.100"
-                                               :borderRightRadius "20"
-                                               :borderTopLeftRadius "20"}
-                                    [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]
-                                   [nbase/box {:bg "coolGray.300"
-                                               :borderRadius 10
-                                               :p 6
-                                               :mt 4
-                                               :alignSelf "flex-start"}]]
-                                  [nbase/vstack {:justifyContent "flex-start"
-                                                 :style {:height (- @h 0)}}
-                                   [nbase/box {:bg "coolGray.300"
-                                               :borderRadius 10
-                                               :p 6
-                                               :alignSelf "flex-start"
-                                               :mb 4}]
-                                   [nbase/box {:p 2 :bg "darkBlue.100"
-                                               :borderRightRadius "20"
-                                               :borderBottomLeftRadius "20"}
-                                    [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]]))))
+                                [gesture/tap-gesture-handler
+                                 {
+                                   :numberOfTaps 2
+                                   :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
+                                                            (when (gesture/tap-state-end (j/get % :nativeEvent))
+                                                              (reset! focus-message (j/get item :message))
+                                                              (re-frame/dispatch [:navigate-to :message-focus])))}
+
+                                 (if (true? (j/get item :me))
+                                   [nbase/vstack {:justifyContent "flex-end"
+                                                  :style {:height (- @h 0)
+                                                          :paddingHorizontal 8}}
+                                    [nbase/box {:p 2 :bg "darkBlue.100"
+                                                :borderRightRadius "20"
+                                                :borderTopLeftRadius "20"}
+                                     [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]
+                                    [nbase/box {:bg "coolGray.300"
+                                                :borderRadius 10
+                                                :p 6
+                                                :mt 4
+                                                :alignSelf "flex-start"}]]
+                                   [nbase/vstack {:justifyContent "flex-start"
+                                                  :style {:height (- @h 0)}}
+                                    [nbase/box {:bg "coolGray.300"
+                                                :borderRadius 10
+                                                :p 6
+                                                :alignSelf "flex-start"
+                                                :mb 4}]
+                                    [nbase/box {:p 2 :bg "darkBlue.100"
+                                                :borderRightRadius "20"
+                                                :borderBottomLeftRadius "20"}
+                                     [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]])])))
 
               :showsHorizontalScrollIndicator false
 
@@ -227,6 +237,19 @@
                                     :on-press #(js/console.log "on add >>>>")}
             [ui/ion-icons {:name "ios-add" :color "#78716c" :size 18}]]])]])))
 
+(defn focus-view []
+  (let [screen-width (.-width (.get Dimensions "window"))
+        screen-height (.-height (.get Dimensions "window"))]
+    [nbase/center {:style {:width screen-width :height screen-height}}
+     [nbase/box {:mt 4 :p 6}
+      [gesture/tap-gesture-handler
+       {
+         :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
+                                  (when (gesture/tap-state-end (j/get % :nativeEvent))
+                                    (js/console.log "focus view on tap ...")
+                                    (re-frame/dispatch [:navigate-back])))}
+       [text/measured-text {:fontSize 24 :width (- screen-height 120)} @focus-message]]]]))
+
 (def model-list
   {:name       :message-list
    :component  list-view
@@ -238,3 +261,13 @@
    :component  base-view
    :options
    {:title ""}})
+
+(def model-focus
+  {:name :message-focus
+   :component focus-view
+   ; :options {:title ""}
+   :options
+   {
+     :headerShown false
+
+    :presentation "card"}})
