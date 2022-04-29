@@ -248,7 +248,7 @@
                                    (js/console.log "focus view on tap ...")
                                    (re-frame/dispatch [:navigate-back])))}
       [nbase/box {:mt 4 :p 6}
-       [text/measured-text {:fontSize 24 :width (- screen-height 120)} @focus-message]]]]))
+       [text/measured-text {:fontSize 28 :width (- screen-height 120)} @focus-message]]]]))
 
 (def model-list
   {:name       :message-list
