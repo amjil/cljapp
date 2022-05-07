@@ -37,3 +37,24 @@
                                      :width 100
                                      :transform [{:translateX x}
                                                  {:translateY y}]}}]])))
+
+;
+(defn real-draggable-view []
+  (let [pan (new rn/Animated.ValueXY #js {:x 0
+                                          :y 0})
+        pan-responder (rn/PanResponder.create #js {:onStartShouldSetPanResponder (fn [arg] true)
+                                                   :onPanResponderGrant (fn [e state]
+                                                                          (.setOffset ^js pan #js {:x (j/get-in pan [:x :_value])
+                                                                                                   :y (j/get-in pan [:y :_value])}))
+                                                   :onPanResponderMove (fn [e state]
+                                                                         (.setValue ^js pan #js {:x (j/get state :dx)
+                                                                                                 :y (j/get state :dy)}))
+                                                   :onPanResponderRelease (fn [e state]
+                                                                            (.flattenOffset ^js pan))})]
+    (fn []
+      [:> rn/Animated.View (merge (js->clj (.-panHandlers pan-responder))
+                                  {:style {:background-color "red"
+                                           :height 100
+                                           :width 100
+                                           :transform [{:translateX (j/get pan "x")}
+                                                       {:translateY (j/get pan "y")}]}})])))
