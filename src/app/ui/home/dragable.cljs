@@ -4,13 +4,8 @@
     ["react-native-reanimated" :as re-animated]
     ["react-native" :as rn]
     [reagent.core :as r]
-    [goog.object :as goog-obj]))
-
-(defn gget-in [m ks]
-  (goog-obj/getValueByKeys m (clj->js (map name ks))))
-
-(defn gkeys [obj]
-  (goog-obj/getKeys obj))
+    [applied-science.js-interop :as j]
+    [cljs-bean.core :as bean]))
 
 
 (defn draggable-view-gesture []
@@ -18,18 +13,18 @@
         y (new rn/Animated.Value 0)
         last-offset (new rn/Animated.ValueXY #js {:x 0
                                                   :y 0})
-        gesture-handler (rn/Animated.event (clj->js [{:nativeEvent {:translationX x
-                                                                    :translationY y}}])
-                                           (clj->js {:useNativeDriver true}))
+        gesture-handler (rn/Animated.event (bean/->js [{:nativeEvent {:translationX x
+                                                                      :translationY y}}])
+                                           (bean/->js {:useNativeDriver true}))
         state-handler (fn [event]
-                        (if (= (gget-in event [:nativeEvent :oldState])
+                        (if (= (j/get-in event [:nativeEvent :oldState])
                                gesture/State.ACTIVE)
                           (do
-                            (.setValue ^js last-offset #js {:x (+ (gget-in last-offset [:x :_value]) (gget-in event [:nativeEvent :translationX]))
-                                                            :y (+ (gget-in last-offset [:y :_value]) (gget-in event [:nativeEvent :translationY]))})
+                            (.setValue ^js last-offset #js {:x (+ (j/get-in last-offset [:x :_value]) (j/get-in event [:nativeEvent :translationX]))
+                                                            :y (+ (j/get-in last-offset [:y :_value]) (j/get-in event [:nativeEvent :translationY]))})
 
-                            (.setOffset ^js x (gget-in last-offset [:x :_value]))
-                            (.setOffset ^js y (gget-in last-offset [:y :_value]))
+                            (.setOffset ^js x (j/get-in last-offset [:x :_value]))
+                            (.setOffset ^js y (j/get-in last-offset [:y :_value]))
 
                             (.setValue ^js x 0)
                             (.setValue ^js y 0))))]
