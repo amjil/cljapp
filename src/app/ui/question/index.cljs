@@ -14,6 +14,7 @@
     [app.handler.animatable :as animatable]
     ["react-native-gesture-handler" :as ges]
     ["react-native-reanimated" :as re-animated]
+    ["lottie-react-native" :as lottie]
 
     [steroid.rn.core :as srn]
     [applied-science.js-interop :as j]
@@ -135,6 +136,7 @@
                                             (.setValue ^js transform-offset (bean/->js {:x -80 :y 0}))))))
                 :onPanResponderRelease (fn [e state]
                                          (js/console.log "onPanResponderRelease ..." state (j/get-in container-offset [:x :_value]))
+                                         (js/console.log "lottie >>> " lottie)
                                          (if (<= threshold (j/get-in container-offset [:x :_value]))
                                            (on-refresh)
                                            (reset-container-position)))
@@ -241,7 +243,10 @@
         {:style {:width 80
                  :height "100%"
                  :transform [{:translateX (j/get transform-offset :x)}]}} ;(if (j/get container-offset :x) (- (j/get container-offset :x) 80) 0)}]}}
-        [nbase/box {:bg "primary.300" :flex 1}]]
+        ; [nbase/box {:flex 1 :bg "primary.100"}]
+        [:> lottie
+           {:source (js/require "../src/json/104547-loading-25.json")
+            :autoPlay true}]]
        [nbase/box {:right 4
                    :bottom 2}
                   ; :position "absolute"}
