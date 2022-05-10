@@ -84,7 +84,9 @@
                                      (j/call timing :start)))
         on-refresh (fn []
                      (js/console.log "on-refresh .... ")
-                     (reset-container-position))
+                     (js/setTimeout
+                       reset-container-position
+                       2000))
         is-innerscroll-left (<= @inner-scroll-offset left-pull-threshold)
         check-scroll (fn []
                        (if (is-innerscroll-left)
@@ -106,7 +108,7 @@
                 ; :onMoveShouldSetPanResponder (fn [e state] true)
                 ; :onPanResponderReject (fn [e state] (js/console.log "onPanResponderReject ... "))
                 :onMoveShouldSetPanResponderCapture (fn [e state]
-                                                      (js/console.log "onMoveShouldSetPanResponderCapture start ...")
+                                                      ; (js/console.log "onMoveShouldSetPanResponderCapture start ...")
                                                       ; true)
                                                       (let [result
                                                              (cond
@@ -120,14 +122,14 @@
 
                                                                :else
                                                                false)]
-                                                        (js/console.log "onMoveShouldSetPanResponderCapture end ..." result)
+                                                        ; (js/console.log "onMoveShouldSetPanResponderCapture end ..." result)
                                                         result))
                 :onPanResponderMove (fn [e state]
                                       (let [x (j/get state :dx)]
-                                        (js/console.log "onPanResponderMove start ..." state " container-offset = " container-offset " x = " x)
+                                        ; (js/console.log "onPanResponderMove start ..." state " container-offset = " container-offset " x = " x)
                                         ;
                                         (if (> x 0)
-                                          (do
+                                          (when (<= x 80)
                                             (.setValue ^js container-offset #js {:x (j/get state :dx)
                                                                                  :y (j/get state :dy)})
                                             (.setValue ^js transform-offset (bean/->js {:x (- x 80) :y 0})))
@@ -136,8 +138,7 @@
                                             (.setValue ^js transform-offset (bean/->js {:x -80 :y 0}))))))
                 :onPanResponderRelease (fn [e state]
                                          (js/console.log "onPanResponderRelease ..." state (j/get-in container-offset [:x :_value]))
-                                         (js/console.log "lottie >>> " lottie)
-                                         (if (<= threshold (j/get-in container-offset [:x :_value]))
+                                         (if (<= threshold (j/get state :dx))
                                            (on-refresh)
                                            (reset-container-position)))
                                          ; (check-scroll))
@@ -242,7 +243,7 @@
        [animation/animated-view
         {:style {:width 80
                  :height "100%"
-                 :transform [{:translateX (j/get transform-offset :x)}]}} ;(if (j/get container-offset :x) (- (j/get container-offset :x) 80) 0)}]}}
+                 :transform [{:translateX (j/get transform-offset :x)}]}}
         ; [nbase/box {:flex 1 :bg "primary.100"}]
         [:> lottie
            {:source (js/require "../src/json/104547-loading-25.json")
