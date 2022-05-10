@@ -32,3 +32,7 @@
 (defn tap-state-end [evt]
   (=  (j/get state :END)
       (j/get evt :state)))
+
+(defn pan-handler-active [evt]
+  (=  (j/get state :ACTIVE)
+      (j/get evt :state)))
