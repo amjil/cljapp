@@ -52,7 +52,7 @@
                                                    :onPanResponderRelease (fn [e state]
                                                                             (.flattenOffset ^js pan))})]
     (fn []
-      [:> rn/Animated.View (merge (js->clj (.-panHandlers pan-responder))
+      [:> rn/Animated.View (merge (bean/->clj (.-panHandlers pan-responder))
                                   {:style {:background-color "red"
                                            :height 100
                                            :width 100
