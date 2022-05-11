@@ -116,8 +116,10 @@
 
                                                                ; (false? @scroll-enabled) false
 
-                                                               (and (<= @inner-scroll-offset left-pull-threshold)
-                                                                    (< 0 (j/get state :dx)))
+                                                               (>= @inner-scroll-offset left-pull-threshold)
+                                                               false
+
+                                                               (< 0 (j/get state :dx))
                                                                true
 
                                                                :else
@@ -173,12 +175,12 @@
              :data      @questions-atom
              :overScrollMode "never"
              :scrollToOverflowEnabled true
+             :onScroll (fn [e]
+                         (reset! inner-scroll-offset (j/get-in e [:nativeEvent :contentOffset :x])))
              :ref (fn [r]
                     (reset! scroll-ref r))
-            ; :onRefresh (fn [e] (js/console.log "on-refreshing ... "))
-            ; :refreshing false
-             ; :ListHeaderComponent (reagent/as-element
-             ;                        [animation/animated-view {:style {:padding-left (j/get container-offset :x)}}])
+             ; :onRefresh (fn [e] (js/console.log "on-refreshing ... "))
+             ; :refreshing false
              :renderItem (fn [x]
                            (let [{:keys [item index separators]} (j/lookup x)]
                              (reagent/as-element
