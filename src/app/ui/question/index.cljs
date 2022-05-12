@@ -7,7 +7,6 @@
     [app.ui.keyboard.index :as keyboard]
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
-    [app.ui.refresh :as refresh]
     [app.handler.gesture :as gesture]
     [app.handler.animated :as animated]
     [app.handler.animation :as animation]
@@ -99,7 +98,6 @@
                     (let [x (j/get-in e [:nativeEvent :contentOffset :x])]
                       (reset! inner-scroll-offset x)))
                       ; (check-scroll)))
-        ;
         pan-responder
         (rn/PanResponder.create
           #js { ;:onStartShouldSetPanResponder (fn [arg] true)
@@ -149,7 +147,10 @@
                                            (js/console.log "onPanResponderTerminate ..." state)
                                            (reset-container-position))
                                          ; (check-scroll))
-                :onShouldBlockNativeResponder (fn [e] true)})]
+                :onShouldBlockNativeResponder (fn [e] true)})
+        ;
+        is-open (reagent/atom false)
+        modal-height (str (- (.-height (.get Dimensions "window")) 150) "px")]
 
     (fn []
       [nbase/zstack {:flex 1
@@ -157,6 +158,26 @@
                      :bg "white"
                      :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                                    (reset! h height))}
+       [nbase/modal {:isOpen @is-open :onClose #(reset! is-open false)}
+        [nbase/box {:bg "coolGray.50" :shadow 1 :rounded "lg" :maxHeight modal-height
+                    :minHeight "40%" :overflow "hidden"}
+         [nbase/box
+          {:flex 1 :justifyContent "center" :alignItem "center" :flexDirection "row"
+           :pt "2" :py "3"}
+          [srn/touchable-highlight {:style {:padding 10}
+                                    :underlayColor "#cccccc"
+                                    :onPress #(js/console.log "touchable 1 >>> ")}
+           [text/measured-text {:color "#4b5563"} "Arial"]]
+          [nbase/divider {:orientation "vertical"}]
+          [srn/touchable-highlight {:style {:padding 10}
+                                    :underlayColor "#cccccc"
+                                    :onPress #(js/console.log "touchable 2 >>> ")}
+           [text/measured-text {:color "#4b5563"} "Nunito Sans"]]
+          [nbase/divider {:orientation "vertical"}]
+          [srn/touchable-highlight {:style {:padding 10}
+                                    :underlayColor "#cccccc"
+                                    :onPress #(js/console.log "touchable 3 >>> ")}
+           [text/measured-text {:color "#4b5563"} "Roboto"]]]]]
        (if (nil? @h)
          [nbase/hstack {:style {:height 674}}
           [nbase/box {:m 1 :p 4
@@ -218,7 +239,8 @@
                                             :mt 9
                                             :style {:height (- @h 120)}
                                             :justifyContent "space-between"}
-                                 [nbase/box
+                                 [srn/touchable-highlight {:underlayColor "#cccccc" :onPress #(reset! is-open true)
+                                                           :style {:height 24}}
                                   [nbase/icon {:as Ionicons :name "ios-ellipsis-vertical-sharp"
                                                :size "6" :color "indigo.500"
                                                :mb 40}]]
