@@ -79,6 +79,7 @@
                        :pointerEvents "none"}]]]]])))
 
 (def webref (reagent/atom nil))
+(def weblen (reagent/atom 0))
 (def cursor (reagent/atom nil))
 (def is-caret (reagent/atom nil))
 
@@ -103,9 +104,12 @@
                                    :keywordize-keys true)]
                        (condp = (:type data)
                          "initHeight" (do
-                                        ; (js/console.log (bean/->js data))
-                                        (reset! webview-width (+ 10 (:message data)))
+                                        (js/console.log "initHeight .... " (bean/->js data))
+                                        (reset! webview-width (:message data))
                                         (.fire init-selection-fn))
+                         "onContent" (do
+                                       (js/console.log "editor on content >>>> " (clj->js data))
+                                       (reset! weblen (-> data :message :contentLength)))
                          "onChange" (do
                                       (change-fn (:message data)))
                                       ; (reset! content (:text (:message data))))
@@ -226,8 +230,10 @@
                                 :margin-bottom 10}
                         :pointerEvents "none"}]]
           (if (true? @is-caret)
-            [nbase/box {:style {:top (:top @cursor) :left (:left @cursor)}
-                        :position "absolute"
+            [nbase/box {:style {:top (:top @cursor) :left (:left @cursor)
+                                :zIndex 30001
+                                :position "absolute"}
+                        :elevation 3001
                         :flex-direction "row"}
              [:> blinkview {"useNativeDriver" false}
               [:> svg/Svg {:width 18 :height 2}

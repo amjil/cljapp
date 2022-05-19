@@ -20,6 +20,7 @@
    ["react-native-smooth-blink-view" :default blinkview]
    ["react-native-svg" :as svg]
    ["react-native-linear-gradient" :default linear-gradient]
+   ["@react-navigation/stack" :refer [createStackNavigator]]
 
    [app.ui.home.views :as home]
    [app.ui.profile.views :as profile]
@@ -30,6 +31,7 @@
    [app.ui.webview :as webview]
    [app.ui.editor :as editor]
    [app.ui.article.index :as article]
+   [app.ui.article.new :as arnew]
    [app.ui.question.index :as question]
    [app.ui.message.index :as message]))
 
@@ -72,18 +74,42 @@
     ; :screenOptions screen-options}
     :screenOptions
     (fn [options]
-     (let [{:keys [route]} (bean/->clj options)]
-       (bean/->js {:activeTintColor   "#5cb85c"
-                   :inactiveTintColor :black
-                   :showLabel         false
-                   :tabBarLabel       (fn [] nil)
-                   :headerShown       false
-                   :modal             true
-                   :tabBarIcon (fn [data]
-                                 (let [{:keys [color]} (bean/->clj data)
-                                       icon (get tab-icons (:name route))]
-                                   (reagent/as-element
-                                     [ui/ion-icons {:name icon :color color :size 20}])))})))}
+     (let [{:keys [route]} (bean/->clj options)
+           icon (get tab-icons (:name route))]
+       (bean/->js
+                  (if (not= icon "md-document")
+                    {:activeTintColor   "#5cb85c"
+                     :inactiveTintColor :black
+                     :showLabel         false
+                     :tabBarLabel       (fn [] nil)
+                     :headerShown       false
+                     :modal             true
+                     :tabBarIcon (fn [data]
+                                   (let [{:keys [color]} (bean/->clj data)
+                                         icon (get tab-icons (:name route))]
+                                     (reagent/as-element
+                                       (if (= icon "md-document")
+                                         [rn/view {:style {:width 42 :height 42 ;:borderRadius "full" :variant "solid" :colorScheme "indigo"
+                                                           :justifyContent "center" :alignSelf "center" :alignItems "center"
+                                                           :position "absolute" :marginTop -20}}
+                                          [ui/ion-icons {:name "add-circle" :color color :size 40}]]
+                                         [ui/ion-icons {:name icon :color color :size 20}]))))}
+                    {:tabBarButton
+                     (fn []
+                       (reagent/as-element
+                         [rn/touchable-opacity {:onPress #(re-frame/dispatch [:navigate-to :model-new])
+                                                :style {:justifyContent "space-around" :alignItems "center"}}
+                          [rn/view {:style {:height 40 :width 40}}
+                           [ui/ion-icons {:name "add-circle" :size 42
+                                          :color "#4f46e5"}]]]))
+                     :tabItemStyle {}
+                     :modal true
+                     :activeTintColor   "#5cb85c"
+                     :inactiveTintColor :black
+                     :showLabel         false
+                     :tabBarLabel       (fn [] nil)
+                     :headerShown       false}))))}
+
 
    [{:name      :home
      :component home/home}
@@ -96,7 +122,8 @@
       question/question-list
       {:name :question})
     (merge
-      article/article-list
+      ; article/article-list
+      arnew/model-new
       {:name :article})
     (merge
       ; article/article-list
@@ -105,25 +132,67 @@
     {:name      :profile
      :component profile/profile}]])
 
+(defn create-stack-navigator []
+  (let [^js stack (createStackNavigator)]
+    [(reagent/adapt-react-class (.-Navigator stack))
+     (reagent/adapt-react-class (.-Group stack))
+     (reagent/adapt-react-class (.-Screen stack))]))
+
+(defn prepare-navigator [navigator screen]
+  (fn [& params]
+    (let [[props children] (if (map? (first params))
+                             [(first params) (second params)]
+                             [{} (first params)])]
+      (into [navigator props]
+            (mapv (fn [props]
+                    [screen (update props :component reagent/reactify-component)])
+                  children)))))
+
 (defn root-stack []
-  [safe-area/safe-area-provider
-   [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
-     {:on-ready #(re-frame/dispatch [:initialise-app])}     ;; when navigation initialized and mounted initialize the app
-     [nativebase/nativebase-provider {:config {:dependencies {"linear-gradient" linear-gradient}}}
-      [stack/stack {}
-       [{:name      :main
-         :component tabs
-         :options {:title ""}}
-        article/article-detail
-        article/article-edit
-        article/article-list
-        question/question-list
-        question/question-detail
-        question/question-edit
-        profile/profile-edit
-        message/model-base
-        message/model-list
-        message/model-focus]]])]])
+  (let [[navigator group screen] (create-stack-navigator)]
+    [safe-area/safe-area-provider
+     [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
+       {:on-ready #(re-frame/dispatch [:initialise-app])}     ;; when navigation initialized and mounted initialize the app
+       [nativebase/nativebase-provider {:config {:dependencies {"linear-gradient" linear-gradient}}}
+        [navigator {}
+         (into
+           [group {}]
+           (mapv (fn [props]
+                   [screen (update props :component reagent/reactify-component)])
+             [{:name      :main
+               :component tabs
+               :options {:title ""}}
+              article/article-detail
+              article/article-edit
+              article/article-list
+              question/question-list
+              question/question-detail
+              question/question-edit
+              profile/profile-edit
+              message/model-base
+              message/model-list
+              message/model-focus]))
+         (into
+           [group {:screenOptions {:presentation "modal"}}]
+           (mapv (fn [props]
+                   [screen (update props :component reagent/reactify-component)])
+             [arnew/model-new]))]])]]))
+
+        ; [stack/stack {}
+        ;  [{:name      :main
+        ;    :component tabs
+        ;    :options {:title ""}}
+        ;   article/article-detail
+        ;   article/article-edit
+        ;   article/article-list
+        ;   question/question-list
+        ;   question/question-detail
+        ;   question/question-edit
+        ;   profile/profile-edit
+        ;   message/model-base
+        ;   message/model-list
+        ;   message/model-focus
+        ;   arnew/model-new]]])]]))
 ; (defn root-stack []
 ;   [safe-area/safe-area-provider
 ;    [nativebase/nativebase-provider

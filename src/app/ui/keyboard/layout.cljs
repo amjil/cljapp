@@ -60,17 +60,17 @@
       [keycommon/key-button {} #(bridge/editor-insert "᠃")
        [text/rotated-text {:font-family "MongolianBaiZheng" :font-size 18} 28 28 "᠃"]])
     [keycommon/key-button {:flex 1.5} #(condp = (:type opts)
-                                         "chat"
+                                         "single-line"
                                          ((:on-press opts))
 
                                          (bridge/editor-insert "\n"))
      [ui/ion-icons {:name (condp = (:type opts)
-                            "chat" "ios-send"
+                            "single-line" "ios-send"
 
                             "ios-return-down-back-sharp")
                     :color (condp = (:type opts)
-                             "chat" "#34d399"
-                             
+                             "single-line" "#34d399"
+
                              "gray")
                     :size 30}]]]])
 

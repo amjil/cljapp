@@ -205,7 +205,7 @@
 
         (if (true? @editor-input)
           [nbase/box {:height 220 :mt 1}
-           [keyboard/keyboard {:type "chat"
+           [keyboard/keyboard {:type "single-line"
                                :on-press (fn []
                                            (bridge/editor-content)
                                            (reset! editor-input false)

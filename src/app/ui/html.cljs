@@ -26,7 +26,7 @@
       }
       html,body {
         height: 100%;
-        width: 100%;
+        //width: 100%;
         margin: 0;
         padding: 0;
         background-color:rgba(0, 0, 0, 0);
@@ -1005,25 +1005,17 @@
     </script>
     <!-- Initialize Quill editor -->
     <script>
-      const quill = new Quill('#editor', window.options)
-      /*
-      quill.on('text-change', function(delta, oldDelta, source) {
-        const html = document.querySelector('#editor').children[0].innerHTML
-        const message = {
-          type: 'onChange',
-          message: html,
-        }
+      const quill = new Quill('#editor', window.options);
 
+      quill.on('text-change', function(delta, oldDelta, source) {
         var length = quill.getLength() - 1;
-        var text = quill.getText(0, length);
-        var content = quill.root.innerHTML;
         const message = {
-          type: 'onChange',
-          message: {text: text, width: quill.root.clientWidth, content: content},
+          type: 'onContent',
+          message: {contentLength: length}
         }
         window.ReactNativeWebView.postMessage(JSON.stringify(message))
       });
-      */
+
       function _postMessage(data){
           window.ReactNativeWebView.postMessage(JSON.stringify(data));
       };

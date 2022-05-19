@@ -138,13 +138,14 @@
       :else
       (let [line-height (/ (j/get info :height) (j/get info :lineCount))
             data (as-> (map (fn [x] (subs t (j/get x :start) (j/get x :end))) (j/get info :lineInfo)) m)]
-        [rn/view {:style {:height height :width (* (inc line-height) (j/get info :lineCount))
-                          :flexDirection "row"}}
-         (for [x data]
-           ^{:key x}
-           [rn/view {:style {:height height
-                             :width (inc line-height)}}
-            [rotated-text (dissoc props :width) (inc line-height) height x]])]))))
+        (into
+          [rn/view {:style {:height height :width (* (inc line-height) (j/get info :lineCount))
+                            :flexDirection "row"}}]
+          (for [x data]
+            ^{:key x}
+            [rn/view {:style {:height height
+                              :width (inc line-height)}}
+             [rotated-text (dissoc props :width) (inc line-height) height x]]))))))
 
 (defn theme-text-props [name props]
   (let [theme-props (bean/->js (useThemeProps name (bean/->js props)))

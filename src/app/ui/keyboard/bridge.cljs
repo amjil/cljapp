@@ -1,6 +1,6 @@
 (ns app.ui.keyboard.bridge
   (:require
-    [app.ui.editor :refer [webref cursor]]
+    [app.ui.editor :refer [webref cursor weblen]]
     [applied-science.js-interop :as j]
     [cljs-bean.core :as bean]))
 
@@ -18,7 +18,11 @@
                             :end (:index @cursor)}}))))
 
 (defn editor-content []
-  (j/call @webref :postMessage
-    (j/call js/JSON :stringify
-      (clj->js {:type "getContent"
-                :message ""}))))
+  (if @webref
+    (j/call @webref :postMessage
+      (j/call js/JSON :stringify
+        (clj->js {:type "getContent"
+                  :message ""})))))
+
+(defn editor-empty? []
+  (= 0 @weblen))
