@@ -13,6 +13,10 @@
                           Center
                           Container
                           Box
+
+                          PresenceTransition
+
+
                           Menu Menu.Item Menu.Group Menu.OptionGroup Menu.ItemOption
                           Popover Popover.Content Popover.Arrow Popover.CloseButton Popover.Header Popover.Body Popover.Footer
                           Modal Modal.Content Modal.CloseButton Modal.Header Modal.Body Modal.Footer
@@ -68,6 +72,8 @@
 (def container (reagent/adapt-react-class Container))
 
 (def heading (reagent/adapt-react-class Heading))
+
+(def presence-transition (reagent/adapt-react-class PresenceTransition))
 
 (def text (reagent/adapt-react-class Text))
 (def input (reagent/adapt-react-class Input))
