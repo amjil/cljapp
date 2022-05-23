@@ -120,7 +120,7 @@
                                              (let [webview-text-width (:height data)]
                                                (when-not (nil? webview-text-width)
                                                  ; (js/console.log "webview text width = " webview-text-width)
-                                                 (reset! webview-width (+ 10 webview-text-width))))
+                                                 (reset! webview-width webview-text-width)))
                                              (let [offset-x (-> data :message :offsetX)]
                                                (when-not (nil? offset-x)
                                                  (js/console.log "webview offset-x = " offset-x)

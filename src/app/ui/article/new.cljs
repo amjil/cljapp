@@ -16,6 +16,7 @@
     [reagent.core :as reagent]
     [re-frame.core :as re-frame]
 
+    ["react-native-modal" :default rnmodal]
     ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
 (def model (reagent/atom {:title "" :content ""}))
@@ -25,10 +26,10 @@
                       {:title "The Center of Asia" :focus_count "1" :answer_count "9"}])
 
 (defn recomm-view [h]
-  [nbase/box {:height (str (- @h 220) "px") :bg "light.200"
-              :maxWidth 32}
-   ; [nbase/box {:p 5}
-    ;
+  [nbase/box {:height (str (- @h 220) "px") :borderRightRadius "10"
+              :maxWidth 40 :flexDirection "row"}
+   [nbase/box {:p 0.5 :flex 0.2 :bg "white"}]
+   [nbase/box {:flex 1 :bg "gray.100"}
     [nbase/flat-list
      {:keyExtractor    (fn [_ index] (str "question-view-" index))
       :data      recommandations
@@ -40,13 +41,19 @@
       :renderItem (fn [x]
                     (let [{:keys [item index separators]} (j/lookup x)]
                       (reagent/as-element
-                       [nbase/box {:flex 1 :flexDirection "row"}
-                        [text/measured-text {:fontSize 18 :width (- @h 220 20)} (j/get item :title)]])))}]])
-                        ; [nbase/box
-                        ;  [text/measured-text {:fontSize 18} (j/get item :focus_count)]
-                        ;  [text/measured-text {:fontSize 19} "-"]
-                        ;  [text/measured-text {:fontSize 18} (j/get item :answer_count)]]])))}]])
-                        ;
+                        [nbase/box {:flex 1 :flexDirection "row"}
+                         [rn/touchable-opacity {:on-press #(js/console.log "recommandations on press >>>")}
+                          [nbase/box {:m 5 :flex 1 :flexDirection "row"}
+                           [text/measured-text {:fontSize 18 :width (- @h 220 20) :color "black"} (j/get item :title)]
+                           [nbase/box
+                             [text/measured-text {:fontSize 14 :color "gray"} (j/get item :focus_count)]
+                             [text/measured-text {:fontSize 14 :color "gray"} "-"]
+                             [text/measured-text {:fontSize 14 :color "gray"} (j/get item :answer_count)]]]]
+                         [nbase/divider {:orientation "vertical"}]])))}]]
+   [rn/touchable-opacity {:on-press #(js/console.log "close similar modal on press >>>")
+                          :style {:flex 0.2}}
+    [nbase/box {:flex 1 :bg "gray.50" :alignItems "center" :justifyContent "center" :borderRightRadius "10"}
+     [text/measured-text {:fontSize 14 :color "gray" :width (-@h 220 20)} (get-in labels [:question :close-similar-titles])]]]])
 
 
 (defn view []
@@ -99,42 +106,44 @@
             [nbase/divider (merge {:orientation "vertical" :mr "3" :ml "1"}
                              (if (= 1 @focus-elem)
                                {:thickness "2" :bg "blue.700"}))]]
-           (if (= 2 @focus-elem)
-             [nbase/zstack {:style {:height (- @h 220)}
-                            :minWidth 20}
-              [editor/editor-view
-               ; opts
-               {:quill {:placeholder (get-in labels [:question :content-placeholder])}
-                :type :text}
-               ;content-fn
-               (fn []
-                 ; (js/console.log "content -fn >......."))
-                 (:content @model))
-                 ; (get @model @active-key))
-               ;update-fn
-               (fn [x] (js/console.log "1112")
-                 (swap! model assoc :content (:text x)))]
-              (if (= 0 @weblen)
-                [nbase/box {:flex 1 :m 5}
-                 [text/measured-text {:fontSize 18 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
-                  (get-in labels [:question :content-placeholder])]])]
-             [rn/touchable-opacity {:style {:paddingVertical 20
-                                            :height (- @h 220)}
-                                    :onPress (fn [] (js/console.log "touchable without feedback .....2")
-                                               (bridge/editor-content)
-                                               (reset! focus-elem 2)
-                                               (reset! weblen (count (:content @model)))
-                                               (candidates/candidates-clear))}
-              [text/measured-text {:fontSize 18 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
-               (if (empty? (:content @model))
-                 (get-in labels [:question :content-placeholder])
-                 (:content @model))]])
-           [rn/touchable-opacity {:on-press #(reset! recomm-flag (not @recomm-flag))}
-            [text/measured-text {:font-size 18} "button"]]])
-        [nbase/presence-transition {:visible @recomm-flag :initial {:opacity 0}
-                                                       :animate {:opacity 1 :transition {:duration 250}}
-                                    :position "absolute" :left 60}
-         [recomm-view h]]
+           [nbase/box {:flex 1 :flexDirection "row"
+                       :ml 0}
+            [:> rnmodal { :isVisible (= 1 @focus-elem)
+                          :coverScreen false
+                          :backdropColor "lightGray"
+                          :scrollHorizontal true
+                          :style {:margin-left -10}};:margin 0}}
+              [recomm-view h]]
+            (if (= 2 @focus-elem)
+               [nbase/zstack {:style {:height (- @h 220)}
+                              :minWidth 20}
+                [editor/editor-view
+                 ; opts
+                 {:quill {:placeholder (get-in labels [:question :content-placeholder])}
+                  :type :text}
+                 ;content-fn
+                 (fn []
+                   ; (js/console.log "content -fn >......."))
+                   (:content @model))
+                   ; (get @model @active-key))
+                 ;update-fn
+                 (fn [x] (js/console.log "1112")
+                   (swap! model assoc :content (:text x)))]
+                (if (= 0 @weblen)
+                  [nbase/box {:flex 1 :m 5}
+                   [text/measured-text {:fontSize 18 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
+                    (get-in labels [:question :content-placeholder])]])]
+               [rn/touchable-opacity {:style {:paddingVertical 20
+                                              :height (- @h 220)}
+                                      :onPress (fn [] (js/console.log "touchable without feedback .....2")
+                                                 (bridge/editor-content)
+                                                 (reset! focus-elem 2)
+                                                 (reset! weblen (count (:content @model)))
+                                                 (candidates/candidates-clear))}
+                [text/measured-text {:fontSize 18 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
+                 (if (empty? (:content @model))
+                   (get-in labels [:question :content-placeholder])
+                   (:content @model))]])]])
         [candidates/views {:bottom 20}]]
        [nbase/box {:height 220 :mt 1}
         [keyboard/keyboard {:type "single-line"
