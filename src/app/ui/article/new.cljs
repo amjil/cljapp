@@ -25,7 +25,7 @@
                       {:title "The big big world" :focus_count "10" :answer_count "89"}
                       {:title "The Center of Asia" :focus_count "1" :answer_count "9"}])
 
-(defn recomm-view [h]
+(defn recomm-view [h flag]
   [nbase/box {:height (str (- @h 220) "px") :borderRightRadius "10"
               :maxWidth 40 :flexDirection "row"}
    [nbase/box {:p 0.5 :flex 0.2 :bg "white"}]
@@ -50,7 +50,7 @@
                              [text/measured-text {:fontSize 14 :color "gray"} "-"]
                              [text/measured-text {:fontSize 14 :color "gray"} (j/get item :answer_count)]]]]
                          [nbase/divider {:orientation "vertical"}]])))}]]
-   [rn/touchable-opacity {:on-press #(js/console.log "close similar modal on press >>>")
+   [rn/touchable-opacity {:on-press #(reset! flag 2)
                           :style {:flex 0.2}}
     [nbase/box {:flex 1 :bg "gray.50" :alignItems "center" :justifyContent "center" :borderRightRadius "10"}
      [text/measured-text {:fontSize 14 :color "gray" :width (-@h 220 20)} (get-in labels [:question :close-similar-titles])]]]])
@@ -61,8 +61,11 @@
         h (reagent/atom nil)
         focus-elem (reagent/atom 0)
 
-        recomm-flag (reagent/atom false)]
+        recomm-flag (reagent/atom 0)]
     (fn []
+      (if (and (= @recomm-flag 0) (not= 0 @weblen))
+        (do (js/console.log "weblen ....")
+          (reset! recomm-flag 1)))
       [nbase/box
        {:on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                       (reset! h height))
@@ -84,8 +87,7 @@
                  ; (get @model @active-key))
                ;update-fn
                (fn [x] (js/console.log "1112")
-                 (swap! model assoc :title (:text x))
-                 (reset! recomm-flag true))]
+                 (swap! model assoc :title (:text x)))]
               (if (= 0 @weblen)
                 [nbase/box {:flex 1 :m 5}
                  [text/multi-line-text {:fontSize 22 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
@@ -106,14 +108,13 @@
             [nbase/divider (merge {:orientation "vertical" :mr "3" :ml "1"}
                              (if (= 1 @focus-elem)
                                {:thickness "2" :bg "blue.700"}))]]
-           [nbase/box {:flex 1 :flexDirection "row"
-                       :ml 0}
-            [:> rnmodal { :isVisible (= 1 @focus-elem)
+           [nbase/box {:flex 1 :flexDirection "row" :ml 0}
+            [:> rnmodal { :isVisible (= @recomm-flag 1)
                           :coverScreen false
                           :backdropColor "lightGray"
                           :scrollHorizontal true
-                          :style {:margin-left -10}};:margin 0}}
-              [recomm-view h]]
+                          :style {:margin-left -10}}
+              [recomm-view h recomm-flag]]
             (if (= 2 @focus-elem)
                [nbase/zstack {:style {:height (- @h 220)}
                               :minWidth 20}
