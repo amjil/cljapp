@@ -56,6 +56,11 @@
                                     :agree_count 0
                                     :comment_count 0}]))
 
+(def comments [{:user_name "john" :content "hello"}
+               {:user_name "sara" :content "hello, John"}
+               {:user_name "peter" :content "what a nice day"}
+               {:user_name "Lily" :content "so, what is the best there?"}])
+
 (def cursor (reagent/atom 0))
 
 (def model (reagent/atom {}))
@@ -287,12 +292,12 @@
   (let [h (reagent/atom 0)]
     (fn []
       [ui/safe-area-consumer
-       [nbase/zstack {:flex 1
-                      :flex-direction "row"
-                      :bg "gray"
-                      :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
-                                    (reset! h height))}
-        [nbase/hstack {:flex 1 :style {:height @h}}
+       [nbase/box {:flex 1
+                   :flex-direction "row"
+                   :bg "gray"
+                   :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
+                                 (reset! h height))}
+        [nbase/box {:flex 1 :flex-direction "row" :style {:height @h}}
          [nbase/vstack {:m 1 :ml 2 :justifyContent "flex-start" :alignItems "flex-start"}
           [nbase/icon {:as Ionicons :name "help-circle"
                        :size "6" :color "indigo.500" :mb 6}]
@@ -313,8 +318,8 @@
           [nbase/box {:m 1 :ml 2 :mt 12 :bg "white"}
            ;; width 4 + 4 + 4   ()  *  4  = 48
            [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_detail @model)]]]
-         [nbase/vstack {:ml 2 :mt 1 :justifyContent "space-between" :style {:height @h}}
-          [nbase/vstack {:borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
+         [nbase/vstack {:ml 2 :mt 1 :style {:height @h}}
+          [nbase/vstack {:mb 4 :borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
            [nbase/icon-button {:w 8 :h 8
                                :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-up-outline"}])}]
            [text/measured-text {:fontSize 12 :color "#2563eb"} (str (get-in labels [:question :vote]) "  " (:agree_count @model))]
@@ -328,10 +333,25 @@
            [nbase/icon-button {:w 8 :h 8
                                :icon (reagent/as-element [nbase/icon {:as Ionicons :name "chatbubble-outline"}])}]]]
 
+         [nbase/box {:ml 2 :mt 1 :flex 1 :flex-direction "row" :style {:height (- @h 10)}}
+          (doall
+            (for [item (take 2 comments)]
+              ^{:key (gensym "comment")}
+              [nbase/hstack {:flex 1}
+               [nbase/vstack {:flex 1 :ml 2}
+                [nbase/box {:bg "gray.300" :borderRadius "md" :p 6}]
+                [nbase/hstack {:flex 1 :mt 2}
+                 [nbase/vstack {:mr 2}
+                  [nbase/box  {:mb 2 :justifyContent "center" :alignItems "center"}
+                   [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (item :user_name)]]
+                  [nbase/box  {:justifyContent "center" :alignItems "center"}
+                   [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]
+                 [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (item :content)]]]]))]
          [nbase/divider {:orientation "vertical" :mx 2}]]
         ;; in zstack flow next answer button
         [nbase/box {:right 4
-                    :bottom 2}
+                    :bottom 2
+                    :position "absolute"}
          [nbase/icon-button {:w 10 :h 10 :borderRadius "full" :variant "outline" :colorScheme "coolGray"
                              :justifyContent "center" :alignSelf "center" :alignItems "center"
                              :icon (reagent/as-element [nbase/icon {:as Ionicons :name "arrow-forward-outline"}])
