@@ -190,7 +190,8 @@
                  {:style {:flex 1
                           :flexDirection "row"}})
           [animation/animated-view
-           {:style {:flex 1 :transform [{:translateX (j/get container-offset :x)}]}}
+           {:style {:flex 1 :transform [{:translateX (j/get container-offset :x)}]
+                    :height @h}}
            [nbase/flat-list
             {:keyExtractor    (fn [_ index] (str "question-view-" index))
              :data      @questions-atom
@@ -206,7 +207,6 @@
                            (let [{:keys [item index separators]} (j/lookup x)]
                              (reagent/as-element
                               [nbase/pressable {:m 1
-                                                :p 4
                                                 :borderRightWidth "0.5"
                                                 :borderColor "gray.300"
                                                 :bg "white"
@@ -217,26 +217,25 @@
                                 [nbase/vstack
                                  [nbase/box {:bg "gray.300"
                                              :borderRadius "md"
-                                             :p 4
+                                             :p 6
                                              :alignSelf "center"}]
                                  [nbase/box {:alignSelf "center"
-                                             :mt 2
-                                             :pl 2}
-                                  [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "#71717a"}
+                                             :justifyContent "center"
+                                             :mt 4}
+                                  [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 68)}
                                    (j/get item :user_name)]]]
-                                [nbase/box {:mt 9
+                                [nbase/box {:mt 16
                                             :ml 2}
-                                 [text/measured-text {:fontFamily "MongolianBaiZheng" :fontSize 22 :color "#002851"}
+                                 [text/measured-text {:fontSize 22 :color "#002851" :width (- @h 68)}
                                   (j/get item :question_content)]]
-                                [nbase/box {:mt 9
+                                [nbase/box {:mt 16
                                             :ml 1
                                             ; :w 100
                                             :flex 1}
-                                 [text/simple-text {:fontFamily "MongolianBaiZheng" :fontSize 18 :color "#71717a"
-                                                    :width (- @h 20)}
+                                 [text/simple-text {:fontSize 18 :color "#71717a" :width (- @h 68)}
                                   (j/get item :question_detail)]]
                                 [nbase/box {:ml 2
-                                            :mt 9
+                                            :mt 16
                                             :style {:height (- @h 120)}
                                             :justifyContent "space-between"}
                                  [srn/touchable-highlight {:underlayColor "#cccccc" :onPress #(reset! is-open true)
@@ -261,9 +260,9 @@
              :showsHorizontalScrollIndicator false
              :horizontal true
              :bounces true
-             :style {:flex 1 :height "100%"
+             :style {:flex 1 :height @h
                      :width (.-width (.get Dimensions "window"))}}]]])
-       ;
+       ; pull to refresh component
        [animation/animated-view
         {:style {:width 80
                  :height "100%"
@@ -271,55 +270,87 @@
         ; [nbase/box {:flex 1 :bg "primary.100"}]
         [:> lottie
            {:source (js/require "../src/json/104547-loading-25.json")
-            :autoPlay true}]]
-       [nbase/box {:right 4
-                   :bottom 2}
-                  ; :position "absolute"}
-        [nbase/icon-button {:w 16 :h 16 :borderRadius "full" :variant "solid" :colorScheme "indigo"
-                            :justifyContent "center" :alignSelf "center" :alignItems "center"
-                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-add"}])
-                            :onPress (fn [e]
-                                       (js/console.log "icon-button on press")
-                                       (re-frame/dispatch [:navigate-to :question-detail]))}]]])))
+            :autoPlay true}]]])))
+       ; [nbase/box {:right 4
+       ;             :bottom 2}
+       ;            ; :position "absolute"}
+       ;  [nbase/icon-button {:w 16 :h 16 :borderRadius "full" :variant "solid" :colorScheme "indigo"
+       ;                      :justifyContent "center" :alignSelf "center" :alignItems "center"
+       ;                      :icon (reagent/as-element [nbase/icon {:as Ionicons :name "ios-add"}])
+       ;                      :onPress (fn [e]
+       ;                                 (js/console.log "icon-button on press")
+       ;                                 (re-frame/dispatch [:navigate-to :question-detail]))}]]])))
 
 
 (defn detail-view []
   (let [h (reagent/atom 0)]
     (fn []
       [ui/safe-area-consumer
+       [nbase/zstack {:flex 1
+                      :flex-direction "row"
+                      :bg "gray"
+                      :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
+                                    (reset! h height))}
+        [nbase/hstack {:flex 1 :style {:height @h}}
+         [nbase/vstack {:m 1 :ml 2 :justifyContent "flex-start" :alignItems "flex-start"}
+          [nbase/icon {:as Ionicons :name "help-circle"
+                       :size "6" :color "indigo.500" :mb 6}]
+          [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_content @model)]]
+         [nbase/divider {:orientation "vertical" :mx 2}]
+         [nbase/flex {:m 1 :flex-direction "row" :bg "white"}
+          [nbase/vstack
+           [nbase/box {:bg "gray.300"
+                       :borderRadius "md"
+                       :p 4
+                       :alignSelf "center"}]
+           [nbase/box {:alignSelf "center"
+                       :justifyContent "center"
+                       :mt 4}
+            [nbase/hstack
+             [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:user_name @model)]
+             [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]]
+          [nbase/box {:m 1 :ml 2 :mt 12 :bg "white"}
+           ;; width 4 + 4 + 4   ()  *  4  = 48
+           [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_detail @model)]]]]
+        ;; in zstack flow next answer button
+        [nbase/box {:right 4
+                    :bottom 2}
+         [nbase/icon-button {:w 12 :h 12 :borderRadius "full" :variant "outline" :colorScheme "coolGray"
+                             :justifyContent "center" :alignSelf "center" :alignItems "center"
+                             :icon (reagent/as-element [nbase/icon {:as Ionicons :name "arrow-forward-outline"}])
+                             :onPress (fn [e]
+                                        (js/console.log "icon-button on press"))}]]]])))
+
+(defn detail-view2 []
+  (let [h (reagent/atom 0)]
+    (fn []
+      [ui/safe-area-consumer
        [nbase/flex {:flex 1
-                    :p 5
+                    :m 1
                     :flex-direction "row"
-                    :bg "white"
+                    :bg "gray"
                     :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                                   (reset! h height))}
 
-        [nbase/box {:p 2}
-         [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠠᠰᠠᠭᠤᠯᠲᠠ"]]
-        [srn/touchable-highlight {:style {:borderWidth 1 :borderColor "#06b6d4"
-                                          :paddingHorizontal 8
-                                          :paddingVertical 20
-                                          :borderRadius 8}
-                                   :underlayColor "#cccccc"
-                                   :on-press (fn [] (reset! active-key :question_content)
-                                               (re-frame/dispatch [:navigate-to :question-edit]))}
-         [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} (:question_content @model)]]
-        [nbase/box {:p 2 :ml 2}
-         [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng"} "ᠲᠠᠢᠯᠪᠤᠷᠢ"]]
-        (if-not (zero? @h)
-          [gesture/tap-gesture-handler
-           { :style {:flex 1}
-             :onHandlerStateChange #(let [state (j/get-in % [:nativeEvent :state])]
-                                      (when (gesture/tap-state-end (j/get % :nativeEvent))
-                                        (reset! active-key :question_detail)
-                                        (re-frame/dispatch [:navigate-to :question-edit])))}
-           [nbase/box {:style {:flex 1
-                               :borderWidth 1 :borderColor "#06b6d4"
-                               :paddingHorizontal 8
-                               :paddingVertical 20
-                               :borderRadius 8}}
-            [text/measured-text {:fontSize 18 :fontFamily "MongolianBaiZheng" :width (- @h 40)} (:question_detail @model)]]])]])))
-
+        [nbase/flex {:flex-direction "row" :bg "white"}
+         [nbase/vstack
+          [nbase/box {:bg "gray.300"
+                      :borderRadius "md"
+                      :p 6
+                      :alignSelf "center"}]
+          [nbase/box {:alignSelf "center"
+                      :justifyContent "center"
+                      :mt 4}
+           [nbase/hstack
+            [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 68)} (:user_name @model)]
+            [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]]
+         [nbase/hstack {:mt 16 :ml 1}
+          [text/measured-text {:fontSize 22 :color "#002851" :width (- @h 68)} (@model :question_content)]
+          [nbase/box {:ml 1}
+           [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 68)} (@model :question_detail)]]]]
+        [nbase/divider {:orientation "vertical" :mx 2}]
+        [nbase/flex {:flex-direction "row" :bg "white" :ml 2}
+         [nbase/box {:p 5 :bg "indigo.300"}]]]])))
 
 
 (defn edit-view []

@@ -66,6 +66,10 @@
       (if (and (= @recomm-flag 0) (not= 0 @weblen))
         (do (js/console.log "weblen ....")
           (reset! recomm-flag 1)))
+
+      (if (and (= @recomm-flag 1) (= 0 @weblen))
+        (do (js/console.log "weblen is zero recomm flag must zero")
+          (reset! recomm-flag 0)))
       [nbase/box
        {:on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                       (reset! h height))

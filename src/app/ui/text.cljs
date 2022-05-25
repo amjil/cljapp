@@ -70,7 +70,10 @@
 
 (defn simple-text
   [props t]
-  (let [info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
+  (let [props (if (and (nil? (:fontFamily props)) (nil? (:font-family props)))
+                (merge props base-prop)
+                props)
+        info (rntext/measure (bean/->js (assoc props :text (if (empty? t) "A" t))))
         height (j/get info :width)
         width (+ 1 (j/get info :height))]
     (cond
