@@ -11,6 +11,7 @@
     [app.handler.animated :as animated]
     [app.handler.animation :as animation]
     [app.handler.animatable :as animatable]
+    [app.text.message :refer [labels]]
     ["react-native-gesture-handler" :as ges]
     ["react-native-reanimated" :as re-animated]
     ["lottie-react-native" :as lottie]
@@ -311,11 +312,27 @@
              [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]]
           [nbase/box {:m 1 :ml 2 :mt 12 :bg "white"}
            ;; width 4 + 4 + 4   ()  *  4  = 48
-           [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_detail @model)]]]]
+           [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_detail @model)]]]
+         [nbase/vstack {:ml 2 :mt 1 :justifyContent "space-between" :style {:height @h}}
+          [nbase/vstack {:borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
+           [nbase/icon-button {:w 8 :h 8
+                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-up-outline"}])}]
+           [text/measured-text {:fontSize 12 :color "#2563eb"} (str (get-in labels [:question :vote]) "  " (:agree_count @model))]
+           [nbase/icon-button {:w 8 :h 8
+                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-down-outline"}])}]]
+          [nbase/vstack {:mt 2 :borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
+           [nbase/icon-button {:w 8 :h 8 :mb 4
+                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "heart-outline"}])}]
+           [nbase/icon-button {:w 8 :h 8 :mb 4
+                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "star-outline"}])}]
+           [nbase/icon-button {:w 8 :h 8
+                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "chatbubble-outline"}])}]]]
+
+         [nbase/divider {:orientation "vertical" :mx 2}]]
         ;; in zstack flow next answer button
         [nbase/box {:right 4
                     :bottom 2}
-         [nbase/icon-button {:w 12 :h 12 :borderRadius "full" :variant "outline" :colorScheme "coolGray"
+         [nbase/icon-button {:w 10 :h 10 :borderRadius "full" :variant "outline" :colorScheme "coolGray"
                              :justifyContent "center" :alignSelf "center" :alignItems "center"
                              :icon (reagent/as-element [nbase/icon {:as Ionicons :name "arrow-forward-outline"}])
                              :onPress (fn [e]
