@@ -201,8 +201,6 @@
          (when (true? @editor-input)
            [candidates/views {:bottom 20}])]
 
-
-
         (if (true? @editor-input)
           [nbase/box {:height 220 :mt 1}
            [keyboard/keyboard {:type "single-line"

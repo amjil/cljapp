@@ -13,21 +13,65 @@
    [app.handler.animatable :as animatable]
 
    [app.ui.home.dragable :as dragable]
-   ["react-native" :refer [Dimensions]]))
+   ["react-native-modal" :default rnmodal]
+   ["react-native" :refer [Dimensions]]
+   ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
 
 ; (def SendBox (.-default (js/require "../src/js/sendbox.js")))
 ; (def Refresh (.-default (js/require "../src/js/refresh.js")))
 
+; (defn home []
+;   (let [is-open (reagent/atom false)]
+;     (fn []
+;      [nbase/center {:flex 1 :px 3 :safeArea true}
+;       [nbase/button {:onPress #(reset! is-open (not @is-open))} "open presence"]
+;       [nbase/presence-transition {:visible @is-open
+;                                   :initial {:opacity 0}
+;                                   :animate {:opacity 1 :transition {:duration 250}}}
+;        [nbase/box {:bg "primary.600" :p 5}]]])))
 (defn home []
-  (let [is-open (reagent/atom false)]
+  (let [is-open (reagent/atom false)
+        screen-height (.-height (.get Dimensions "window"))
+        screen-width (.-width (.get Dimensions "window"))]
     (fn []
-     [nbase/center {:flex 1 :px 3 :safeArea true}
-      [nbase/button {:onPress #(reset! is-open (not @is-open))} "open presence"]
-      [nbase/presence-transition {:visible @is-open
-                                  :initial {:opacity 0}
-                                  :animate {:opacity 1 :transition {:duration 250}}}
-       [nbase/box {:bg "primary.600" :p 5}]]])))
+      [nbase/center {:flex 1 :safeArea true}
+       [nbase/button {:onPress #(reset! is-open true)} "open modal"]
+       [:> rnmodal { :isVisible  @is-open
+                     :scrollHorizontal true
+                     :backdropColor "lightGray"
+                     :transparent false
+                     :swipeDirection ["down"]
+                     :onSwipeComplete (fn [e] (reset! is-open false)
+                                        (js/console.log ">>>> oen swipe .... "))
+                     :style {:margin 0 :alignItems nil :justifyContent nil}}
+        [ui/safe-area-consumer
+         [nbase/zstack {:flex 1 :width "100%" :borderTopRadius "md"}
+          [nbase/box
+           [nbase/text "hello world"]]
+          [nbase/box {:top 2
+                      :right 2}
+           [nbase/icon-button {;:w 4 :h 4
+                               :borderRadius "full" ;:bg "blue.200"
+                               :justifyContent "center" :alignSelf "center" :alignItems "center"
+                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "close-circle-outline"}])
+                               :onPress (fn [e]
+                                          (js/console.log "icon-button on press"))}]]]]]])))
+
+; (defn home []
+;   (let [is-open (reagent/atom false)
+;         screen-height (.-height (.get Dimensions "window"))
+;         screen-width (.-width (.get Dimensions "window"))]
+;     (fn []
+;       [nbase/center {:flex 1 :px 3 :safeArea true}
+;        [nbase/button {:onPress #(reset! is-open true)} "open modal"]
+;        [nbase/modal {:isOpen @is-open :onClose #(reset! is-open false)}
+;         [nbase/modal-content
+;          [nbase/modal-close-button]
+;          [nbase/modal-body
+;           [nbase/box {:style {:width screen-width :height screen-height}}
+;            [nbase/text "hello world"]]]]]])))
+
 ; (defn home []
 ;   (let [is-open (reagent/atom false)
 ;         screen-height (.-height (.get Dimensions "window"))]
