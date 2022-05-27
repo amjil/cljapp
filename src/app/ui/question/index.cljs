@@ -12,6 +12,7 @@
     [app.handler.animation :as animation]
     [app.handler.animatable :as animatable]
     [app.text.message :refer [labels]]
+    [app.ui.question.comment :as comment]
     ["react-native-gesture-handler" :as ges]
     ["react-native-reanimated" :as re-animated]
     ["lottie-react-native" :as lottie]
@@ -287,9 +288,40 @@
        ;                                 (js/console.log "icon-button on press")
        ;                                 (re-frame/dispatch [:navigate-to :question-detail]))}]]])))
 
+(defn comment-view [h item]
+  [nbase/vstack {:flex 1 :ml 2 :mt 1}
+   [nbase/box {:justifyContent "flex-start" :alignItems "flex-start"}
+    [nbase/box {:bg "gray.300" :borderRadius "md" :p 6}]]
+   [nbase/hstack {:flex 1 :mt 2}
+    [nbase/vstack {:mr 2}
+     [nbase/box  {:mb 2 :justifyContent "center" :alignItems "center"}
+      [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (item :user_name)]]
+     [nbase/box  {:justifyContent "center" :alignItems "center"}
+      [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]
+    [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (item :content)]]])
+
+(defn answer-buttons [h model]
+  [srn/view {:style {:height @h :margin-top 5 :margin-horizontal 20}}
+   ; [srn/view {:style {:margin-bottom 20 :borderRadius 10 :backgroundColor "#eff6ff" :justifyContent "center" :alignItems "center"}}]
+   [nbase/vstack {:mb 4 :borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
+    [nbase/icon-button {:justifyContent "center" :alignItems "center"
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-up-outline" :size "5" :color "blue.600"}])}]
+    [text/measured-text {:fontSize 12 :color "#2563eb"} (str (get-in labels [:question :vote]) "  " (:agree_count @model))]
+    [nbase/icon-button {:justifyContent "center" :alignItems "center"
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-down-outline" :size "5" :color "blue.600"}])}]]
+   [nbase/vstack {:mt 2 :borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
+   ; [srn/view {:style {:margin-top 10 :borderRadius 10 :backgroundColor "#eff6ff" :justifyContent "center" :alignItems "center"}}
+    [nbase/icon-button {:mb 4 :justifyContent "center" :alignItems "center"
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "heart-outline"  :size "5" :color "blue.600"}])}]
+    [nbase/icon-button {:mb 4 :justifyContent "center" :alignItems "center"
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "star-outline" :size "5" :color "blue.600"}])}]
+    [nbase/icon-button {:justifyContent "center" :alignItems "center"
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "chatbubble-outline" :size "5" :color "blue.600"}])}]]])
 
 (defn detail-view []
-  (let [h (reagent/atom 0)]
+  (let [h (reagent/atom 0)
+        modal-open (reagent/atom false)
+        is-open (reagent/atom false)]
     (fn []
       [ui/safe-area-consumer
        [nbase/box {:flex 1
@@ -297,7 +329,11 @@
                    :bg "gray"
                    :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                                  (reset! h height))}
-        [nbase/box {:flex 1 :flex-direction "row" :style {:height @h}}
+        ; [nbase/box {:flex 1 :flex-direction "row" :style {:width "100%" :height @h}}]
+        [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1}
+                            :horizontal true
+                            :nestedScrollEnabled false
+                            :scrollEventThrottle 16}
          [nbase/vstack {:m 1 :ml 2 :justifyContent "flex-start" :alignItems "flex-start"}
           [nbase/icon {:as Ionicons :name "help-circle"
                        :size "6" :color "indigo.500" :mb 6}]
@@ -317,38 +353,20 @@
              [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]]
           [nbase/box {:m 1 :ml 2 :mt 12 :bg "white"}
            ;; width 4 + 4 + 4   ()  *  4  = 48
-           [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_detail @model)]]]
-         [nbase/vstack {:ml 2 :mt 1 :style {:height @h}}
-          [nbase/vstack {:mb 4 :borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
-           [nbase/icon-button {:w 8 :h 8
-                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-up-outline"}])}]
-           [text/measured-text {:fontSize 12 :color "#2563eb"} (str (get-in labels [:question :vote]) "  " (:agree_count @model))]
-           [nbase/icon-button {:w 8 :h 8
-                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-down-outline"}])}]]
-          [nbase/vstack {:mt 2 :borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
-           [nbase/icon-button {:w 8 :h 8 :mb 4
-                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "heart-outline"}])}]
-           [nbase/icon-button {:w 8 :h 8 :mb 4
-                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "star-outline"}])}]
-           [nbase/icon-button {:w 8 :h 8
-                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "chatbubble-outline"}])}]]]
+           [text/multi-line-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_detail @model)]]]
+         [answer-buttons h model]
 
-         [nbase/box {:ml 2 :mt 1 :flex 1 :flex-direction "row" :style {:height (- @h 10)}}
-          (doall
-            (for [item (take 2 comments)]
-              ^{:key (gensym "comment")}
-              [nbase/hstack {:flex 1}
-               [nbase/vstack {:flex 1 :ml 2}
-                [nbase/box {:bg "gray.300" :borderRadius "md" :p 6}]
-                [nbase/hstack {:flex 1 :mt 2}
-                 [nbase/vstack {:mr 2}
-                  [nbase/box  {:mb 2 :justifyContent "center" :alignItems "center"}
-                   [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (item :user_name)]]
-                  [nbase/box  {:justifyContent "center" :alignItems "center"}
-                   [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]
-                 [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (item :content)]]]]))]
+         [comment-view h (first comments)]
+         [comment-view h (second comments)]
+
+         ; [srn/touchable-opacity {:on-press (fn [] (reset! modal-open true))}]
+         [srn/touchable-opacity {:on-press (fn [] (j/call @modal-open :open)
+                                                  (reset! is-open true))
+                                 :style {:justifyContent "center" :marginHorizontal 10 :paddingBottom 20}}
+          [text/measured-text {:fontSize 14 :color "#60a5fa"} (get-in labels [:question :all-answer-comments])]]
          [nbase/divider {:orientation "vertical" :mx 2}]]
         ;; in zstack flow next answer button
+        [comment/list-view modal-open is-open]
         [nbase/box {:right 4
                     :bottom 2
                     :position "absolute"}
