@@ -21,6 +21,7 @@
    ["react-native-svg" :as svg]
    ["react-native-linear-gradient" :default linear-gradient]
    ["@react-navigation/stack" :refer [createStackNavigator]]
+   ["react-native-portalize" :refer [Host]]
 
    [app.ui.home.views :as home]
    [app.ui.profile.views :as profile]
@@ -33,7 +34,8 @@
    [app.ui.article.index :as article]
    [app.ui.article.new :as arnew]
    [app.ui.question.index :as question]
-   [app.ui.message.index :as message]))
+   [app.ui.message.index :as message]
+   [app.ui.basic.theme :as theme]))
 
 
 (when platform/android?
@@ -152,31 +154,34 @@
   (let [[navigator group screen] (create-stack-navigator)]
     [safe-area/safe-area-provider
      [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
-       {:on-ready #(re-frame/dispatch [:initialise-app])}     ;; when navigation initialized and mounted initialize the app
+       {:on-ready #(re-frame/dispatch [:initialise-app])     ;; when navigation initialized and mounted initialize the app
+        :theme @theme/theme}
        [nativebase/nativebase-provider {:config {:dependencies {"linear-gradient" linear-gradient}}}
-        [navigator {}
-         (into
-           [group {}]
-           (mapv (fn [props]
-                   [screen (update props :component reagent/reactify-component)])
-             [{:name      :main
-               :component tabs
-               :options {:title ""}}
-              article/article-detail
-              article/article-edit
-              article/article-list
-              question/question-list
-              question/question-detail
-              question/question-edit
-              profile/profile-edit
-              message/model-base
-              message/model-list
-              message/model-focus]))
-         (into
-           [group {:screenOptions {:presentation "modal"}}]
-           (mapv (fn [props]
-                   [screen (update props :component reagent/reactify-component)])
-             [arnew/model-new]))]])]]))
+        [gesture/gesture-root-view {:style {:flex 1}}
+         [:> Host
+          [navigator {}
+           (into
+             [group {}]
+             (mapv (fn [props]
+                     [screen (update props :component reagent/reactify-component)])
+               [{:name      :main
+                 :component tabs
+                 :options {:title ""}}
+                article/article-detail
+                article/article-edit
+                article/article-list
+                question/question-list
+                question/question-detail
+                question/question-edit
+                profile/profile-edit
+                message/model-base
+                message/model-list
+                message/model-focus]))
+           (into
+             [group {:screenOptions {:presentation "modal"}}]
+             (mapv (fn [props]
+                     [screen (update props :component reagent/reactify-component)])
+               [arnew/model-new]))]]]])]]))
 
         ; [stack/stack {}
         ;  [{:name      :main

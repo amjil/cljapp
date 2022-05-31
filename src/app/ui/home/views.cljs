@@ -13,13 +13,30 @@
    [app.handler.animatable :as animatable]
 
    [app.ui.home.dragable :as dragable]
+   [app.ui.basic.theme :as theme]
    ["react-native-modal" :default rnmodal]
-   ["react-native" :refer [Dimensions]]
+   ["react-native" :refer [Dimensions Appearance]]
    ["react-native-vector-icons/Ionicons" :default Ionicons]))
 
+(defn home []
+  (let [current-theme (reagent/atom (if (true? (j/get @theme/theme :dark))
+                                      "dark"
+                                      "light"))]
+    ; (js/console.log "current-theme initial >>>> " @current-theme)
+    ; (js/console.log "initial theme " (j/get @theme/theme :dark))
+    (fn []
+      [nbase/center {:flex 1 :safeArea true}
+       [nbase/button {:onPress (fn [e]
+                                 ; (js/console.log "##### " (j/call Appearance :getColorScheme))
+                                (js/console.log "1>>>>> " @current-theme " >>> ")
+                                (let [th (condp = @current-theme
+                                           "light" "dark"
+                                           "dark" "light")]
+                                  (reset! current-theme th)
+                                  (theme/update-theme th)
+                                  (js/console.log "2>>>>> " @current-theme " >>> " th  ">>> ")))}
+         "update theme"]])))
 
-; (def SendBox (.-default (js/require "../src/js/sendbox.js")))
-; (def Refresh (.-default (js/require "../src/js/refresh.js")))
 
 ; (defn home []
 ;   (let [is-open (reagent/atom false)]
@@ -30,33 +47,33 @@
 ;                                   :initial {:opacity 0}
 ;                                   :animate {:opacity 1 :transition {:duration 250}}}
 ;        [nbase/box {:bg "primary.600" :p 5}]]])))
-(defn home []
-  (let [is-open (reagent/atom false)
-        screen-height (.-height (.get Dimensions "window"))
-        screen-width (.-width (.get Dimensions "window"))]
-    (fn []
-      [nbase/center {:flex 1 :safeArea true}
-       [nbase/button {:onPress #(reset! is-open true)} "open modal"]
-       [:> rnmodal { :isVisible  @is-open
-                     :scrollHorizontal true
-                     :backdropColor "lightGray"
-                     :transparent false
-                     :swipeDirection ["down"]
-                     :onSwipeComplete (fn [e] (reset! is-open false)
-                                        (js/console.log ">>>> oen swipe .... "))
-                     :style {:margin 0 :alignItems nil :justifyContent nil}}
-        [ui/safe-area-consumer
-         [nbase/zstack {:flex 1 :width "100%" :borderTopRadius "md"}
-          [nbase/box
-           [nbase/text "hello world"]]
-          [nbase/box {:top 2
-                      :right 2}
-           [nbase/icon-button {;:w 4 :h 4
-                               :borderRadius "full" ;:bg "blue.200"
-                               :justifyContent "center" :alignSelf "center" :alignItems "center"
-                               :icon (reagent/as-element [nbase/icon {:as Ionicons :name "close-circle-outline"}])
-                               :onPress (fn [e]
-                                          (js/console.log "icon-button on press"))}]]]]]])))
+; (defn home []
+;   (let [is-open (reagent/atom false)
+;         screen-height (.-height (.get Dimensions "window"))
+;         screen-width (.-width (.get Dimensions "window"))]
+;     (fn []
+;       [nbase/center {:flex 1 :safeArea true}
+;        [nbase/button {:onPress #(reset! is-open true)} "open modal"]
+;        [:> rnmodal { :isVisible  @is-open
+;                      :scrollHorizontal true
+;                      :backdropColor "lightGray"
+;                      :transparent false
+;                      :swipeDirection ["down"]
+;                      :onSwipeComplete (fn [e] (reset! is-open false)
+;                                         (js/console.log ">>>> oen swipe .... "))
+;                      :style {:margin 0 :alignItems nil :justifyContent nil}}
+;         [ui/safe-area-consumer
+;          [nbase/zstack {:flex 1 :width "100%" :borderTopRadius "md"}
+;           [nbase/box
+;            [nbase/text "hello world"]]
+;           [nbase/box {:top 2
+;                       :right 2}
+;            [nbase/icon-button {;:w 4 :h 4
+;                                :borderRadius "full" ;:bg "blue.200"
+;                                :justifyContent "center" :alignSelf "center" :alignItems "center"
+;                                :icon (reagent/as-element [nbase/icon {:as Ionicons :name "close-circle-outline"}])
+;                                :onPress (fn [e]
+;                                           (js/console.log "icon-button on press"))}]]]]]])))
 
 ; (defn home []
 ;   (let [is-open (reagent/atom false)
