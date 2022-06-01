@@ -5,6 +5,7 @@
     [app.ui.components :as ui]
     [app.ui.html :as html]
     [app.ui.text :as text]
+    [app.ui.basic.theme :as theme]
     [app.handler.gesture :as gesture]
 
     [applied-science.js-interop :as j]
@@ -19,7 +20,7 @@
   (:import
    [goog.async Debouncer]))
 
-(defn simple-view [content-fn tap-fn]
+(defn simple-view [opts content-fn tap-fn]
   (let [webview-width (reagent/atom 2)
         webref (reagent/atom nil)
         on-message (fn [e]
@@ -30,7 +31,9 @@
                                         (js/console.log (bean/->js data))
                                         (reset! webview-width (:message data)))
                          "onChange" (do
-                                      (js/console.log (bean/->js data))))))
+                                      (js/console.log (bean/->js data)))
+                         "onContent" (do
+                                       (js/console.log "editor on content >>>> " (clj->js data))))))
         dv (reagent/atom (content-fn))]
     (fn []
       (when (and @webref (not= @dv (content-fn)))
@@ -49,6 +52,7 @@
                                        (tap-fn))))}
                                        ; (js/console.log "tap gesture" (j/get % :nativeEvent)))))}
         [nbase/scroll-view {:flex 1 :_contentContainerStyle {:flexGrow 1 :width @webview-width}
+                                                             ; :backgroundColor (theme/color "white" "#27272a")}
                             :horizontal true
                             :on-press (fn [e] (js/console.log "scroll-view on press"))
                             :scrollEventThrottle 16}
@@ -71,11 +75,15 @@
                        :onMessage on-message
                        :injectedJavaScript
                        (str
-                         " quill.root.innerHTML = \"" (content-fn) "\";"
+                         ; " quill.root.innerHTML = \"" (content-fn) "\";"
+                         (if (= (:type opts) :text)
+                           (let [content-value (j/call js/JSON :stringify (content-fn))]
+                             (str " quill.setText('" (subs content-value 1 (dec (count content-value))) "');"))
+                           (str " quill.root.innerHTML = \"" (content-fn) "\";"))
                          " _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});")
                        :style {:height "100%"
                                :width "100%"
-                               :margin-bottom 10}
+                               :backgroundColor "transparent"}
                        :pointerEvents "none"}]]]]])))
 
 (def webref (reagent/atom nil))
