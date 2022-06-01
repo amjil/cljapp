@@ -7,6 +7,7 @@
     [app.ui.keyboard.index :as keyboard]
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
+    [app.ui.basic.theme :as theme]
     [app.handler.gesture :as gesture]
     [app.handler.animated :as animated]
     [app.handler.animation :as animation]
@@ -162,11 +163,11 @@
     (fn []
       [nbase/zstack {:flex 1
                     ; :bg "gray.100"
-                     :bg "white"
+                     :bg (theme/color "white" "dark.100")
                      :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                                    (reset! h height))}
        [nbase/modal {:isOpen @is-open :onClose #(reset! is-open false)}
-        [nbase/box {:bg "coolGray.50" :shadow 1 :rounded "lg" :maxHeight modal-height
+        [nbase/box {:bg (theme/color "coolGray.50" "dark.50") :shadow 1 :rounded "lg" :maxHeight modal-height
                     :minHeight "40%" :overflow "hidden"}
          [nbase/box
           {:flex 1 :justifyContent "center" :alignItem "center" :flexDirection "row"
@@ -174,23 +175,23 @@
           [srn/touchable-highlight {:style {:padding 10}
                                     :underlayColor "#cccccc"
                                     :onPress #(js/console.log "touchable 1 >>> ")}
-           [text/measured-text {:color "#4b5563"} "Arial"]]
-          [nbase/divider {:orientation "vertical"}]
+           [text/measured-text {:color "#9ca3af"} "Arial"]]
+          [nbase/divider {:orientation "vertical" :bg "coolGray.400"}]
           [srn/touchable-highlight {:style {:padding 10}
                                     :underlayColor "#cccccc"
                                     :onPress #(js/console.log "touchable 2 >>> ")}
-           [text/measured-text {:color "#4b5563"} "Nunito Sans"]]
-          [nbase/divider {:orientation "vertical"}]
+           [text/measured-text {:color "#9ca3af"} "Nunito Sans"]]
+          [nbase/divider {:orientation "vertical" :bg "coolGray.400"}]
           [srn/touchable-highlight {:style {:padding 10}
                                     :underlayColor "#cccccc"
                                     :onPress #(js/console.log "touchable 3 >>> ")}
-           [text/measured-text {:color "#4b5563"} "Roboto"]]]]]
+           [text/measured-text {:color "#9ca3af"} "Roboto"]]]]]
        (if (nil? @h)
-         [nbase/hstack {:style {:height 674}}
+         [nbase/box {:style {:height "100%"}}
           [nbase/box {:m 1 :p 4
                       :borderRightWidth "0.5"
-                      :borderColor "gray.300"
-                      :bg "white"}
+                      :borderColor (theme/color "gray.300" "gray.500")
+                      :bg (theme/color "white" "black")}
            [nbase/skeleton {:h "100%" :w 24}]]]
          [animation/animated-view
           (merge (bean/->clj (j/get pan-responder :panHandlers))
@@ -215,31 +216,31 @@
                              (reagent/as-element
                               [nbase/pressable {:m 1
                                                 :borderRightWidth "0.5"
-                                                :borderColor "gray.300"
-                                                :bg "white"
+                                                :borderColor (theme/color "gray.300" "gray.500")
+                                                :bg (theme/color "white" "dark.100")
                                                 :on-press (fn [e] (re-frame/dispatch [:navigate-to :question-detail])
                                                             (reset! cursor index)
                                                             (reset! model (bean/->clj item)))}
                                [nbase/hstack
                                 [nbase/vstack
-                                 [nbase/box {:bg "gray.300"
+                                 [nbase/box {:bg (theme/color "gray.300" "gray.500")
                                              :borderRadius "md"
                                              :p 6
                                              :alignSelf "center"}]
                                  [nbase/box {:alignSelf "center"
                                              :justifyContent "center"
                                              :mt 4}
-                                  [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 68)}
+                                  [text/measured-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 68)}
                                    (j/get item :user_name)]]]
                                 [nbase/box {:mt 16
                                             :ml 2}
-                                 [text/measured-text {:fontSize 22 :color "#002851" :width (- @h 68)}
+                                 [text/measured-text {:fontSize 22 :color (theme/color "#002851" "#9ca3af") :width (- @h 68)}
                                   (j/get item :question_content)]]
                                 [nbase/box {:mt 16
                                             :ml 1
                                             ; :w 100
                                             :flex 1}
-                                 [text/simple-text {:fontSize 18 :color "#71717a" :width (- @h 68)}
+                                 [text/simple-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 68)}
                                   (j/get item :question_detail)]]
                                 [nbase/box {:ml 2
                                             :mt 16
@@ -291,32 +292,32 @@
 (defn comment-view [h item]
   [nbase/vstack {:flex 1 :ml 2 :mt 1}
    [nbase/box {:justifyContent "flex-start" :alignItems "flex-start"}
-    [nbase/box {:bg "gray.300" :borderRadius "md" :p 6}]]
+    [nbase/box {:bg (theme/color "gray.300" "gray.500") :borderRadius "md" :p 6}]]
    [nbase/hstack {:flex 1 :mt 2}
     [nbase/vstack {:mr 2}
      [nbase/box  {:mb 2 :justifyContent "center" :alignItems "center"}
-      [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (item :user_name)]]
+      [text/measured-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 48)} (item :user_name)]]
      [nbase/box  {:justifyContent "center" :alignItems "center"}
       [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]
-    [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (item :content)]]])
+    [text/measured-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 48)} (item :content)]]])
 
 (defn answer-buttons [h model]
   [srn/view {:style {:height @h :margin-top 5 :margin-horizontal 20}}
    ; [srn/view {:style {:margin-bottom 20 :borderRadius 10 :backgroundColor "#eff6ff" :justifyContent "center" :alignItems "center"}}]
-   [nbase/vstack {:mb 4 :borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
+   [nbase/vstack {:mb 4 :borderRadius "full" :bg (theme/color "blue.50" "dark.300") :justifyContent "center" :alignItems "center"}
     [nbase/icon-button {:justifyContent "center" :alignItems "center"
-                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-up-outline" :size "5" :color "blue.600"}])}]
-    [text/measured-text {:fontSize 12 :color "#2563eb"} (str (get-in labels [:question :vote]) "  " (:agree_count @model))]
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-up-outline" :size "5" :color (theme/color "blue.600" "blue.800")}])}]
+    [text/measured-text {:fontSize 12 :color (theme/color "#2563eb" "#1e40af")} (str (get-in labels [:question :vote]) "  " (:agree_count @model))]
     [nbase/icon-button {:justifyContent "center" :alignItems "center"
-                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-down-outline" :size "5" :color "blue.600"}])}]]
-   [nbase/vstack {:mt 2 :borderRadius "full" :bg "blue.50" :justifyContent "center" :alignItems "center"}
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "caret-down-outline" :size "5" :color (theme/color "blue.600" "blue.800")}])}]]
+   [nbase/vstack {:mt 2 :borderRadius "full" :bg (theme/color "blue.50" "dark.300") :justifyContent "center" :alignItems "center"}
    ; [srn/view {:style {:margin-top 10 :borderRadius 10 :backgroundColor "#eff6ff" :justifyContent "center" :alignItems "center"}}
     [nbase/icon-button {:mb 4 :justifyContent "center" :alignItems "center"
-                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "heart-outline"  :size "5" :color "blue.600"}])}]
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "heart-outline"  :size "5" :color (theme/color "blue.600" "blue.800")}])}]
     [nbase/icon-button {:mb 4 :justifyContent "center" :alignItems "center"
-                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "star-outline" :size "5" :color "blue.600"}])}]
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "star-outline" :size "5" :color (theme/color "blue.600" "blue.800")}])}]
     [nbase/icon-button {:justifyContent "center" :alignItems "center"
-                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "chatbubble-outline" :size "5" :color "blue.600"}])}]]])
+                        :icon (reagent/as-element [nbase/icon {:as Ionicons :name "chatbubble-outline" :size "5" :color (theme/color "blue.600" "blue.800")}])}]]])
 
 (defn detail-view []
   (let [h (reagent/atom 0)
@@ -326,7 +327,7 @@
       [ui/safe-area-consumer
        [nbase/box {:flex 1
                    :flex-direction "row"
-                   :bg "gray"
+                   :bg (theme/color "gray" "dark.100")
                    :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                                  (reset! h height))}
         ; [nbase/box {:flex 1 :flex-direction "row" :style {:width "100%" :height @h}}]
@@ -339,21 +340,31 @@
                        :size "6" :color "indigo.500" :mb 6}]
           [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_content @model)]]
          [nbase/divider {:orientation "vertical" :mx 2}]
-         [nbase/flex {:m 1 :flex-direction "row" :bg "white"}
+         [nbase/flex {:m 1 :flex-direction "row" :bg (theme/color "white" "dark.100")}
           [nbase/vstack
-           [nbase/box {:bg "gray.300"
+           [nbase/box {:bg (theme/color "gray.300" "gray.500")
                        :borderRadius "md"
                        :p 4
                        :alignSelf "center"}]
            [nbase/box {:alignSelf "center"
                        :justifyContent "center"
                        :mt 4}
-            [nbase/hstack
-             [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:user_name @model)]
+            [nbase/hstack {:bg (theme/color "white" "dark.100")}
+             [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48) } (:user_name @model)]
              [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]]
-          [nbase/box {:m 1 :ml 2 :mt 12 :bg "white"}
+          [nbase/box {:m 1 :ml 2 :mt 12 :bg (theme/color "white" "dark.100")}
+                      ; :w "200"}
            ;; width 4 + 4 + 4   ()  *  4  = 48
-           [text/multi-line-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (:question_detail @model)]]]
+           [text/multi-line-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 48)} (:question_detail @model)]]]
+           ; [editor/simple-view
+           ;  ;opts
+           ;  {:type :text}
+           ;  ; (:content @model)
+           ;  (fn [] (:question_detail @model))
+           ;    ; (str "<h2>abc</h2><p></p>" (:question_detail @model)))
+           ;  ; "<p>abc</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>xxxx</p>"
+           ;  ;tap-fn
+           ;  (fn [] (js/console.log "text on tap >>> question-detail"))]]]
          [answer-buttons h model]
 
          [comment-view h (first comments)]

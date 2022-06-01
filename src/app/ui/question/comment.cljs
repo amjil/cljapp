@@ -4,6 +4,7 @@
     [app.ui.editor :as editor]
     [app.ui.components :as ui]
     [app.ui.text :as text]
+    [app.ui.basic.theme :as theme]
     [app.ui.keyboard.index :as keyboard]
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
@@ -47,15 +48,15 @@
                                       (reagent/as-element
                                         [nbase/vstack {:flex 1 :ml 2 :mt 2}
                                          [nbase/box {:justifyContent "flex-start" :alignItems "flex-start"}
-                                          [nbase/box {:bg "gray.300" :borderRadius "md" :p 6}]]
+                                          [nbase/box {:bg (theme/color "gray.300" "gray.500") :borderRadius "md" :p 6}]]
                                          [nbase/hstack {:flex 1 :mt 2}
                                           [nbase/vstack {:mr 2}
                                            [nbase/box  {:mb 2 :justifyContent "center" :alignItems "center"}
-                                            [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (j/get item :user_name)]]
+                                            [text/measured-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 48)} (j/get item :user_name)]]
                                            [nbase/box  {:justifyContent "center" :alignItems "center"}
-                                            [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]
-                                          [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48)} (j/get item :content)]]])))
-                      :contentContainerStyle {:height "100%"}}}]])))
+                                            [text/measured-text {:fontSize 10 :color (theme/color "#a1a1aa" "#e4e4e7")} "09:15"]]]
+                                          [text/measured-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 48)} (j/get item :content)]]])))
+                      :contentContainerStyle {:height "100%" :backgroundColor (theme/color "white" "#27272a")}}}]])))
 
 
 ; (defn list-view [is-open]
