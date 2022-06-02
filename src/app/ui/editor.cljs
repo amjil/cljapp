@@ -23,17 +23,29 @@
 (defn simple-view [opts content-fn tap-fn]
   (let [webview-width (reagent/atom 2)
         webref (reagent/atom nil)
+        init-selection-fn (Debouncer. (fn []
+                                       (j/call @webref :postMessage
+                                         (j/call js/JSON :stringify (clj->js {:type "initSelection" :message ""})))))
         on-message (fn [e]
                      (let [data (js->clj (j/call js/JSON :parse (j/get-in e [:nativeEvent :data]))
                                    :keywordize-keys true)]
                        (condp = (:type data)
                          "initHeight" (do
                                         (js/console.log (bean/->js data))
-                                        (reset! webview-width (:message data)))
+                                        ; (reset! webview-width (:message data)))
+                                        (.fire init-selection-fn))
                          "onChange" (do
                                       (js/console.log (bean/->js data)))
                          "onContent" (do
-                                       (js/console.log "editor on content >>>> " (clj->js data))))))
+                                       (js/console.log "editor on content >>>> " (clj->js data)))
+                         "updateSelection" (do
+                                             (js/console.log (j/get-in e [:nativeEvent :data]))
+                                             ;; if there is has :offsetX change the view's width
+                                             (let [webview-text-width (-> data :message :offsetX)]
+                                               (when-not (nil? webview-text-width)
+                                                 (js/console.log "webview text width = " webview-text-width)
+                                                 (reset! webview-width (+ (get-in data [:message :width]) webview-text-width))))))))
+
         dv (reagent/atom (content-fn))]
     (fn []
       (when (and @webref (not= @dv (content-fn)))
@@ -80,7 +92,8 @@
                                   (let [content-value (j/call js/JSON :stringify (content-fn))]
                                     (str " quill.setText('" (subs content-value 1 (dec (count content-value))) "');"))
                                   (str " quill.root.innerHTML = \"" (content-fn) "\";"))
-                                " _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});")
+                                ; " _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});")
+                                " _postMessage({type: 'initHeight', message: quill.root.ownerDocument.body.scrollWidth });")
                               :style {:height "100%"
                                       :width "100%"
                                       :backgroundColor "transparent"}
@@ -127,10 +140,10 @@
                          "updateSelection" (do
                                              (js/console.log (j/get-in e [:nativeEvent :data]))
                                              ;; if there is has :height change the view's width
-                                             (let [webview-text-width (:height data)]
+                                             (let [webview-text-width (get-in data [:message :offsetX])]
                                                (when-not (nil? webview-text-width)
                                                  ; (js/console.log "webview text width = " webview-text-width)
-                                                 (reset! webview-width webview-text-width)))
+                                                 (reset! webview-width (+ (get-in data [:message :width]) webview-text-width))))
                                              (let [offset-x (-> data :message :offsetX)]
                                                (when-not (nil? offset-x)
                                                  (js/console.log "webview offset-x = " offset-x)
@@ -208,7 +221,6 @@
           [nbase/box {:style {:width @webview-width :height "100%"}
                       :pointerEvents "none"}
            [:> WebView (merge {:useWebKit true
-                               :forceDarkOn true
                                :ref (fn [r] (reset! webref r))
                                :cacheEnabled false
                                :scrollEnabled false
@@ -232,10 +244,10 @@
                                      (str " quill.setText('" (subs content-value 1 (dec (count content-value))) "');"))
                                    (str " quill.root.innerHTML = \"" (content-fn) "\";"))
                                  "_postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
-                           //var length = quill.getLength();
-                           //var range = pointFromSelection(length - 1);
-                           //_postMessage({type: 'updateSelection', message: range});
-                          ")
+                                   //var length = quill.getLength();
+                                   //var range = pointFromSelection(length - 1);
+                                   //_postMessage({type: 'updateSelection', message: range});
+                                  ")
                                :style {:height "100%"
                                        ; :width "100%"
                                        :backgroundColor "transparent"
