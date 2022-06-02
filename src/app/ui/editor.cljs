@@ -58,33 +58,35 @@
                             :scrollEventThrottle 16}
          [nbase/box {:style {:width @webview-width :height "100%"}
                      :pointerEvents "none"}
-          [:> WebView {:useWebKit true
-                       :ref (fn [r] (reset! webref r))
-                       :cacheEnabled false
-                       :scrollEnabled false
-                       :scrollEventThrottle 10
-                       :hideKeyboardAccessoryView true
-                       :keyboardDisplayRequiresUserAction false
-                       :originWhitelist ["*"]
-                       :startInLoadingState true
-                       :bounces false
-                       :javaScriptEnabled true
-                       :source {:html html/quill-html
-                                :baseUrl ""}
-                       :focusable false
-                       :onMessage on-message
-                       :injectedJavaScript
-                       (str
-                         ; " quill.root.innerHTML = \"" (content-fn) "\";"
-                         (if (= (:type opts) :text)
-                           (let [content-value (j/call js/JSON :stringify (content-fn))]
-                             (str " quill.setText('" (subs content-value 1 (dec (count content-value))) "');"))
-                           (str " quill.root.innerHTML = \"" (content-fn) "\";"))
-                         " _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});")
-                       :style {:height "100%"
-                               :width "100%"
-                               :backgroundColor "transparent"}
-                       :pointerEvents "none"}]]]]])))
+          [:> WebView (merge {:useWebKit true
+                              :ref (fn [r] (reset! webref r))
+                              :cacheEnabled false
+                              :scrollEnabled false
+                              :scrollEventThrottle 10
+                              :hideKeyboardAccessoryView true
+                              :keyboardDisplayRequiresUserAction false
+                              :originWhitelist ["*"]
+                              :startInLoadingState true
+                              :bounces false
+                              :javaScriptEnabled true
+                              :source {:html html/quill-html
+                                       :baseUrl ""}
+                              :focusable false
+                              :onMessage on-message
+                              :injectedJavaScript
+                              (str
+                                ; " quill.root.innerHTML = \"" (content-fn) "\";"
+                                (if (= (:type opts) :text)
+                                  (let [content-value (j/call js/JSON :stringify (content-fn))]
+                                    (str " quill.setText('" (subs content-value 1 (dec (count content-value))) "');"))
+                                  (str " quill.root.innerHTML = \"" (content-fn) "\";"))
+                                " _postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});")
+                              :style {:height "100%"
+                                      :width "100%"
+                                      :backgroundColor "transparent"}
+                              :pointerEvents "none"}
+                          (if (theme/is-dark?)
+                            {:forceDarkOn true}))]]]]])))
 
 (def webref (reagent/atom nil))
 (def weblen (reagent/atom 0))
@@ -205,39 +207,42 @@
           ; [nbase/box {:style {:width @webview-width :height "100%"}}]
           [nbase/box {:style {:width @webview-width :height "100%"}
                       :pointerEvents "none"}
-           [:> WebView {:useWebKit true
-                        :ref (fn [r] (reset! webref r))
-                        :cacheEnabled false
-                        :scrollEnabled false
-                        :scrollEventThrottle 10
-                        :hideKeyboardAccessoryView true
-                        :keyboardDisplayRequiresUserAction false
-                        :originWhitelist ["*"]
-                        :startInLoadingState true
-                        :bounces false
-                        :javaScriptEnabled true
-                        :source {:html html/quill-html
-                                 :baseUrl ""}
-                        :focusable false
-                        :onMessage on-message
-                        :injectedJavaScriptBeforeContentLoaded (str "window.options=" (j/call js/JSON :stringify (bean/->js opts)))
-                        :injectedJavaScript
-                        (str
-                          ; " document.querySelector('#editor').innerHTML=\"" content "\";"
-                          (if (= (:type opts) :text)
-                            (let [content-value (j/call js/JSON :stringify (content-fn))]
-                              (str " quill.setText('" (subs content-value 1 (dec (count content-value))) "');"))
-                            (str " quill.root.innerHTML = \"" (content-fn) "\";"))
-                          "_postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
+           [:> WebView (merge {:useWebKit true
+                               :forceDarkOn true
+                               :ref (fn [r] (reset! webref r))
+                               :cacheEnabled false
+                               :scrollEnabled false
+                               :scrollEventThrottle 10
+                               :hideKeyboardAccessoryView true
+                               :keyboardDisplayRequiresUserAction false
+                               :originWhitelist ["*"]
+                               :startInLoadingState true
+                               :bounces false
+                               :javaScriptEnabled true
+                               :source {:html html/quill-html
+                                        :baseUrl ""}
+                               :focusable false
+                               :onMessage on-message
+                               :injectedJavaScriptBeforeContentLoaded (str "window.options=" (j/call js/JSON :stringify (bean/->js opts)))
+                               :injectedJavaScript
+                               (str
+                                 ; " document.querySelector('#editor').innerHTML=\"" content "\";"
+                                 (if (= (:type opts) :text)
+                                   (let [content-value (j/call js/JSON :stringify (content-fn))]
+                                     (str " quill.setText('" (subs content-value 1 (dec (count content-value))) "');"))
+                                   (str " quill.root.innerHTML = \"" (content-fn) "\";"))
+                                 "_postMessage({type: 'initHeight', message: Math.max(document.body.offsetWidth, document.body.scrollWidth)});
                            //var length = quill.getLength();
                            //var range = pointFromSelection(length - 1);
                            //_postMessage({type: 'updateSelection', message: range});
                           ")
-                        :style {:height "100%"
-                                ; :width "100%"
-                                :backgroundColor "transparent"
-                                :margin-bottom 10}
-                        :pointerEvents "none"}]]
+                               :style {:height "100%"
+                                       ; :width "100%"
+                                       :backgroundColor "transparent"
+                                       :margin-bottom 10}
+                               :pointerEvents "none"}
+                         (if (theme/is-dark?)
+                           {:forceDarkOn true}))]]
           (if (true? @is-caret)
             [nbase/box {:style {:top (:top @cursor) :left (:left @cursor)
                                 :zIndex 30001
