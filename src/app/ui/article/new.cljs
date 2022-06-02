@@ -8,6 +8,7 @@
     [app.ui.keyboard.index :as keyboard]
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
+    [app.ui.basic.theme :as theme]
     [app.text.message :refer [labels]]
 
     [steroid.rn.core :as rn]
@@ -28,8 +29,8 @@
 (defn recomm-view [h flag]
   [nbase/box {:height (str (- @h 220) "px") :borderRightRadius "10"
               :maxWidth 40 :flexDirection "row"}
-   [nbase/box {:p 0.5 :flex 0.2 :bg "white"}]
-   [nbase/box {:flex 1 :bg "gray.100"}
+   [nbase/box {:p 0.5 :flex 0.2 :bg (theme/color "white" "dark.100")}]
+   [nbase/box {:flex 1 :bg (theme/color "gray.100" "dark.300")}
     [nbase/flat-list
      {:keyExtractor    (fn [_ index] (str "question-view-" index))
       :data      recommandations
@@ -44,16 +45,16 @@
                         [nbase/box {:flex 1 :flexDirection "row"}
                          [rn/touchable-opacity {:on-press #(js/console.log "recommandations on press >>>")}
                           [nbase/box {:m 5 :flex 1 :flexDirection "row"}
-                           [text/measured-text {:fontSize 18 :width (- @h 220 20) :color "black"} (j/get item :title)]
+                           [text/measured-text {:fontSize 18 :width (- @h 220 20) :color (theme/color "black" "#a1a1aa")} (j/get item :title)]
                            [nbase/box
-                             [text/measured-text {:fontSize 14 :color "gray"} (j/get item :focus_count)]
-                             [text/measured-text {:fontSize 14 :color "gray"} "-"]
-                             [text/measured-text {:fontSize 14 :color "gray"} (j/get item :answer_count)]]]]
-                         [nbase/divider {:orientation "vertical"}]])))}]]
+                             [text/measured-text {:fontSize 14 :color (theme/color "gray" "#a1a1aa")} (j/get item :focus_count)]
+                             [text/measured-text {:fontSize 14 :color (theme/color "gray" "#a1a1aa")} "-"]
+                             [text/measured-text {:fontSize 14 :color (theme/color "gray" "#a1a1aa")} (j/get item :answer_count)]]]]
+                         [nbase/divider {:orientation "vertical" :bg (theme/color "gray" "dark.500")}]])))}]]
    [rn/touchable-opacity {:on-press #(reset! flag 2)
                           :style {:flex 0.2}}
-    [nbase/box {:flex 1 :bg "gray.50" :alignItems "center" :justifyContent "center" :borderRightRadius "10"}
-     [text/measured-text {:fontSize 14 :color "gray" :width (-@h 220 20)} (get-in labels [:question :close-similar-titles])]]]])
+    [nbase/box {:flex 1 :bg (theme/color "gray.50" "dark.300") :alignItems "center" :justifyContent "center" :borderRightRadius "10"}
+     [text/measured-text {:fontSize 14 :color (theme/color "gray" "#a1a1aa") :width (-@h 220 20)} (get-in labels [:question :close-similar-titles])]]]])
 
 
 (defn view []
@@ -76,10 +77,11 @@
         :flex 1}
        [nbase/zstack {:flex 1}
         (if-not (nil? @h)
-          [nbase/flex {:flex 1 :flex-direction "row" :bg "white"}
+          [nbase/flex {:flex 1 :flex-direction "row" :bg (theme/color "white" "dark.100")}
            (if (= 1 @focus-elem)
              [nbase/zstack {:style {:height (- @h 220)}
-                            :minWidth 10}
+                            :minWidth 10
+                            :bg (theme/color "white" "dark.100")}
               [editor/editor-view
                ; opts
                {;:placeholder (get-in labels [:question :title-placeholder])
@@ -94,7 +96,7 @@
                  (swap! model assoc :title (:text x)))]
               (if (= 0 @weblen)
                 [nbase/box {:flex 1 :m 5}
-                 [text/multi-line-text {:fontSize 22 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
+                 [text/multi-line-text {:fontSize 22 :color (theme/color "#71717a" "#a1a1aa") :fontFamily "MongolianBaiZheng" :width (- @h 220)}
                   (get-in labels [:question :title-placeholder])]])]
              [rn/touchable-opacity {:style {:paddingVertical 20
                                             :paddingLeft 20
@@ -104,23 +106,24 @@
                                                (reset! focus-elem 1)
                                                (reset! weblen (count (:title @model)))
                                                (candidates/candidates-clear))}
-              [text/measured-text {:fontSize 22 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
+              [text/measured-text {:fontSize 22 :color (theme/color "#71717a" "#a1a1aa") :fontFamily "MongolianBaiZheng" :width (- @h 220)}
                (if (empty? (:title @model))
                  (get-in labels [:question :title-placeholder])
                  (:title @model))]])
            [nbase/box {:my 5}
             [nbase/divider (merge {:orientation "vertical" :mr "3" :ml "1"}
                              (if (= 1 @focus-elem)
-                               {:thickness "2" :bg "blue.700"}))]]
+                               {:thickness "2" :bg (theme/color "blue.700" "blue.300")}))]]
            [nbase/box {:flex 1 :flexDirection "row" :ml 0}
             [:> rnmodal { :isVisible (= @recomm-flag 1)
                           :coverScreen false
-                          :backdropColor "lightGray"
+                          :backdropColor (theme/color "lightGray" "#27272a")
                           :scrollHorizontal true
                           :style {:margin-left -10}}
               [recomm-view h recomm-flag]]
             (if (= 2 @focus-elem)
                [nbase/zstack {:style {:height (- @h 220)}
+                              :bg (theme/color "white" "dark.100")
                               :minWidth 20}
                 [editor/editor-view
                  ; opts
@@ -136,7 +139,7 @@
                    (swap! model assoc :content (:text x)))]
                 (if (= 0 @weblen)
                   [nbase/box {:flex 1 :m 5}
-                   [text/measured-text {:fontSize 18 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
+                   [text/measured-text {:fontSize 18 :color (theme/color "#71717a" "#a1a1aa") :fontFamily "MongolianBaiZheng" :width (- @h 220)}
                     (get-in labels [:question :content-placeholder])]])]
                [rn/touchable-opacity {:style {:paddingVertical 20
                                               :height (- @h 220)}
@@ -145,7 +148,7 @@
                                                  (reset! focus-elem 2)
                                                  (reset! weblen (count (:content @model)))
                                                  (candidates/candidates-clear))}
-                [text/measured-text {:fontSize 18 :color "#71717a" :fontFamily "MongolianBaiZheng" :width (- @h 220)}
+                [text/measured-text {:fontSize 18 :color (theme/color "#71717a" "#a1a1aa") :fontFamily "MongolianBaiZheng" :width (- @h 220)}
                  (if (empty? (:content @model))
                    (get-in labels [:question :content-placeholder])
                    (:content @model))]])]])

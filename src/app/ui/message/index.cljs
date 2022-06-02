@@ -5,6 +5,7 @@
     [app.handler.gesture :as gesture]
     [app.ui.components :as ui]
     [app.ui.text :as text]
+    [app.ui.basic.theme :as theme]
     [app.ui.keyboard.index :as keyboard]
     [app.ui.keyboard.candidates :as candidates]
     [app.ui.keyboard.bridge :as bridge]
@@ -58,15 +59,15 @@
   (let [h (reagent/atom nil)]
     (fn []
      [nbase/zstack {:flex 1
-                    :bg "white"
+                    :bg (theme/color "white" "dark.100")
                     :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                                   (reset! h height))}
       (if (nil? @h)
         [nbase/hstack {:style {:height 674}}
          [nbase/box {:m 1 :p 4
                      :borderRightWidth "0.5"
-                     :borderColor "gray.300"
-                     :bg "white"}
+                     :borderColor (theme/color "gray.300" "gray.500")
+                     :bg (theme/color "white" "dark.100")}
           [nbase/skeleton {:h "100%" :w 24}]]]
         [nbase/flat-list
          {:keyExtractor    (fn [_ index] (str "conversation-view-" index))
@@ -78,7 +79,7 @@
                                               :on-press (fn [e] (re-frame/dispatch [:navigate-to :message-list])
                                                           (reset! conversation-name (j/get item :name)))}
                              [nbase/vstack
-                              [nbase/box {:bg "coolGray.300"
+                              [nbase/box {:bg (theme/color "coolGray.300" "coolGray.500")
                                           :borderRadius 10
                                           :p 8
                                           :alignSelf "flex-start"
@@ -87,7 +88,7 @@
                                ; [nbase/box {:justifyContent "space-between"}
                                [text/measured-text {:fontSize 18 } (j/get item :name)]
                                 ; [text/measured-text {:fontSize 18 } (j/get item :name)]]
-                               [text/single-line-text {:fontSize 18 :color "#d4d4d4" :width (- @h 100)} (j/get item :message)]]]])))
+                               [text/single-line-text {:fontSize 18 :color (theme/color "#d4d4d4" "#737373") :width (- @h 100)} (j/get item :message)]]]])))
 
           :ItemSeparatorComponent
           (fn [] (reagent/as-element [nbase/divider {:bg "coolGray.200" :thickness "1" :orientation "vertical" :mx "2"}]))
@@ -105,17 +106,17 @@
         editor-input (reagent/atom false)]
     (fn []
       [ui/safe-area-consumer
-       [nbase/box {:flex 1}
+       [nbase/box {:flex 1 :bg (theme/color "white" "dark.100")}
         [nbase/zstack {:flex 1
-                       :bg "white"
+                       :bg (theme/color "white" "dark.100")
                        :on-layout #(let [height (j/get-in % [:nativeEvent :layout :height])]
                                      (reset! h height))}
          (if (nil? @h)
            [nbase/hstack; {:style {:height 674}}
             [nbase/box {:m 1 :p 4
                         :borderRightWidth "0.5"
-                        :borderColor "gray.300"
-                        :bg "white"}
+                        :borderColor (theme/color "gray.300" "gray.500")
+                        :bg (theme/color "white" "dark.100")}
              [nbase/skeleton {:h "100%" :w 24}]]]
            [gesture/tap-gesture-handler
             {
@@ -141,26 +142,26 @@
                                    [nbase/vstack {:justifyContent "flex-end"
                                                   :style {:height (- @h 0)
                                                           :paddingHorizontal 8}}
-                                    [nbase/box {:p 2 :bg "darkBlue.100"
+                                    [nbase/box {:p 2 :bg (theme/color "darkBlue.100" "darkBlue.300")
                                                 :borderRightRadius "20"
                                                 :borderTopLeftRadius "20"}
                                      [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]
-                                    [nbase/box {:bg "coolGray.300"
+                                    [nbase/box {:bg (theme/color "coolGray.300" "coolGray.500")
                                                 :borderRadius 10
                                                 :p 6
                                                 :mt 4
                                                 :alignSelf "flex-start"}]]
                                    [nbase/vstack {:justifyContent "flex-start"
                                                   :style {:height (- @h 0)}}
-                                    [nbase/box {:bg "coolGray.300"
+                                    [nbase/box {:bg (theme/color "coolGray.300" "coolGray.500")
                                                 :borderRadius 10
                                                 :p 6
                                                 :alignSelf "flex-start"
                                                 :mb 4}]
-                                    [nbase/box {:p 2 :bg "darkBlue.100"
+                                    [nbase/box {:p 2 :bg (theme/color "darkBlue.100" "darkBlue.300")
                                                 :borderRightRadius "20"
                                                 :borderBottomLeftRadius "20"}
-                                     [text/measured-text {:fontSize 18 :width (- @h 0 64 60)} (j/get item :message)]]])])))
+                                     [text/measured-text {:fontSize 18 :width (- @h 0 64 60) :color (theme/color "black" "#71717a")} (j/get item :message)]]])])))
 
               :showsHorizontalScrollIndicator false
 
@@ -177,9 +178,9 @@
               :horizontal true
               :flex 1}]])
          (when (true? @editor-input)
-           [nbase/box {:flex 1 :bg "warmGray.300"
+           [nbase/box {:flex 1 :bg (theme/color "warmGray.300" "warmGray.500")
                        :p 1}
-            [nbase/box {:style {:height (- @h 4)} :bg "white"
+            [nbase/box {:style {:height (- @h 4)} :bg (theme/color "white" "dark.100")
                         :borderRadius 4
                         :minWidth 10
                         :maxWidth 24}
@@ -208,7 +209,7 @@
                                            (bridge/editor-content)
                                            (reset! editor-input false)
                                            (candidates/candidates-clear))}]]
-          [nbase/box {:bg "warmGray.100"
+          [nbase/box {:bg (theme/color "warmGray.100" "warmGray.300")
                       :h 12
                       :mt 1
                       :p 2
@@ -246,7 +247,7 @@
                                    (js/console.log "focus view on tap ...")
                                    (re-frame/dispatch [:navigate-back])))}
       [nbase/box {:mt 4 :p 6}
-       [text/measured-text {:fontSize 28 :width (- screen-height 120)} @focus-message]]]]))
+       [text/measured-text {:fontSize 28 :width (- screen-height 120) :color (theme/color "black" "#71717a")} @focus-message]]]]))
 
 (def model-list
   {:name       :message-list
