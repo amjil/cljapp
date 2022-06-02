@@ -29,6 +29,7 @@
 
 (def questions-atom (reagent/atom [{:question_content "ᠲᠡᠷᠭᠡᠯ ᠰᠠᠷᠠ ᠭᠡᠵᠦ ᠶᠠᠮᠠᠷ ᠰᠠᠷᠠ ᠪᠤᠢ?"
                                     :question_detail "ᠲᠡᠷᠭᠡᠯ ᠰᠠᠷᠠ᠂ ᠬᠠᠪᠢᠷᠭᠠᠨ ᠰᠠᠷᠠ᠂ ᠲᠠᠯ᠎ᠠ ᠰᠠᠷᠠ\nabc\naaa\n111\n2222\n2222"
+                                    ; :question_detail "ᠲᠡᠷᠭᠡᠯ ᠰᠠᠷᠠ᠂ ᠬᠠᠪᠢᠷᠭᠠᠨ ᠰᠠᠷᠠ᠂ ᠲᠠᠯ᠎ᠠ ᠰᠠᠷᠠ"
                                     :user_name "ᠪᠠᠲᠦ"
                                     :agree_count 0
                                     :comment_count 0}
@@ -352,19 +353,22 @@
             [nbase/hstack {:bg (theme/color "white" "dark.100")}
              [text/measured-text {:fontSize 18 :color "#71717a" :width (- @h 48) } (:user_name @model)]
              [text/measured-text {:fontSize 10 :color "#a1a1aa"} "09:15"]]]]
-          [nbase/box {:m 1 :ml 2 :mt 12 :bg (theme/color "white" "dark.100")}
-                      ; :w "200"}
+          ; [nbase/box {:m 1 :ml 2 :mt 12
+          ;             :bg (theme/color "white" "dark.100")}
+          ;  ;; width 4 + 4 + 4   ()  *  4  = 48
+          ;  [text/multi-line-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 48)} (:question_detail @model)]]
+          [nbase/box {:m 1 :ml 2 :mt 8
+                      :bg (theme/color "white" "dark.100")}
            ;; width 4 + 4 + 4   ()  *  4  = 48
-           [text/multi-line-text {:fontSize 18 :color (theme/color "#71717a" "#9ca3af") :width (- @h 48)} (:question_detail @model)]]]
-           ; [editor/simple-view
-           ;  ;opts
-           ;  {:type :text}
-           ;  ; (:content @model)
-           ;  (fn [] (:question_detail @model))
-           ;    ; (str "<h2>abc</h2><p></p>" (:question_detail @model)))
-           ;  ; "<p>abc</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>xxxx</p>"
-           ;  ;tap-fn
-           ;  (fn [] (js/console.log "text on tap >>> question-detail"))]]]
+           [editor/simple-view
+            ;opts
+            {:type :text}
+            ; (:content @model)
+            (fn [] (:question_detail @model))
+              ; (str "<h2>abc</h2><p></p>" (:question_detail @model)))
+            ; "<p>abc</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>def</p><p>xxxx</p>"
+            ;tap-fn
+            (fn [] (js/console.log "text on tap >>> question-detail"))]]]
          [answer-buttons h model]
 
          [comment-view h (first comments)]
