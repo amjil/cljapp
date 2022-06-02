@@ -235,6 +235,7 @@
                           ")
                         :style {:height "100%"
                                 ; :width "100%"
+                                :backgroundColor "transparent"
                                 :margin-bottom 10}
                         :pointerEvents "none"}]]
           (if (true? @is-caret)
