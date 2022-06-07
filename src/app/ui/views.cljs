@@ -22,6 +22,7 @@
    ["react-native-linear-gradient" :default linear-gradient]
    ["@react-navigation/stack" :refer [createStackNavigator]]
    ["react-native-portalize" :refer [Host]]
+   ["native-base" :refer [extendTheme]]
 
    [app.ui.home.views :as home]
    [app.ui.profile.views :as profile]
@@ -84,7 +85,7 @@
                      :inactiveTintColor :black
                      :showLabel         false
                      :tabBarLabel       (fn [] nil)
-                     :headerShown       false
+                     ; :headerShown       false
                      :modal             true
                      :tabBarIcon (fn [data]
                                    (let [{:keys [color]} (bean/->clj data)
@@ -109,8 +110,8 @@
                      :activeTintColor   "#5cb85c"
                      :inactiveTintColor :black
                      :showLabel         false
-                     :tabBarLabel       (fn [] nil)
-                     :headerShown       false}))))}
+                     :tabBarLabel       (fn [] nil)}))))}
+                     ; :headerShown       false}))))}
 
 
    [{:name      :home
@@ -156,10 +157,11 @@
      [(rnn/create-navigation-container-reload                 ;; navigation container with shadow-cljs hot reload
        {:on-ready #(re-frame/dispatch [:initialise-app])     ;; when navigation initialized and mounted initialize the app
         :theme @theme/theme}
-       [nativebase/nativebase-provider {:config {:dependencies {"linear-gradient" linear-gradient}}}
+       [nativebase/nativebase-provider {:config {:dependencies {"linear-gradient" linear-gradient}}
+                                        :theme (extendTheme (bean/->js {:useSystemColorMode false :initialColorMode "dark"}))}
         [gesture/gesture-root-view {:style {:flex 1}}
          [:> Host
-          [navigator {}
+          [navigator {:screenOptions {:headerShown false}}
            (into
              [group {}]
              (mapv (fn [props]
