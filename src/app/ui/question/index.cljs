@@ -471,7 +471,7 @@
     :headerRight
     (fn [tag id classname]
       (reagent/as-element
-        [nbase/icon-button {:variant "ghost" :colorScheme "indigo"
-                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "search-outline"}])
+        [nbase/icon-button {:justifyContent "center" :alignItems "center"
+                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "search-outline" :size "5" :color (theme/color "blue.600" "blue.800")}])
                             :on-press (fn [e] (js/console.log "on press icon button")
                                         (re-frame/dispatch [:navigate-to :search-base]))}]))}})
