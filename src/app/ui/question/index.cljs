@@ -445,13 +445,15 @@
   {:name       :question-detail
    :component  detail-view
    :options
-   {:title ""}})
+   {:title ""
+    :headerShown true}})
 
 (def question-edit
   {:name       :question-edit
    :component  edit-view
    :options
    {:title ""
+    :headerShown true
     :headerRight
     (fn [tag id classname]
       (reagent/as-element
@@ -465,4 +467,11 @@
   {:name       :question-list
    :component  list-view
    :options
-   {:title ""}})
+   {:title ""
+    :headerRight
+    (fn [tag id classname]
+      (reagent/as-element
+        [nbase/icon-button {:variant "ghost" :colorScheme "indigo"
+                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "search-outline"}])
+                            :on-press (fn [e] (js/console.log "on press icon button")
+                                        (re-frame/dispatch [:navigate-to :search-base]))}]))}})

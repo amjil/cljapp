@@ -165,6 +165,7 @@
 
    :options
    {:title ""
+    :headerShown true
     :headerRight
     (fn [tag id classname]
       (reagent/as-element

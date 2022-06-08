@@ -253,7 +253,8 @@
   {:name       :message-list
    :component  list-view
    :options
-   {:title ""}})
+   {:title ""
+    :headerShown true}})
 
 (def model-base
   {:name       :message-base
@@ -267,6 +268,6 @@
    ; :options {:title ""}
    :options
    {
-     :headerShown false
+    :headerShown false
 
     :presentation "card"}})

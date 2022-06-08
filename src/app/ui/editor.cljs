@@ -140,11 +140,15 @@
                          "updateSelection" (do
                                              (js/console.log (j/get-in e [:nativeEvent :data]))
                                              ;; if there is has :height change the view's width
-                                             (let [webview-text-width (get-in data [:message :offsetX])]
+                                             (let [webview-text-width (get data :height)]
                                                (when-not (nil? webview-text-width)
-                                                 ; (js/console.log "webview text width = " webview-text-width)
-                                                 (reset! webview-width (+ (get-in data [:message :width]) webview-text-width))))
-                                             (let [offset-x (-> data :message :offsetX)]
+                                                 (reset! webview-width webview-text-width)))
+                                             ; (let [webview-text-width (get-in data [:message :offsetX])]
+                                             ;   (when-not (nil? webview-text-width)
+                                             ;     (js/console.log "webview text width = " webview-text-width)
+                                             ;     ; (reset! webview-width (:height data))
+                                             ;     (reset! webview-width (+ (get-in data [:message :width]) webview-text-width))))
+                                             (let [offset-x (- (-> data :message :offsetX) (-> data :message :width))]
                                                (when-not (nil? offset-x)
                                                  (js/console.log "webview offset-x = " offset-x)
                                                  (if @scroll-ref
