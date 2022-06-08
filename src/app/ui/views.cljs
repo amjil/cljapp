@@ -36,7 +36,8 @@
    [app.ui.article.new :as arnew]
    [app.ui.question.index :as question]
    [app.ui.message.index :as message]
-   [app.ui.basic.theme :as theme]))
+   [app.ui.basic.theme :as theme]
+   [app.ui.search :as search]))
 
 
 (when platform/android?
@@ -183,7 +184,8 @@
              [group {:screenOptions {:presentation "modal"}}]
              (mapv (fn [props]
                      [screen (update props :component reagent/reactify-component)])
-               [arnew/model-new]))]]]])]]))
+               [arnew/model-new
+                search/search-base]))]]]])]]))
 
         ; [stack/stack {}
         ;  [{:name      :main
