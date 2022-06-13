@@ -11,30 +11,28 @@
 		04029D6027257C7200696F7B /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04029D5F27257C7200696F7B /* Ionicons.ttf */; };
 		04A3FC5626F9FA3D009F6F78 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 04A3FC5526F9FA3D009F6F78 /* assets */; };
 		063766004B854905B6C3C03F /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 17CA34A790544E56AB2E6860 /* MaterialIcons.ttf */; };
-		0E4E73490B8BF3F20266D31A /* libPods-cljapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22250DDC44061B13949507D6 /* libPods-cljapp.a */; };
 		0E67B429BEAA44BB8E91C554 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D440D060A21455CB9D0D58D /* Octicons.ttf */; };
+		113A921B282F25AB004079D9 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 113A921A282F25AB004079D9 /* www */; };
+		113A921F282F5816004079D9 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 113A921E282F5816004079D9 /* www */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		17092C977D1C43A481FBB4C6 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA90DE56FE564F2C9F32AB7C /* FontAwesome5_Solid.ttf */; };
+		24455D65B55185690905FB4D /* libPods-cljapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07A52B87AE38C96646D7EF28 /* libPods-cljapp.a */; };
 		2DB54C164CF04C1285C0693E /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B6FA0A80931E4BE8BA5012F8 /* FontAwesome5_Brands.ttf */; };
 		32FA6F0BDA23435998E78772 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2302AC694B2B41049478452E /* Zocial.ttf */; };
-		3C7CC683E71C4D849538A11C /* NotoSansMongolian-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8ED0C0DD64740BCA1371811 /* NotoSansMongolian-Regular.ttf */; };
-		4A3CEDF5409B460C8F316CFB /* MongolianShineChagan.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B131E3D8EC94FE69434CEAF /* MongolianShineChagan.ttf */; };
 		51CFC37D518947AF9FAB31D6 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C77221702D314AC092EDD0B0 /* FontAwesome5_Regular.ttf */; };
-		72EA0F2735E742BE8E9BC80D /* MongolianWhite.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 26ED57C9F23E493FA2077393 /* MongolianWhite.ttf */; };
 		781D0BB523F34584B2F20B2A /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 26F0A71E1ECD4E91A7B2A054 /* Fontisto.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		82953B75421A4FB5A9505F49 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2B26EC6853748EB98E169CA /* SimpleLineIcons.ttf */; };
-		93ABB8332F734A1084247997 /* Menk Qagan Tig.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 02855398B06A4724942054BC /* Menk Qagan Tig.ttf */; };
 		A494B108B79144C4BFD19964 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EC5ED25FA65E491EA2F98CA6 /* Entypo.ttf */; };
-		ACC87221C54130C313D73487 /* libPods-cljapp-cljappTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BFF9952431B93B01F92508F /* libPods-cljapp-cljappTests.a */; };
+		A701A8F288C615E86C99329C /* libPods-cljapp-cljappTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22DFA269E7A85A28CAB266F5 /* libPods-cljapp-cljappTests.a */; };
 		B299D83E372B4C119E01E3C6 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C0520DF165E4FCDA15853F3 /* Feather.ttf */; };
 		B5A4A328E0154B53AE848820 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 20604A702D8E444C979F1B3B /* FontAwesome.ttf */; };
 		BED0654727DB46068E9CCAE3 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 756476A6AA1F4593AE3656B2 /* EvilIcons.ttf */; };
 		C7B7262154944EE9919E3F83 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3450C03F29CF4C519575614A /* Foundation.ttf */; };
 		E77836BF01AA4A6297E38F89 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6269DC44A6348218058E745 /* AntDesign.ttf */; };
-		EAD87D5F336B45A5818A22B7 /* MenkVranStdExTig.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B05B098355D4DDE8F8EE22F /* MenkVranStdExTig.ttf */; };
+		EEE6A555C1074E0784B203D4 /* MongolianBaiZheng.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DCE89190DDB4FC5846C50B4 /* MongolianBaiZheng.ttf */; };
 		F775140378DF4521924F9031 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9318A2E104FF4AB7BA0FE811 /* MaterialCommunityIcons.ttf */; };
 /* End PBXBuildFile section */
 
@@ -52,10 +50,11 @@
 		00E356EE1AD99517003FC87E /* cljappTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cljappTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* cljappTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = cljappTests.m; sourceTree = "<group>"; };
-		02855398B06A4724942054BC /* Menk Qagan Tig.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Menk Qagan Tig.ttf"; path = "../assets/fonts/Menk Qagan Tig.ttf"; sourceTree = "<group>"; };
 		04029D5F27257C7200696F7B /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		04A3FC5526F9FA3D009F6F78 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
-		0B131E3D8EC94FE69434CEAF /* MongolianShineChagan.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MongolianShineChagan.ttf; path = ../assets/fonts/MongolianShineChagan.ttf; sourceTree = "<group>"; };
+		07A52B87AE38C96646D7EF28 /* libPods-cljapp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cljapp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		113A921A282F25AB004079D9 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = cljapp/www; sourceTree = "<group>"; };
+		113A921E282F5816004079D9 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = cljapp/www; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* cljapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cljapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = cljapp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = cljapp/AppDelegate.m; sourceTree = "<group>"; };
@@ -64,30 +63,24 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = cljapp/main.m; sourceTree = "<group>"; };
 		17CA34A790544E56AB2E6860 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		20604A702D8E444C979F1B3B /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		22250DDC44061B13949507D6 /* libPods-cljapp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cljapp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		22DFA269E7A85A28CAB266F5 /* libPods-cljapp-cljappTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cljapp-cljappTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2302AC694B2B41049478452E /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
-		26ED57C9F23E493FA2077393 /* MongolianWhite.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MongolianWhite.ttf; path = ../assets/fonts/MongolianWhite.ttf; sourceTree = "<group>"; };
+		23585D48DF8A2AAC399D8CFD /* Pods-cljapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cljapp.debug.xcconfig"; path = "Target Support Files/Pods-cljapp/Pods-cljapp.debug.xcconfig"; sourceTree = "<group>"; };
 		26F0A71E1ECD4E91A7B2A054 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
-		2B05B098355D4DDE8F8EE22F /* MenkVranStdExTig.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MenkVranStdExTig.ttf; path = ../assets/fonts/MenkVranStdExTig.ttf; sourceTree = "<group>"; };
+		335C770309D334B5E9A159BD /* Pods-cljapp-cljappTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cljapp-cljappTests.debug.xcconfig"; path = "Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests.debug.xcconfig"; sourceTree = "<group>"; };
 		3450C03F29CF4C519575614A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		4BFF9952431B93B01F92508F /* libPods-cljapp-cljappTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cljapp-cljappTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		55D58C28ADA623575DE1BA20 /* Pods-cljapp-cljappTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cljapp-cljappTests.debug.xcconfig"; path = "Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests.debug.xcconfig"; sourceTree = "<group>"; };
+		3601823A946C70619DCBADE4 /* Pods-cljapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cljapp.release.xcconfig"; path = "Target Support Files/Pods-cljapp/Pods-cljapp.release.xcconfig"; sourceTree = "<group>"; };
+		4DCE89190DDB4FC5846C50B4 /* MongolianBaiZheng.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MongolianBaiZheng.ttf; path = ../assets/fonts/MongolianBaiZheng.ttf; sourceTree = "<group>"; };
 		6C0520DF165E4FCDA15853F3 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
-		6DF1128C939A064F93BCD8F0 /* Pods-cljapp-cljappTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cljapp-cljappTests.release.xcconfig"; path = "Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests.release.xcconfig"; sourceTree = "<group>"; };
 		756476A6AA1F4593AE3656B2 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = cljapp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8D440D060A21455CB9D0D58D /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		9318A2E104FF4AB7BA0FE811 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
-		98C35A70ADF04952A896E0FD /* MongolianSoninChagan.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MongolianSoninChagan.ttf; path = ../assets/fonts/MongolianSoninChagan.ttf; sourceTree = "<group>"; };
 		A2B26EC6853748EB98E169CA /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
-		B389D2452E613735C21B0622 /* Pods-cljapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cljapp.release.xcconfig"; path = "Target Support Files/Pods-cljapp/Pods-cljapp.release.xcconfig"; sourceTree = "<group>"; };
 		B6FA0A80931E4BE8BA5012F8 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
-		C5491E2034E443558BD8ECDC /* MongolianBaiti.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MongolianBaiti.ttf; path = ../assets/fonts/MongolianBaiti.ttf; sourceTree = "<group>"; };
+		B820018278BE81B22851DED2 /* Pods-cljapp-cljappTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cljapp-cljappTests.release.xcconfig"; path = "Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests.release.xcconfig"; sourceTree = "<group>"; };
 		C77221702D314AC092EDD0B0 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
-		C8ED0C0DD64740BCA1371811 /* NotoSansMongolian-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansMongolian-Regular.ttf"; path = "../assets/fonts/NotoSansMongolian-Regular.ttf"; sourceTree = "<group>"; };
 		CA90DE56FE564F2C9F32AB7C /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
-		CD86A9C7881A4B1CBA5A2A8E /* MongolianChaganTegshi.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MongolianChaganTegshi.ttf; path = ../assets/fonts/MongolianChaganTegshi.ttf; sourceTree = "<group>"; };
-		E3F3A6686E59BE83579C4052 /* Pods-cljapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cljapp.debug.xcconfig"; path = "Target Support Files/Pods-cljapp/Pods-cljapp.debug.xcconfig"; sourceTree = "<group>"; };
 		EC5ED25FA65E491EA2F98CA6 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F6269DC44A6348218058E745 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -98,7 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACC87221C54130C313D73487 /* libPods-cljapp-cljappTests.a in Frameworks */,
+				A701A8F288C615E86C99329C /* libPods-cljapp-cljappTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,7 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0E4E73490B8BF3F20266D31A /* libPods-cljapp.a in Frameworks */,
+				24455D65B55185690905FB4D /* libPods-cljapp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,6 +134,8 @@
 		13B07FAE1A68108700A75B9A /* cljapp */ = {
 			isa = PBXGroup;
 			children = (
+				113A921A282F25AB004079D9 /* www */,
+				113A921E282F5816004079D9 /* www */,
 				04029D5E27257C1900696F7B /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -156,8 +151,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				22250DDC44061B13949507D6 /* libPods-cljapp.a */,
-				4BFF9952431B93B01F92508F /* libPods-cljapp-cljappTests.a */,
+				07A52B87AE38C96646D7EF28 /* libPods-cljapp.a */,
+				22DFA269E7A85A28CAB266F5 /* libPods-cljapp-cljappTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -198,10 +193,10 @@
 		B77472E29649560B119779A1 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E3F3A6686E59BE83579C4052 /* Pods-cljapp.debug.xcconfig */,
-				B389D2452E613735C21B0622 /* Pods-cljapp.release.xcconfig */,
-				55D58C28ADA623575DE1BA20 /* Pods-cljapp-cljappTests.debug.xcconfig */,
-				6DF1128C939A064F93BCD8F0 /* Pods-cljapp-cljappTests.release.xcconfig */,
+				23585D48DF8A2AAC399D8CFD /* Pods-cljapp.debug.xcconfig */,
+				3601823A946C70619DCBADE4 /* Pods-cljapp.release.xcconfig */,
+				335C770309D334B5E9A159BD /* Pods-cljapp-cljappTests.debug.xcconfig */,
+				B820018278BE81B22851DED2 /* Pods-cljapp-cljappTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -209,7 +204,6 @@
 		D67E53C06606413F9529C728 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C5491E2034E443558BD8ECDC /* MongolianBaiti.ttf */,
 				F6269DC44A6348218058E745 /* AntDesign.ttf */,
 				EC5ED25FA65E491EA2F98CA6 /* Entypo.ttf */,
 				756476A6AA1F4593AE3656B2 /* EvilIcons.ttf */,
@@ -225,13 +219,7 @@
 				8D440D060A21455CB9D0D58D /* Octicons.ttf */,
 				A2B26EC6853748EB98E169CA /* SimpleLineIcons.ttf */,
 				2302AC694B2B41049478452E /* Zocial.ttf */,
-				CD86A9C7881A4B1CBA5A2A8E /* MongolianChaganTegshi.ttf */,
-				98C35A70ADF04952A896E0FD /* MongolianSoninChagan.ttf */,
-				0B131E3D8EC94FE69434CEAF /* MongolianShineChagan.ttf */,
-				26ED57C9F23E493FA2077393 /* MongolianWhite.ttf */,
-				C8ED0C0DD64740BCA1371811 /* NotoSansMongolian-Regular.ttf */,
-				2B05B098355D4DDE8F8EE22F /* MenkVranStdExTig.ttf */,
-				02855398B06A4724942054BC /* Menk Qagan Tig.ttf */,
+				4DCE89190DDB4FC5846C50B4 /* MongolianBaiZheng.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -243,12 +231,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "cljappTests" */;
 			buildPhases = (
-				2E92EAA0E11FDC5BC4BAD764 /* [CP] Check Pods Manifest.lock */,
+				FF3C4126D65BB7ABAD0B2CA5 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				26EB0E5529FFF8BF9A4090D6 /* [CP] Embed Pods Frameworks */,
-				AF039AF20912A4C43994FA5D /* [CP] Copy Pods Resources */,
+				459A4EE92A0A999DEF4DF73E /* [CP] Embed Pods Frameworks */,
+				9BC1BA254114BF62C9066B39 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -264,14 +252,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "cljapp" */;
 			buildPhases = (
-				E62E3AF9FD3D7A232EA9D890 /* [CP] Check Pods Manifest.lock */,
+				D21AD8520ABD0BC23CF052A3 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				35642BA61E4D3A4E74A3512B /* [CP] Embed Pods Frameworks */,
-				8B70E52A68174E3040094608 /* [CP] Copy Pods Resources */,
+				200D752BE36F4F68B1724C83 /* [CP] Embed Pods Frameworks */,
+				E5F138C462DFFF8D2D96F4FD /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -338,6 +326,7 @@
 				A494B108B79144C4BFD19964 /* Entypo.ttf in Resources */,
 				BED0654727DB46068E9CCAE3 /* EvilIcons.ttf in Resources */,
 				B299D83E372B4C119E01E3C6 /* Feather.ttf in Resources */,
+				113A921F282F5816004079D9 /* www in Resources */,
 				B5A4A328E0154B53AE848820 /* FontAwesome.ttf in Resources */,
 				2DB54C164CF04C1285C0693E /* FontAwesome5_Brands.ttf in Resources */,
 				51CFC37D518947AF9FAB31D6 /* FontAwesome5_Regular.ttf in Resources */,
@@ -345,15 +334,12 @@
 				781D0BB523F34584B2F20B2A /* Fontisto.ttf in Resources */,
 				C7B7262154944EE9919E3F83 /* Foundation.ttf in Resources */,
 				F775140378DF4521924F9031 /* MaterialCommunityIcons.ttf in Resources */,
+				113A921B282F25AB004079D9 /* www in Resources */,
 				063766004B854905B6C3C03F /* MaterialIcons.ttf in Resources */,
 				0E67B429BEAA44BB8E91C554 /* Octicons.ttf in Resources */,
 				82953B75421A4FB5A9505F49 /* SimpleLineIcons.ttf in Resources */,
 				32FA6F0BDA23435998E78772 /* Zocial.ttf in Resources */,
-				4A3CEDF5409B460C8F316CFB /* MongolianShineChagan.ttf in Resources */,
-				72EA0F2735E742BE8E9BC80D /* MongolianWhite.ttf in Resources */,
-				3C7CC683E71C4D849538A11C /* NotoSansMongolian-Regular.ttf in Resources */,
-				EAD87D5F336B45A5818A22B7 /* MenkVranStdExTig.ttf in Resources */,
-				93ABB8332F734A1084247997 /* Menk Qagan Tig.ttf in Resources */,
+				EEE6A555C1074E0784B203D4 /* MongolianBaiZheng.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,6 +351,8 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputFileListPaths = (
+			);
 			inputPaths = (
 			);
 			name = "Bundle React Native code and images";
@@ -374,46 +362,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		26EB0E5529FFF8BF9A4090D6 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2E92EAA0E11FDC5BC4BAD764 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-cljapp-cljappTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		35642BA61E4D3A4E74A3512B /* [CP] Embed Pods Frameworks */ = {
+		200D752BE36F4F68B1724C83 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -430,23 +379,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cljapp/Pods-cljapp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8B70E52A68174E3040094608 /* [CP] Copy Pods Resources */ = {
+		459A4EE92A0A999DEF4DF73E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-cljapp/Pods-cljapp-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cljapp/Pods-cljapp-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AF039AF20912A4C43994FA5D /* [CP] Copy Pods Resources */ = {
+		9BC1BA254114BF62C9066B39 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -463,7 +413,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cljapp-cljappTests/Pods-cljapp-cljappTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E62E3AF9FD3D7A232EA9D890 /* [CP] Check Pods Manifest.lock */ = {
+		D21AD8520ABD0BC23CF052A3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -485,6 +435,22 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E5F138C462DFFF8D2D96F4FD /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-cljapp/Pods-cljapp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cljapp/Pods-cljapp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -502,6 +468,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FF3C4126D65BB7ABAD0B2CA5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-cljapp-cljappTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -537,7 +525,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 55D58C28ADA623575DE1BA20 /* Pods-cljapp-cljappTests.debug.xcconfig */;
+			baseConfigurationReference = 335C770309D334B5E9A159BD /* Pods-cljapp-cljappTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -564,7 +552,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6DF1128C939A064F93BCD8F0 /* Pods-cljapp-cljappTests.release.xcconfig */;
+			baseConfigurationReference = B820018278BE81B22851DED2 /* Pods-cljapp-cljappTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -588,12 +576,13 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E3F3A6686E59BE83579C4052 /* Pods-cljapp.debug.xcconfig */;
+			baseConfigurationReference = 23585D48DF8A2AAC399D8CFD /* Pods-cljapp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = cljapp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -614,11 +603,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B389D2452E613735C21B0622 /* Pods-cljapp.release.xcconfig */;
+			baseConfigurationReference = 3601823A946C70619DCBADE4 /* Pods-cljapp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = cljapp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -669,7 +659,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -734,7 +724,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
