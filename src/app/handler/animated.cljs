@@ -9,3 +9,5 @@
 (def animated-flat-list (r/adapt-react-class (.createAnimatedComponent Animated FlatList)))
 
 (def animated-view (r/adapt-react-class (.-View Animated)))
+
+(def animated-value (.-Value Animated))
