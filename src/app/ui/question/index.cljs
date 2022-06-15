@@ -472,6 +472,11 @@
     (fn [tag id classname]
       (reagent/as-element
         [nbase/icon-button {:justifyContent "center" :alignItems "center"
-                            :icon (reagent/as-element [nbase/icon {:as Ionicons :name "search-outline" :size "5" :color (theme/color "blue.600" "blue.800")}])
+                            :_pressed {:bg (theme/color "blue.300" "blue.500")}
+                            :borderRadius "full"
+                            :icon (reagent/as-element
+                                    [nbase/icon
+                                     {:as Ionicons :name "search-outline" :size "5"
+                                      :color (theme/color "blue.600" "blue.800")}])
                             :on-press (fn [e] (js/console.log "on press icon button")
                                         (re-frame/dispatch [:navigate-to :search-base]))}]))}})
