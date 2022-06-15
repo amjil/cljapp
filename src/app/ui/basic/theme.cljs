@@ -31,4 +31,6 @@
 
 
 (defn color [l d]
-  (if (is-dark?) d l))
+  (if (= "system" @current-theme)
+    (if (= "dark" (get-system-theme)) d l)
+    (if (is-dark?) d l)))
